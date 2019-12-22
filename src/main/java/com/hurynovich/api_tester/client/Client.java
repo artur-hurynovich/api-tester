@@ -1,8 +1,8 @@
 package com.hurynovich.api_tester.client;
 
 import com.hurynovich.api_tester.client.exception.ClientException;
-import com.hurynovich.api_tester.dto.impl.RequestDTO;
-import com.hurynovich.api_tester.dto.impl.ResponseDTO;
+import com.hurynovich.api_tester.model.dto.impl.RequestDTO;
+import com.hurynovich.api_tester.model.dto.impl.ResponseDTO;
 
 public interface Client {
 

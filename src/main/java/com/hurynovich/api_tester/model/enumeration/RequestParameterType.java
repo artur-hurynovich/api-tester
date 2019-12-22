@@ -1,4 +1,4 @@
-package com.hurynovich.api_tester.enumeration;
+package com.hurynovich.api_tester.model.enumeration;
 
 public enum RequestParameterType {
 

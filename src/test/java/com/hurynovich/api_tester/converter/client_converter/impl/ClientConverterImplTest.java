@@ -2,9 +2,9 @@ package com.hurynovich.api_tester.converter.client_converter.impl;
 
 import com.hurynovich.api_tester.converter.client_converter.ClientConverter;
 import com.hurynovich.api_tester.converter.exception.ConverterException;
-import com.hurynovich.api_tester.dto.impl.RequestDTO;
-import com.hurynovich.api_tester.dto.impl.RequestParameterDTO;
-import com.hurynovich.api_tester.dto.impl.ResponseDTO;
+import com.hurynovich.api_tester.model.dto.impl.RequestDTO;
+import com.hurynovich.api_tester.model.dto.impl.RequestParameterDTO;
+import com.hurynovich.api_tester.model.dto.impl.ResponseDTO;
 import com.hurynovich.api_tester.helper.RequestTestHelper;
 import com.hurynovich.api_tester.utils.url.UrlUtils;
 import com.hurynovich.api_tester.utils.url.impl.UrlUtilsImpl;

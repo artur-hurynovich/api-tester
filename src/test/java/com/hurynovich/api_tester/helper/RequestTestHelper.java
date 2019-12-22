@@ -1,6 +1,6 @@
 package com.hurynovich.api_tester.helper;
 
-import com.hurynovich.api_tester.dto.impl.RequestParameterDTO;
+import com.hurynovich.api_tester.model.dto.impl.RequestParameterDTO;
 import com.hurynovich.api_tester.utils.url.constants.UrlUtilsConstants;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.http.HttpHeaders;

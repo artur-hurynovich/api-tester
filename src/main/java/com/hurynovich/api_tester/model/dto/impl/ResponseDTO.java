@@ -1,6 +1,6 @@
-package com.hurynovich.api_tester.dto.impl;
+package com.hurynovich.api_tester.model.dto.impl;
 
-import com.hurynovich.api_tester.dto.AbstractDTO;
+import com.hurynovich.api_tester.model.dto.AbstractDTO;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 

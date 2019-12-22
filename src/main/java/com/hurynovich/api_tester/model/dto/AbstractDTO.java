@@ -1,4 +1,4 @@
-package com.hurynovich.api_tester.dto;
+package com.hurynovich.api_tester.model.dto;
 
 public class AbstractDTO {
 
