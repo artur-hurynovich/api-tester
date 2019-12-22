@@ -5,9 +5,8 @@ import com.hurynovich.api_tester.converter.exception.ConverterException;
 import com.hurynovich.api_tester.model.dto.impl.RequestDTO;
 import com.hurynovich.api_tester.model.dto.impl.RequestParameterDTO;
 import com.hurynovich.api_tester.model.dto.impl.ResponseDTO;
-import com.hurynovich.api_tester.helper.RequestTestHelper;
+import com.hurynovich.api_tester.test_helper.RequestTestHelper;
 import com.hurynovich.api_tester.utils.url.UrlUtils;
-import com.hurynovich.api_tester.utils.url.impl.UrlUtilsImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
@@ -24,8 +23,6 @@ public class ClientConverterImplTest {
 	private static final int REQUEST_PARAMETERS_SIZE = 3;
 
 	private static final ClientConverter<String> CLIENT_CONVERTER = new ClientConverterImpl();
-
-	private static final UrlUtils URL_UTILS = new UrlUtilsImpl();
 
 	@Test
 	public void convertRequestDTOToRequestEntityTest() throws ConverterException {
@@ -51,7 +48,7 @@ public class ClientConverterImplTest {
 	}
 
 	private void checkUrl(final String url, final RequestEntity<String> requestEntity) {
-		Assertions.assertEquals(url, URL_UTILS.clearParameters(requestEntity.getUrl().toString()));
+		Assertions.assertEquals(url, UrlUtils.clearParameters(requestEntity.getUrl().toString()));
 	}
 
 	private void checkParameters(final List<RequestParameterDTO> parameters, final RequestEntity<String> requestEntity) {

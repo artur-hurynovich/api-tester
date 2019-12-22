@@ -8,6 +8,7 @@ import com.hurynovich.api_tester.model.execution.RequestExecutionSignal;
 import com.hurynovich.api_tester.model.execution.RequestExecutionState;
 import com.hurynovich.api_tester.model.validation.ValidationResult;
 import com.hurynovich.api_tester.service.dto_service.DTOService;
+import com.hurynovich.api_tester.utils.request_execution_status.RequestExecutionSignalTypeUtils;
 import com.hurynovich.api_tester.validator.Validator;
 
 import java.util.ArrayList;
@@ -61,7 +62,7 @@ public class RequestExecutionSignalValidator implements Validator<RequestExecuti
 		final RequestExecutionSignalType signalType = signal.getType();
 		switch (signalType) {
 			case START:
-				if (requestExecutionState != null && nonValidSignalType(signalType, requestExecutionState)) {
+				if (requestExecutionState != null && nonValidSignalType(signal, requestExecutionState)) {
 					validationResult.setType(ValidationResultType.NON_VALID);
 					validationResult.getDescriptions().add(
 						"signalType '" + signalType + "' is not valid for requestExecutionStatus '" +
@@ -73,7 +74,7 @@ public class RequestExecutionSignalValidator implements Validator<RequestExecuti
 					validationResult.setType(ValidationResultType.NON_VALID);
 					validationResult.getDescriptions().add(
 						"signalType '" + signalType + "' can't be applied before request execution started");
-				} else if (!nonValidSignalType(signalType, requestExecutionState)) {
+				} else if (nonValidSignalType(signal, requestExecutionState)) {
 					validationResult.setType(ValidationResultType.NON_VALID);
 					validationResult.getDescriptions().add(
 						"signalType '" + signalType + "' is not valid for requestExecutionStatus '" +
@@ -86,9 +87,10 @@ public class RequestExecutionSignalValidator implements Validator<RequestExecuti
 		}
 	}
 
-	private boolean nonValidSignalType(final RequestExecutionSignalType type,
+	private boolean nonValidSignalType(final RequestExecutionSignal signal,
 									   final RequestExecutionState requestExecutionState) {
-		return !requestExecutionState.getStatus().getValidSignalTypes().contains(type);
+		return !RequestExecutionSignalTypeUtils.getValidSignalTypes(requestExecutionState.getStatus())
+			.contains(signal.getType());
 	}
 
 	private void validateRequestChainId(final RequestExecutionSignal signal, final ValidationResult validationResult) {

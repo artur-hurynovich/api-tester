@@ -1,14 +1,12 @@
-package com.hurynovich.api_tester.helper;
+package com.hurynovich.api_tester.test_helper;
 
 import com.hurynovich.api_tester.model.dto.impl.RequestParameterDTO;
 import com.hurynovich.api_tester.utils.url.constants.UrlUtilsConstants;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -29,11 +27,7 @@ public class RequestTestHelper {
 	private static final int REQUEST_BODY_MAX_LENGTH = 100;
 
 	public static HttpMethod generateRandomHttpMethod() {
-		final List<HttpMethod> httpMethods = Arrays.asList(HttpMethod.values());
-
-		final int randomIndex = random.nextInt(httpMethods.size());
-
-		return httpMethods.get(randomIndex);
+		return RandomValueGenerator.generateRandomEnumValue(HttpMethod.class);
 	}
 
 	public static HttpHeaders generateRandomHttpHeaders(final int size) {
@@ -41,50 +35,45 @@ public class RequestTestHelper {
 
 		IntStream.range(1, size + 1).forEach(index ->
 												 headers.add(
-													 generateRandomString(REQUEST_HEADER_NAME_MAX_LENGTH),
-													 generateRandomString(REQUEST_HEADER_VALUE_MAX_LENGTH)));
+													 RandomValueGenerator
+														 .generateRandomStringLettersOnly(
+															 REQUEST_HEADER_NAME_MAX_LENGTH),
+													 RandomValueGenerator
+														 .generateRandomStringLettersOnly(
+															 REQUEST_HEADER_VALUE_MAX_LENGTH)));
 
 		return headers;
 	}
 
 	public static HttpStatus generateRandomHttpStatus() {
-		final List<HttpStatus> httpStatuses = Arrays.asList(HttpStatus.values());
-
-		final int randomIndex = random.nextInt(httpStatuses.size());
-
-		return httpStatuses.get(randomIndex);
+		return RandomValueGenerator.generateRandomEnumValue(HttpStatus.class);
 	}
 
 	public static String generateRandomUrl() {
-		return HTTP_PROTOCOL + "://" + generateRandomString(DOMAIN_NAME_LENGTH) + '.' +
-			   generateRandomString(DOMAIN_LENGTH);
+		return HTTP_PROTOCOL + "://" + RandomValueGenerator.generateRandomStringLettersOnly(DOMAIN_NAME_LENGTH) + '.' +
+			   RandomValueGenerator.generateRandomStringLettersOnly(DOMAIN_LENGTH);
 	}
 
-	private static String generateRandomString(final int size) {
-		return RandomStringUtils.random(size, true, false);
-	}
 
 	public static List<RequestParameterDTO> generateRandomParameters(final int size) {
 		return IntStream.range(1, size + 1).mapToObj(index -> {
 			final RequestParameterDTO requestParameterDTO = new RequestParameterDTO();
 
 			requestParameterDTO.setName(
-				generateRandomString(random.nextInt(REQUEST_PARAMETER_NAME_MAX_LENGTH) + 1).toLowerCase());
+				RandomValueGenerator
+					.generateRandomStringLettersOnly(random.nextInt(REQUEST_PARAMETER_NAME_MAX_LENGTH) + 1)
+					.toLowerCase());
 			requestParameterDTO.setValue(
-				generateRandomString(random.nextInt(REQUEST_PARAMETER_VALUE_MAX_LENGTH) + 1).toLowerCase());
+				RandomValueGenerator
+					.generateRandomStringLettersOnly(random.nextInt(REQUEST_PARAMETER_VALUE_MAX_LENGTH) + 1)
+					.toLowerCase());
 
 			return requestParameterDTO;
 		}).collect(Collectors.toList());
 	}
 
 	public static String generateRandomBody() {
-		return generateRandomString(REQUEST_BODY_MIN_LENGTH, REQUEST_BODY_MAX_LENGTH);
-	}
-
-	public static String generateRandomString(final int minSize, final int maxSize) {
-		final int size = minSize + random.nextInt(maxSize);
-
-		return RandomStringUtils.random(size, true, false);
+		return RandomValueGenerator.generateRandomStringLettersOnly(REQUEST_BODY_MIN_LENGTH, REQUEST_BODY_MAX_LENGTH);
 	}
 
 	public static List<RequestParameterDTO> parseParameters(final String url) {
