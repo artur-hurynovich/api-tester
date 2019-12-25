@@ -97,7 +97,7 @@ public class ExecutionHelperImpl implements ExecutionHelper {
     public ExecutionStateType resolveTransitionToExecutionStateType(final @NonNull ExecutionSignal executionSignal) {
 		final Pair<ExecutionSignalType, ExecutionStateType> pairOfSignalAndCurrentState = buildPairOfSignalAndCurrentState(executionSignal);
 
-		return TRANSITION_TO_EXECUTION_STATE_TYPES.get(pairOfSignalAndCurrentState);
+		return TRANSITION_TO_EXECUTION_STATE_TYPES.getOrDefault(pairOfSignalAndCurrentState, ERROR);
     }
 
     private Pair<ExecutionSignalType, ExecutionStateType> buildPairOfSignalAndCurrentState(final @NonNull ExecutionSignal executionSignal) {
