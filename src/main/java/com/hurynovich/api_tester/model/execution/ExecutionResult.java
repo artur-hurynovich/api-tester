@@ -1,4 +1,4 @@
 package com.hurynovich.api_tester.model.execution;
 
-public class RequestExecutionResult {
+public class ExecutionResult {
 }

@@ -6,14 +6,14 @@ import java.util.List;
 
 public class RequestChainDTO extends AbstractDTO {
 
-	private List<RequestDTO> requests;
+    private List<RequestDTO> requests;
 
-	public List<RequestDTO> getRequests() {
-		return requests;
-	}
+    public List<RequestDTO> getRequests() {
+        return requests;
+    }
 
-	public void setRequests(final List<RequestDTO> requests) {
-		this.requests = requests;
-	}
+    public void setRequests(final List<RequestDTO> requests) {
+        this.requests = requests;
+    }
 
 }

@@ -5,34 +5,34 @@ import com.hurynovich.api_tester.model.enumeration.RequestParameterType;
 
 public class RequestParameterDTO extends AbstractDTO {
 
-	private RequestParameterType type;
+    private RequestParameterType type;
 
-	private String name;
+    private String name;
 
-	private String value;
+    private String value;
 
-	public RequestParameterType getType() {
-		return type;
-	}
+    public RequestParameterType getType() {
+        return type;
+    }
 
-	public void setType(final RequestParameterType type) {
-		this.type = type;
-	}
+    public void setType(final RequestParameterType type) {
+        this.type = type;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(final String name) {
-		this.name = name;
-	}
+    public void setName(final String name) {
+        this.name = name;
+    }
 
-	public String getValue() {
-		return value;
-	}
+    public String getValue() {
+        return value;
+    }
 
-	public void setValue(final String value) {
-		this.value = value;
-	}
+    public void setValue(final String value) {
+        this.value = value;
+    }
 
 }

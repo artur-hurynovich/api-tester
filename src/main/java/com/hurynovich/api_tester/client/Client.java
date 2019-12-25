@@ -6,6 +6,6 @@ import com.hurynovich.api_tester.model.dto.impl.ResponseDTO;
 
 public interface Client {
 
-	ResponseDTO sendRequest(RequestDTO request) throws ClientException;
+    ResponseDTO sendRequest(RequestDTO request) throws ClientException;
 
 }

@@ -5,6 +5,7 @@ import com.hurynovich.api_tester.converter.exception.ConverterException;
 import com.hurynovich.api_tester.model.dto.impl.RequestDTO;
 import com.hurynovich.api_tester.model.dto.impl.RequestParameterDTO;
 import com.hurynovich.api_tester.model.dto.impl.ResponseDTO;
+
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
@@ -19,45 +20,45 @@ import java.util.List;
 
 public class ClientConverterImpl implements ClientConverter<String> {
 
-	@Override
-	public RequestEntity<String> convert(final RequestDTO requestDTO) throws ConverterException {
-		try {
-			final MultiValueMap<String, String> uriVariables = convertRequestDTOParametersToQueryParams(requestDTO);
-			final UriComponentsBuilder uriComponentsBuilder =
-				UriComponentsBuilder.fromUri(new URI(requestDTO.getUrl())).queryParams(uriVariables);
+    @Override
+    public RequestEntity<String> convert(final RequestDTO requestDTO) throws ConverterException {
+        try {
+            final MultiValueMap<String, String> uriVariables = convertRequestDTOParametersToQueryParams(requestDTO);
+            final UriComponentsBuilder uriComponentsBuilder =
+                    UriComponentsBuilder.fromUri(new URI(requestDTO.getUrl())).queryParams(uriVariables);
 
-			return RequestEntity.method(requestDTO.getMethod(), uriComponentsBuilder.build(uriVariables)).
-				headers(requestDTO.getHeaders()).
-				body(requestDTO.getBody());
-		} catch (final URISyntaxException e) {
-			throw new ConverterException("Failed to convert:\n" + requestDTO, e);
-		}
-	}
+            return RequestEntity.method(requestDTO.getMethod(), uriComponentsBuilder.build(uriVariables)).
+                    headers(requestDTO.getHeaders()).
+                    body(requestDTO.getBody());
+        } catch (final URISyntaxException e) {
+            throw new ConverterException("Failed to convert:\n" + requestDTO, e);
+        }
+    }
 
-	private MultiValueMap<String, String> convertRequestDTOParametersToQueryParams(final RequestDTO requestDTO) {
-		final List<RequestParameterDTO> parameters = requestDTO.getParameters();
+    private MultiValueMap<String, String> convertRequestDTOParametersToQueryParams(final RequestDTO requestDTO) {
+        final List<RequestParameterDTO> parameters = requestDTO.getParameters();
 
-		if (!CollectionUtils.isEmpty(parameters)) {
-			final MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
+        if (!CollectionUtils.isEmpty(parameters)) {
+            final MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
 
-			parameters.forEach(
-				parameter -> queryParams.put(parameter.getName(), Collections.singletonList(parameter.getValue())));
+            parameters.forEach(
+                    parameter -> queryParams.put(parameter.getName(), Collections.singletonList(parameter.getValue())));
 
-			return queryParams;
-		} else {
-			return new LinkedMultiValueMap<>();
-		}
-	}
+            return queryParams;
+        } else {
+            return new LinkedMultiValueMap<>();
+        }
+    }
 
-	@Override
-	public ResponseDTO convert(final ResponseEntity<String> responseEntity) {
-		final ResponseDTO responseDTO = new ResponseDTO();
+    @Override
+    public ResponseDTO convert(final ResponseEntity<String> responseEntity) {
+        final ResponseDTO responseDTO = new ResponseDTO();
 
-		responseDTO.setStatus(responseEntity.getStatusCode());
-		responseDTO.setHeaders(responseEntity.getHeaders());
-		responseDTO.setBody(responseEntity.getBody());
+        responseDTO.setStatus(responseEntity.getStatusCode());
+        responseDTO.setHeaders(responseEntity.getHeaders());
+        responseDTO.setBody(responseEntity.getBody());
 
-		return responseDTO;
-	}
+        return responseDTO;
+    }
 
 }
