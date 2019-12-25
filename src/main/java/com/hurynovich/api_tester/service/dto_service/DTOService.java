@@ -4,6 +4,8 @@ import com.hurynovich.api_tester.model.dto.AbstractDTO;
 
 public interface DTOService<D extends AbstractDTO, I> {
 
-    boolean existsById(final I id);
+    D getById(I id);
+
+    boolean existsById(I id);
 
 }

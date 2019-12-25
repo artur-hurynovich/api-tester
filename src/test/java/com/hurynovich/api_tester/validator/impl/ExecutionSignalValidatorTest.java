@@ -36,7 +36,7 @@ public class ExecutionSignalValidatorTest {
 
     private static final ExecutionState EXECUTION_STATE = Mockito.mock(ExecutionState.class);
 
-    private static final ExecutionHelper EXECUTION_HELPER = new ExecutionHelperImpl(EXECUTION_STATE_CACHE);
+    private static final ExecutionHelper EXECUTION_HELPER = new ExecutionHelperImpl(EXECUTION_STATE_CACHE, REQUEST_CHAIN_SERVICE);
 
     private static final Validator<ExecutionSignal> SIGNAL_VALIDATOR =
             new ExecutionSignalValidator(EXECUTION_STATE_CACHE, USER_SERVICE, REQUEST_CHAIN_SERVICE, EXECUTION_HELPER);

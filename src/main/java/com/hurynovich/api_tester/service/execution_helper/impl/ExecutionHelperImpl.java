@@ -2,10 +2,12 @@ package com.hurynovich.api_tester.service.execution_helper.impl;
 
 import com.hurynovich.api_tester.cache.Cache;
 import com.hurynovich.api_tester.cache.cache_key.impl.ExecutionStateCacheKey;
+import com.hurynovich.api_tester.model.dto.impl.RequestChainDTO;
 import com.hurynovich.api_tester.model.enumeration.ExecutionSignalType;
 import com.hurynovich.api_tester.model.enumeration.ExecutionStateType;
 import com.hurynovich.api_tester.model.execution.ExecutionSignal;
 import com.hurynovich.api_tester.model.execution.ExecutionState;
+import com.hurynovich.api_tester.service.dto_service.DTOService;
 import com.hurynovich.api_tester.service.execution_helper.ExecutionHelper;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -43,8 +45,12 @@ public class ExecutionHelperImpl implements ExecutionHelper {
 
     private final Cache<ExecutionStateCacheKey, ExecutionState> executionStateCache;
 
-    public ExecutionHelperImpl(final Cache<ExecutionStateCacheKey, ExecutionState> executionStateCache) {
+    private final DTOService<RequestChainDTO, Long> requestChainService;
+
+    public ExecutionHelperImpl(final Cache<ExecutionStateCacheKey, ExecutionState> executionStateCache,
+                               final DTOService<RequestChainDTO, Long> requestChainService) {
         this.executionStateCache = executionStateCache;
+        this.requestChainService = requestChainService;
     }
 
     private static Map<ExecutionStateType, List<ExecutionSignalType>> initValidExecutionSignalTypes() {
@@ -82,6 +88,25 @@ public class ExecutionHelperImpl implements ExecutionHelper {
 		transitionToStatusMap.put(new ImmutablePair<>(STOP, PENDING_STOPPED), STOPPED);
 
         return Collections.unmodifiableMap(transitionToStatusMap);
+    }
+
+    @Override
+    public ExecutionState updateExecutionStateCache(final @NonNull ExecutionSignal executionSignal) {
+        final Long userId = executionSignal.getUserId();
+        final Long requestChainId = executionSignal.getRequestChainId();
+        final ExecutionStateCacheKey executionStateCacheKey = new ExecutionStateCacheKey(userId, requestChainId);
+
+        ExecutionState executionState = executionStateCache.get(executionStateCacheKey);
+        if (executionState == null) {
+            executionState = new ExecutionState();
+
+            final RequestChainDTO requestChain = requestChainService.getById(executionSignal.getRequestChainId());
+            executionState.setRequests(requestChain.getRequests());
+        }
+
+        executionState.setType(resolveTransitionToExecutionStateType(executionSignal));
+
+        return executionStateCache.put(executionStateCacheKey, executionState);
     }
 
     @Override

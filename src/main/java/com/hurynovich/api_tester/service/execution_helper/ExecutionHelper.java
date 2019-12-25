@@ -9,6 +9,8 @@ import java.util.List;
 
 public interface ExecutionHelper {
 
+    ExecutionState updateExecutionStateCache(ExecutionSignal executionSignal);
+
     List<ExecutionSignalType> resolveValidExecutionSignalTypes(ExecutionState executionState);
 
     ExecutionStateType resolveTransitionToExecutionStateType(ExecutionSignal executionSignal);

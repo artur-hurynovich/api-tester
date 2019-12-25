@@ -2,10 +2,12 @@ package com.hurynovich.api_tester.service.execution_helper.impl;
 
 import com.hurynovich.api_tester.cache.Cache;
 import com.hurynovich.api_tester.cache.cache_key.impl.ExecutionStateCacheKey;
+import com.hurynovich.api_tester.model.dto.impl.RequestChainDTO;
 import com.hurynovich.api_tester.model.enumeration.ExecutionSignalType;
 import com.hurynovich.api_tester.model.enumeration.ExecutionStateType;
 import com.hurynovich.api_tester.model.execution.ExecutionSignal;
 import com.hurynovich.api_tester.model.execution.ExecutionState;
+import com.hurynovich.api_tester.service.dto_service.DTOService;
 import com.hurynovich.api_tester.service.execution_helper.ExecutionHelper;
 
 import org.junit.jupiter.api.Assertions;
@@ -35,7 +37,9 @@ public class ExecutionHelperImplTest {
 
     private static final Cache<ExecutionStateCacheKey, ExecutionState> EXECUTION_STATE_CACHE = Mockito.mock(Cache.class);
 
-    private static final ExecutionHelper EXECUTION_HELPER = new ExecutionHelperImpl(EXECUTION_STATE_CACHE);
+    private static final DTOService<RequestChainDTO, Long> REQUEST_CHAIN_SERVICE = Mockito.mock(DTOService.class);
+
+    private static final ExecutionHelper EXECUTION_HELPER = new ExecutionHelperImpl(EXECUTION_STATE_CACHE, REQUEST_CHAIN_SERVICE);
 
     final ExecutionState PENDING_RUNNING_EXECUTION_STATE = buildExecutionState(PENDING_RUNNING);
     final ExecutionState RUNNING_EXECUTION_STATE = buildExecutionState(RUNNING);

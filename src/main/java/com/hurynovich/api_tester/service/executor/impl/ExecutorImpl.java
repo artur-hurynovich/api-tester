@@ -1,35 +1,68 @@
 package com.hurynovich.api_tester.service.executor.impl;
 
-import com.hurynovich.api_tester.cache.Cache;
-import com.hurynovich.api_tester.cache.cache_key.impl.ExecutionStateCacheKey;
+import com.hurynovich.api_tester.builder.execution_log_entry_builder.ExecutionLogEntryBuilder;
 import com.hurynovich.api_tester.client.Client;
-import com.hurynovich.api_tester.model.dto.impl.RequestChainDTO;
+import com.hurynovich.api_tester.client.exception.ClientException;
+import com.hurynovich.api_tester.model.dto.impl.RequestDTO;
+import com.hurynovich.api_tester.model.dto.impl.ResponseDTO;
+import com.hurynovich.api_tester.model.enumeration.ExecutionStateType;
+import com.hurynovich.api_tester.model.execution.ExecutionLogEntry;
 import com.hurynovich.api_tester.model.execution.ExecutionResult;
 import com.hurynovich.api_tester.model.execution.ExecutionSignal;
 import com.hurynovich.api_tester.model.execution.ExecutionState;
-import com.hurynovich.api_tester.service.dto_service.DTOService;
+import com.hurynovich.api_tester.service.execution_helper.ExecutionHelper;
 import com.hurynovich.api_tester.service.executor.Executor;
+
+import org.springframework.lang.NonNull;
+import org.springframework.util.CollectionUtils;
+
+import java.util.List;
 
 public class ExecutorImpl implements Executor {
 
-    private final Cache<ExecutionStateCacheKey, ExecutionState> executionStateCache;
-
-    private final DTOService<RequestChainDTO, Long> requestChainService;
+    private final ExecutionHelper executionHelper;
 
     private final Client client;
 
-    public ExecutorImpl(final Cache<ExecutionStateCacheKey, ExecutionState> executionStateCache,
-                        final DTOService<RequestChainDTO, Long> requestChainService,
-                        final Client client) {
-        this.executionStateCache = executionStateCache;
-        this.requestChainService = requestChainService;
+    private final ExecutionLogEntryBuilder executionLogEntryBuilder;
+
+    public ExecutorImpl(ExecutionHelper executionHelper, Client client, ExecutionLogEntryBuilder executionLogEntryBuilder) {
+        this.executionHelper = executionHelper;
         this.client = client;
+        this.executionLogEntryBuilder = executionLogEntryBuilder;
     }
 
     @Override
-    public ExecutionResult execute(final ExecutionSignal signal) {
+    public void execute(final @NonNull ExecutionSignal executionSignal) {
+        final ExecutionState executionState = executionHelper.updateExecutionStateCache(executionSignal);
 
-        return null;
+        while (executionState.getType() == ExecutionStateType.RUNNING) {
+            final List<RequestDTO> requests = executionState.getRequests();
+
+            if (!CollectionUtils.isEmpty(requests)) {
+                final ExecutionResult executionResult = sendRequest(requests.remove(0));
+
+                // TODO send result by web-socket
+            } else {
+
+            }
+        }
+    }
+
+    private ExecutionResult sendRequest(final RequestDTO requestDTO) {
+        final ExecutionResult executionResult = new ExecutionResult();
+        final ExecutionLogEntry requestLogEntry = executionLogEntryBuilder.build(requestDTO);
+        executionResult.addExecutionLogEntry(requestLogEntry);
+
+        try {
+            final ResponseDTO responseDTO = client.sendRequest(requestDTO);
+            final ExecutionLogEntry responseLogEntry = executionLogEntryBuilder.build(responseDTO);
+            executionResult.addExecutionLogEntry(responseLogEntry);
+        } catch (final ClientException e) {
+            // TODO add error log entry and set state = ERROR
+        }
+
+        return executionResult;
     }
 
 }
