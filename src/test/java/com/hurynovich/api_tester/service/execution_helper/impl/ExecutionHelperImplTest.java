@@ -127,13 +127,7 @@ public class ExecutionHelperImplTest {
     private void checkTransitionToExecutionStateType(final ExecutionSignal signal,
                                                      final ExecutionState currentState,
                                                      final ExecutionStateType expectedExecutionStateType) {
-        final Long userId = (long) RandomValueGenerator.generateRandomPositiveInt();
-        final Long requestChainId = (long) RandomValueGenerator.generateRandomPositiveInt();
-        signal.setUserId(userId);
-        signal.setRequestChainId(requestChainId);
-
-        final ExecutionStateCacheKey executionStateCacheKey = new ExecutionStateCacheKey(userId, requestChainId);
-        Mockito.when(EXECUTION_STATE_CACHE.get(executionStateCacheKey)).thenReturn(currentState);
+        Mockito.when(EXECUTION_STATE_CACHE.get(Mockito.any(ExecutionStateCacheKey.class))).thenReturn(currentState);
 
         final ExecutionStateType executionStateType = EXECUTION_HELPER.resolveTransitionToExecutionStateType(signal);
         Assertions.assertEquals(expectedExecutionStateType, executionStateType);
