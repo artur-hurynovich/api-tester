@@ -6,7 +6,6 @@ import com.hurynovich.api_tester.model.dto.impl.RequestDTO;
 import com.hurynovich.api_tester.model.dto.impl.RequestParameterDTO;
 import com.hurynovich.api_tester.model.dto.impl.ResponseDTO;
 import com.hurynovich.api_tester.test_helper.RequestTestHelper;
-import com.hurynovich.api_tester.utils.url.UrlUtils;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -49,7 +48,7 @@ public class ClientConverterImplTest {
     }
 
     private void checkUrl(final String url, final RequestEntity<String> requestEntity) {
-        Assertions.assertEquals(url, UrlUtils.clearParameters(requestEntity.getUrl().toString()));
+        Assertions.assertEquals(url, RequestTestHelper.clearParameters(requestEntity.getUrl().toString()));
     }
 
     private void checkParameters(final List<RequestParameterDTO> parameters, final RequestEntity<String> requestEntity) {

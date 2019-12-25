@@ -1,7 +1,6 @@
 package com.hurynovich.api_tester.test_helper;
 
 import com.hurynovich.api_tester.model.dto.impl.RequestParameterDTO;
-import com.hurynovich.api_tester.utils.url.constants.UrlUtilsConstants;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -26,6 +25,10 @@ public class RequestTestHelper {
     private static final int REQUEST_PARAMETER_VALUE_MAX_LENGTH = 10;
     private static final int REQUEST_BODY_MIN_LENGTH = 10;
     private static final int REQUEST_BODY_MAX_LENGTH = 100;
+
+    public static final String PARAMETERS_PREFIX = "?";
+    public static final String PARAMETERS_SEPARATOR = "&";
+    public static final String PARAMETER_NAME_VALUE_SEPARATOR = "=";
 
     public static HttpMethod generateRandomHttpMethod() {
         return RandomValueGenerator.generateRandomEnumValue(HttpMethod.class);
@@ -73,6 +76,16 @@ public class RequestTestHelper {
         }).collect(Collectors.toList());
     }
 
+    public static String clearParameters(final String url) {
+        final int parametersPrefixIndex = url.indexOf(PARAMETERS_PREFIX);
+
+        if (parametersPrefixIndex != -1) {
+            return url.substring(0, parametersPrefixIndex);
+        } else {
+            return url;
+        }
+    }
+
     public static String generateRandomBody() {
         return RandomValueGenerator.generateRandomStringLettersOnly(REQUEST_BODY_MIN_LENGTH, REQUEST_BODY_MAX_LENGTH);
     }
@@ -80,12 +93,12 @@ public class RequestTestHelper {
     public static List<RequestParameterDTO> parseParameters(final String url) {
         final List<RequestParameterDTO> requestParameterDTOS = new ArrayList<>();
 
-        final int parametersPrefixIndex = url.indexOf(UrlUtilsConstants.PARAMETERS_PREFIX);
+        final int parametersPrefixIndex = url.indexOf(PARAMETERS_PREFIX);
 
         if (parametersPrefixIndex != -1 && url.length() > parametersPrefixIndex + 1) {
             final String parametersString = url.substring(parametersPrefixIndex + 1);
 
-            final String[] parameters = parametersString.split(UrlUtilsConstants.PARAMETERS_SEPARATOR);
+            final String[] parameters = parametersString.split(PARAMETERS_SEPARATOR);
             if (parameters.length > 0) {
                 for (final String parameter : parameters) {
                     requestParameterDTOS.add(buildRequestParameterDTO(parameter));
@@ -99,7 +112,7 @@ public class RequestTestHelper {
     private static RequestParameterDTO buildRequestParameterDTO(final String parameter) {
         final RequestParameterDTO requestParameterDTO = new RequestParameterDTO();
 
-        final String[] parameterEntry = parameter.split(UrlUtilsConstants.PARAMETER_NAME_VALUE_SEPARATOR);
+        final String[] parameterEntry = parameter.split(PARAMETER_NAME_VALUE_SEPARATOR);
         requestParameterDTO.setName(parameterEntry[0]);
         requestParameterDTO.setValue(parameterEntry[1]);
 

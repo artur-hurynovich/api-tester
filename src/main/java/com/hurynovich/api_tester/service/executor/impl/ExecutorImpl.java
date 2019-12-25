@@ -46,6 +46,8 @@ public class ExecutorImpl implements Executor {
             } else {
 
             }
+
+            // TODO handle result and set new state if necessary
         }
     }
 
@@ -59,7 +61,8 @@ public class ExecutorImpl implements Executor {
             final ExecutionLogEntry responseLogEntry = executionLogEntryBuilder.build(responseDTO);
             executionResult.addExecutionLogEntry(responseLogEntry);
         } catch (final ClientException e) {
-            // TODO add error log entry and set state = ERROR
+            final ExecutionLogEntry errorLogEntry = executionLogEntryBuilder.build("Failed to send request: " + e);
+            executionResult.addExecutionLogEntry(errorLogEntry);
         }
 
         return executionResult;

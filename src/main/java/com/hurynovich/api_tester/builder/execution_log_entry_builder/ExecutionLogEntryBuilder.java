@@ -10,4 +10,6 @@ public interface ExecutionLogEntryBuilder {
 
     ExecutionLogEntry build(ResponseDTO responseDTO);
 
+    ExecutionLogEntry build(String message);
+
 }
