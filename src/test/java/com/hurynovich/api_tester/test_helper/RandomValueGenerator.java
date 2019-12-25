@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
-import java.util.UUID;
 
 public class RandomValueGenerator {
 
@@ -68,10 +67,6 @@ public class RandomValueGenerator {
         } else {
             throw new RuntimeException("List has no elements");
         }
-    }
-
-    public static UUID generateRandomUUID() {
-        return UUID.randomUUID();
     }
 
 }

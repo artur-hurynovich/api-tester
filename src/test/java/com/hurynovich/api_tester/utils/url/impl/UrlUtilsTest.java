@@ -14,7 +14,7 @@ public class UrlUtilsTest {
     private static final String NAME_2 = "name2";
     private static final String VALUE_2 = "value2";
 
-    private static final String URL_NO_PARAMETERS = RequestTestHelper.generateRandomUrl();
+    private static final String URL_NO_PARAMETERS = RequestTestHelper.generateRandomHttpUrl();
     private static final String URL_WITH_PARAMETERS_PREFIX =
             URL_NO_PARAMETERS + UrlUtilsConstants.PARAMETERS_PREFIX;
     private static final String URL_WITH_ONE_PARAMETER =

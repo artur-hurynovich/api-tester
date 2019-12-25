@@ -29,7 +29,7 @@ public class ClientConverterImplTest {
     public void convertRequestDTOToRequestEntityTest() throws ConverterException {
         final HttpMethod method = RequestTestHelper.generateRandomHttpMethod();
         final HttpHeaders headers = RequestTestHelper.generateRandomHttpHeaders(REQUEST_HEADERS_SIZE);
-        final String url = RequestTestHelper.generateRandomUrl();
+        final String url = RequestTestHelper.generateRandomHttpUrl();
         final List<RequestParameterDTO> parameters = RequestTestHelper.generateRandomParameters(REQUEST_PARAMETERS_SIZE);
         final String body = RequestTestHelper.generateRandomBody();
 

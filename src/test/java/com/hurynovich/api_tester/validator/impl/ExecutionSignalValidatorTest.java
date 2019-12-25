@@ -12,6 +12,8 @@ import com.hurynovich.api_tester.model.execution.ExecutionState;
 import com.hurynovich.api_tester.model.validation.ValidationResult;
 import com.hurynovich.api_tester.service.dto_service.DTOService;
 import com.hurynovich.api_tester.service.execution_helper.ExecutionHelper;
+import com.hurynovich.api_tester.service.execution_helper.impl.ExecutionHelperImpl;
+import com.hurynovich.api_tester.test_helper.ExecutionTestHelper;
 import com.hurynovich.api_tester.test_helper.RandomValueGenerator;
 import com.hurynovich.api_tester.validator.Validator;
 
@@ -23,7 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class ExecutionSignalValidatorTest {
 
@@ -32,18 +34,19 @@ public class ExecutionSignalValidatorTest {
     private static final DTOService<UserDTO, Long> USER_SERVICE = Mockito.mock(DTOService.class);
     private static final DTOService<RequestChainDTO, Long> REQUEST_CHAIN_SERVICE = Mockito.mock(DTOService.class);
 
-    private static final ExecutionHelper EXECUTION_HELPER = Mockito.mock(ExecutionHelper.class);
+    private static final ExecutionState EXECUTION_STATE = Mockito.mock(ExecutionState.class);
+
+    private static final ExecutionHelper EXECUTION_HELPER = new ExecutionHelperImpl(EXECUTION_STATE_CACHE);
 
     private static final Validator<ExecutionSignal> SIGNAL_VALIDATOR =
             new ExecutionSignalValidator(EXECUTION_STATE_CACHE, USER_SERVICE, REQUEST_CHAIN_SERVICE, EXECUTION_HELPER);
-
-    private static final ExecutionState EXECUTION_STATE = Mockito.mock(ExecutionState.class);
 
     @Test
     public void successValidationOnStartTest() {
         final ExecutionSignal signal = buildValidSignalOfType(ExecutionSignalType.RUN);
 
-        Mockito.when(USER_SERVICE.existsById(signal.getRequestChainId())).thenReturn(true);
+        Mockito.when(USER_SERVICE.existsById(signal.getUserId())).thenReturn(true);
+        Mockito.when(REQUEST_CHAIN_SERVICE.existsById(signal.getRequestChainId())).thenReturn(true);
 
         final ValidationResult validationResult = SIGNAL_VALIDATOR.validate(signal);
         Assertions.assertEquals(ValidationResultType.VALID, validationResult.getType());
@@ -54,14 +57,13 @@ public class ExecutionSignalValidatorTest {
     public void successValidationTest() {
         final ExecutionSignal signal = buildValidSignalOfType(
                 RandomValueGenerator.generateRandomEnumValueExcluding(ExecutionSignalType.class,
-                        Collections.singletonList(
-                                ExecutionSignalType.RUN)));
-        Mockito.when(EXECUTION_STATE_CACHE.get(signal.getExecutionStateId()))
-                .thenReturn(EXECUTION_STATE);
-        final ExecutionStateType validExecutionStateType =
-                getValidExecutionStatusByExecutionSignal(signal);
+                        Collections.singletonList(ExecutionSignalType.RUN)));
+        Mockito.when(EXECUTION_STATE_CACHE.get(Mockito.any(ExecutionStateCacheKey.class))).thenReturn(EXECUTION_STATE);
+
+        final ExecutionStateType validExecutionStateType = getValidExecutionStatusByExecutionSignal(signal);
         Mockito.when(EXECUTION_STATE.getType()).thenReturn(validExecutionStateType);
-        Mockito.when(USER_SERVICE.existsById(signal.getRequestChainId())).thenReturn(true);
+        Mockito.when(USER_SERVICE.existsById(signal.getUserId())).thenReturn(true);
+        Mockito.when(REQUEST_CHAIN_SERVICE.existsById(signal.getRequestChainId())).thenReturn(true);
 
         final ValidationResult validationResult = SIGNAL_VALIDATOR.validate(signal);
         Assertions.assertEquals(ValidationResultType.VALID, validationResult.getType());
@@ -72,10 +74,10 @@ public class ExecutionSignalValidatorTest {
     public void signalTypeNullFailureValidationTest() {
         final ExecutionSignal signal = buildValidSignalOfType(null);
 
-        final ExecutionStateType validExecutionStateType =
-                getValidExecutionStatusByExecutionSignal(signal);
+        final ExecutionStateType validExecutionStateType = getValidExecutionStatusByExecutionSignal(signal);
         Mockito.when(EXECUTION_STATE.getType()).thenReturn(validExecutionStateType);
-        Mockito.when(USER_SERVICE.existsById(signal.getRequestChainId())).thenReturn(true);
+        Mockito.when(USER_SERVICE.existsById(signal.getUserId())).thenReturn(true);
+        Mockito.when(REQUEST_CHAIN_SERVICE.existsById(signal.getRequestChainId())).thenReturn(true);
 
         final ValidationResult validationResult = SIGNAL_VALIDATOR.validate(signal);
         Assertions.assertEquals(ValidationResultType.NON_VALID, validationResult.getType());
@@ -89,44 +91,98 @@ public class ExecutionSignalValidatorTest {
     public void notValidSignalTypeFailureValidationTest() {
         final ExecutionSignal signal = buildValidSignal();
 
-        Mockito.when(EXECUTION_STATE_CACHE.get(signal.getExecutionStateId()))
-                .thenReturn(EXECUTION_STATE);
-        final ExecutionStateType notValidExecutionStateType =
-                getNotValidExecutionStatusByExecutionSignal(signal);
+        Mockito.when(EXECUTION_STATE_CACHE.get(Mockito.any(ExecutionStateCacheKey.class))).thenReturn(EXECUTION_STATE);
+
+        final ExecutionStateType notValidExecutionStateType = getNotValidExecutionStatusByExecutionSignal(signal);
         Mockito.when(EXECUTION_STATE.getType()).thenReturn(notValidExecutionStateType);
-        Mockito.when(USER_SERVICE.existsById(signal.getRequestChainId())).thenReturn(true);
+        Mockito.when(USER_SERVICE.existsById(signal.getUserId())).thenReturn(true);
+        Mockito.when(REQUEST_CHAIN_SERVICE.existsById(signal.getRequestChainId())).thenReturn(true);
 
         final ValidationResult validationResult = SIGNAL_VALIDATOR.validate(signal);
         Assertions.assertEquals(ValidationResultType.NON_VALID, validationResult.getType());
 
         final List<String> descriptions = validationResult.getDescriptions();
         Assertions.assertEquals(1, descriptions.size());
-        Assertions.assertEquals(
-                "signalType '" + signal.getType() + "' is not valid for requestExecutionStatus '" +
-                        notValidExecutionStateType + "'",
-                descriptions.get(0));
+        Assertions.assertEquals("signalType '" + signal.getType() +
+                "' is not valid for requestExecutionStatus '" + notValidExecutionStateType + "'", descriptions.get(0));
     }
 
     @Test
     public void executionStateNullFailureValidationTest() {
         final ExecutionSignal signal = buildValidSignalOfType(
                 RandomValueGenerator.generateRandomEnumValueExcluding(ExecutionSignalType.class,
-                        Collections.singletonList(
-                                ExecutionSignalType.RUN)));
+                        Collections.singletonList(ExecutionSignalType.RUN)));
 
-        final ExecutionStateType notValidExecutionStateType =
-                getNotValidExecutionStatusByExecutionSignal(signal);
-        Mockito.when(EXECUTION_STATE.getType()).thenReturn(notValidExecutionStateType);
-        Mockito.when(USER_SERVICE.existsById(signal.getRequestChainId())).thenReturn(true);
+        Mockito.when(EXECUTION_STATE_CACHE.get(Mockito.any(ExecutionStateCacheKey.class))).thenReturn(null);
+
+        Mockito.when(USER_SERVICE.existsById(signal.getUserId())).thenReturn(true);
+        Mockito.when(REQUEST_CHAIN_SERVICE.existsById(signal.getRequestChainId())).thenReturn(true);
 
         final ValidationResult validationResult = SIGNAL_VALIDATOR.validate(signal);
         Assertions.assertEquals(ValidationResultType.NON_VALID, validationResult.getType());
 
         final List<String> descriptions = validationResult.getDescriptions();
         Assertions.assertEquals(1, descriptions.size());
-        Assertions.assertEquals(
-                "signalType '" + signal.getType() + "' can't be applied before request execution started",
-                descriptions.get(0));
+        Assertions.assertEquals("signalType '" + signal.getType() +
+                "' can't be applied before request execution started", descriptions.get(0));
+    }
+
+    @Test
+    public void userIdNullFailureValidationTest() {
+        final ExecutionSignal signal = buildValidSignal();
+        signal.setUserId(null);
+
+        Mockito.when(EXECUTION_STATE_CACHE.get(Mockito.any(ExecutionStateCacheKey.class))).thenReturn(EXECUTION_STATE);
+
+        final ExecutionStateType validExecutionStateType = getValidExecutionStatusByExecutionSignal(signal);
+        Mockito.when(EXECUTION_STATE.getType()).thenReturn(validExecutionStateType);
+        Mockito.when(REQUEST_CHAIN_SERVICE.existsById(signal.getRequestChainId())).thenReturn(true);
+
+        final ValidationResult validationResult = SIGNAL_VALIDATOR.validate(signal);
+        Assertions.assertEquals(ValidationResultType.NON_VALID, validationResult.getType());
+
+        final List<String> descriptions = validationResult.getDescriptions();
+        Assertions.assertEquals(1, descriptions.size());
+        Assertions.assertEquals("'userId' can't be null", descriptions.get(0));
+    }
+
+    @Test
+    public void userIdNegativeFailureValidationTest() {
+        final ExecutionSignal signal = buildValidSignal();
+        signal.setUserId((long) RandomValueGenerator.generateRandomNegativeOrZeroInt());
+
+        Mockito.when(EXECUTION_STATE_CACHE.get(Mockito.any(ExecutionStateCacheKey.class))).thenReturn(EXECUTION_STATE);
+
+        final ExecutionStateType validExecutionStateType = getValidExecutionStatusByExecutionSignal(signal);
+        Mockito.when(EXECUTION_STATE.getType()).thenReturn(validExecutionStateType);
+        Mockito.when(REQUEST_CHAIN_SERVICE.existsById(signal.getRequestChainId())).thenReturn(true);
+
+        final ValidationResult validationResult = SIGNAL_VALIDATOR.validate(signal);
+        Assertions.assertEquals(ValidationResultType.NON_VALID, validationResult.getType());
+
+        final List<String> descriptions = validationResult.getDescriptions();
+        Assertions.assertEquals(1, descriptions.size());
+        Assertions.assertEquals("'userId' can't be negative or zero", descriptions.get(0));
+    }
+
+    @Test
+    public void userIdNonExistentFailureValidationTest() {
+        final ExecutionSignal signal = buildValidSignal();
+        signal.setUserId((long) RandomValueGenerator.generateRandomPositiveInt());
+
+        Mockito.when(EXECUTION_STATE_CACHE.get(Mockito.any(ExecutionStateCacheKey.class))).thenReturn(EXECUTION_STATE);
+
+        final ExecutionStateType validExecutionStateType = getValidExecutionStatusByExecutionSignal(signal);
+        Mockito.when(EXECUTION_STATE.getType()).thenReturn(validExecutionStateType);
+        Mockito.when(USER_SERVICE.existsById(signal.getRequestChainId())).thenReturn(false);
+        Mockito.when(REQUEST_CHAIN_SERVICE.existsById(signal.getRequestChainId())).thenReturn(true);
+
+        final ValidationResult validationResult = SIGNAL_VALIDATOR.validate(signal);
+        Assertions.assertEquals(ValidationResultType.NON_VALID, validationResult.getType());
+
+        final List<String> descriptions = validationResult.getDescriptions();
+        Assertions.assertEquals(1, descriptions.size());
+        Assertions.assertEquals("No UserDTO found for userId = " + signal.getUserId(), descriptions.get(0));
     }
 
     @Test
@@ -134,12 +190,11 @@ public class ExecutionSignalValidatorTest {
         final ExecutionSignal signal = buildValidSignal();
         signal.setRequestChainId(null);
 
-        Mockito.when(EXECUTION_STATE_CACHE.get(signal.getExecutionStateId()))
-                .thenReturn(EXECUTION_STATE);
-        final ExecutionStateType validExecutionStateType =
-                getValidExecutionStatusByExecutionSignal(signal);
+        Mockito.when(EXECUTION_STATE_CACHE.get(Mockito.any(ExecutionStateCacheKey.class))).thenReturn(EXECUTION_STATE);
+
+        final ExecutionStateType validExecutionStateType = getValidExecutionStatusByExecutionSignal(signal);
         Mockito.when(EXECUTION_STATE.getType()).thenReturn(validExecutionStateType);
-        Mockito.when(USER_SERVICE.existsById(signal.getRequestChainId())).thenReturn(true);
+        Mockito.when(USER_SERVICE.existsById(signal.getUserId())).thenReturn(true);
 
         final ValidationResult validationResult = SIGNAL_VALIDATOR.validate(signal);
         Assertions.assertEquals(ValidationResultType.NON_VALID, validationResult.getType());
@@ -154,12 +209,11 @@ public class ExecutionSignalValidatorTest {
         final ExecutionSignal signal = buildValidSignal();
         signal.setRequestChainId((long) RandomValueGenerator.generateRandomNegativeOrZeroInt());
 
-        Mockito.when(EXECUTION_STATE_CACHE.get(signal.getExecutionStateId()))
-                .thenReturn(EXECUTION_STATE);
-        final ExecutionStateType validExecutionStateType =
-                getValidExecutionStatusByExecutionSignal(signal);
+        Mockito.when(EXECUTION_STATE_CACHE.get(Mockito.any(ExecutionStateCacheKey.class))).thenReturn(EXECUTION_STATE);
+
+        final ExecutionStateType validExecutionStateType = getValidExecutionStatusByExecutionSignal(signal);
         Mockito.when(EXECUTION_STATE.getType()).thenReturn(validExecutionStateType);
-        Mockito.when(USER_SERVICE.existsById(signal.getRequestChainId())).thenReturn(true);
+        Mockito.when(USER_SERVICE.existsById(signal.getUserId())).thenReturn(true);
 
         final ValidationResult validationResult = SIGNAL_VALIDATOR.validate(signal);
         Assertions.assertEquals(ValidationResultType.NON_VALID, validationResult.getType());
@@ -174,12 +228,12 @@ public class ExecutionSignalValidatorTest {
         final ExecutionSignal signal = buildValidSignal();
         signal.setRequestChainId((long) RandomValueGenerator.generateRandomPositiveInt());
 
-        Mockito.when(EXECUTION_STATE_CACHE.get(signal.getExecutionStateId()))
-                .thenReturn(EXECUTION_STATE);
-        final ExecutionStateType validExecutionStateType =
-                getValidExecutionStatusByExecutionSignal(signal);
+        Mockito.when(EXECUTION_STATE_CACHE.get(Mockito.any(ExecutionStateCacheKey.class))).thenReturn(EXECUTION_STATE);
+
+        final ExecutionStateType validExecutionStateType = getValidExecutionStatusByExecutionSignal(signal);
         Mockito.when(EXECUTION_STATE.getType()).thenReturn(validExecutionStateType);
-        Mockito.when(USER_SERVICE.existsById(signal.getRequestChainId())).thenReturn(false);
+        Mockito.when(USER_SERVICE.existsById(signal.getUserId())).thenReturn(true);
+        Mockito.when(REQUEST_CHAIN_SERVICE.existsById(signal.getRequestChainId())).thenReturn(false);
 
         final ValidationResult validationResult = SIGNAL_VALIDATOR.validate(signal);
         Assertions.assertEquals(ValidationResultType.NON_VALID, validationResult.getType());
@@ -191,28 +245,27 @@ public class ExecutionSignalValidatorTest {
     }
 
     private ExecutionSignal buildValidSignal() {
-        final ExecutionSignalType signalType =
-                RandomValueGenerator.generateRandomEnumValue(ExecutionSignalType.class);
-        final UUID requestExecutionStateId = RandomValueGenerator.generateRandomUUID();
+        final ExecutionSignalType signalType = RandomValueGenerator.generateRandomEnumValue(ExecutionSignalType.class);
+        final long userId = RandomValueGenerator.generateRandomPositiveInt();
         final long requestChainId = RandomValueGenerator.generateRandomPositiveInt();
 
-        return buildSignal(signalType, requestExecutionStateId, requestChainId);
+        return buildSignal(signalType, userId, requestChainId);
     }
 
     private ExecutionSignal buildValidSignalOfType(final ExecutionSignalType type) {
-        final UUID requestExecutionStateId = RandomValueGenerator.generateRandomUUID();
+        final long userId = RandomValueGenerator.generateRandomPositiveInt();
         final long requestChainId = RandomValueGenerator.generateRandomPositiveInt();
 
-        return buildSignal(type, requestExecutionStateId, requestChainId);
+        return buildSignal(type, userId, requestChainId);
     }
 
     private ExecutionSignal buildSignal(final ExecutionSignalType type,
-                                        final UUID requestExecutionStateId,
+                                        final Long userId,
                                         final Long requestChainId) {
         final ExecutionSignal signal = new ExecutionSignal();
 
         signal.setType(type);
-        signal.setExecutionStateId(requestExecutionStateId);
+        signal.setUserId(userId);
         signal.setRequestChainId(requestChainId);
 
         return signal;
@@ -220,20 +273,24 @@ public class ExecutionSignalValidatorTest {
 
     private ExecutionStateType getValidExecutionStatusByExecutionSignal(final ExecutionSignal signal) {
         final List<ExecutionStateType> executionStateTypes = new ArrayList<>(Arrays.asList(ExecutionStateType.values()));
+        final List<ExecutionState> executionStates =
+                executionStateTypes.stream().map(ExecutionTestHelper::buildExecutionState).collect(Collectors.toList());
 
-        executionStateTypes
-                .removeIf(status -> !ExecutionSignalTypeUtils.getValidSignalTypes(status).contains(signal.getType()));
+        executionStates
+                .removeIf(state -> !EXECUTION_HELPER.resolveValidExecutionSignalTypes(state).contains(signal.getType()));
 
-        return executionStateTypes.stream().findAny().orElse(null);
+        return executionStates.stream().findAny().map(ExecutionState::getType).orElse(null);
     }
 
     private ExecutionStateType getNotValidExecutionStatusByExecutionSignal(final ExecutionSignal signal) {
         final List<ExecutionStateType> executionStateTypes = new ArrayList<>(Arrays.asList(ExecutionStateType.values()));
+        final List<ExecutionState> executionStates =
+                executionStateTypes.stream().map(ExecutionTestHelper::buildExecutionState).collect(Collectors.toList());
 
-        executionStateTypes
-                .removeIf(status -> ExecutionSignalTypeUtils.getValidSignalTypes(status).contains(signal.getType()));
+        executionStates
+                .removeIf(state -> EXECUTION_HELPER.resolveValidExecutionSignalTypes(state).contains(signal.getType()));
 
-        return executionStateTypes.stream().findAny().orElse(null);
+        return executionStates.stream().findAny().map(ExecutionState::getType).orElse(null);
     }
 
 }

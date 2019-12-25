@@ -7,7 +7,6 @@ import com.hurynovich.api_tester.model.enumeration.ExecutionStateType;
 import com.hurynovich.api_tester.model.execution.ExecutionSignal;
 import com.hurynovich.api_tester.model.execution.ExecutionState;
 import com.hurynovich.api_tester.service.execution_helper.ExecutionHelper;
-import com.hurynovich.api_tester.test_helper.RandomValueGenerator;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -29,6 +28,8 @@ import static com.hurynovich.api_tester.model.enumeration.ExecutionStateType.PEN
 import static com.hurynovich.api_tester.model.enumeration.ExecutionStateType.PENDING_STOPPED;
 import static com.hurynovich.api_tester.model.enumeration.ExecutionStateType.RUNNING;
 import static com.hurynovich.api_tester.model.enumeration.ExecutionStateType.STOPPED;
+import static com.hurynovich.api_tester.test_helper.ExecutionTestHelper.buildExecutionSignal;
+import static com.hurynovich.api_tester.test_helper.ExecutionTestHelper.buildExecutionState;
 
 public class ExecutionHelperImplTest {
 
@@ -99,22 +100,6 @@ public class ExecutionHelperImplTest {
         checkTransitionToExecutionStateType(buildExecutionSignal(STOP), STOPPED_EXECUTION_STATE, ERROR);
         checkTransitionToExecutionStateType(buildExecutionSignal(STOP), FINISHED_EXECUTION_STATE, ERROR);
         checkTransitionToExecutionStateType(buildExecutionSignal(STOP), ERROR_EXECUTION_STATE, ERROR);
-    }
-
-    private ExecutionState buildExecutionState(final ExecutionStateType type) {
-        final ExecutionState executionState = new ExecutionState();
-
-        executionState.setType(type);
-
-        return executionState;
-    }
-
-    private ExecutionSignal buildExecutionSignal(final ExecutionSignalType type) {
-        final ExecutionSignal executionSignal = new ExecutionSignal();
-
-        executionSignal.setType(type);
-
-        return executionSignal;
     }
 
     private void checkValidExecutionSignalTypes(final ExecutionState executionState,

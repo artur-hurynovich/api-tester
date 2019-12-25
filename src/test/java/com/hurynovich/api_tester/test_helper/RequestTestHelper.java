@@ -50,7 +50,7 @@ public class RequestTestHelper {
         return RandomValueGenerator.generateRandomEnumValue(HttpStatus.class);
     }
 
-    public static String generateRandomUrl() {
+    public static String generateRandomHttpUrl() {
         return HTTP_PROTOCOL + "://" + RandomValueGenerator.generateRandomStringLettersOnly(DOMAIN_NAME_LENGTH) + '.' +
                 RandomValueGenerator.generateRandomStringLettersOnly(DOMAIN_LENGTH);
     }
