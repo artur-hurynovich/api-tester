@@ -52,14 +52,14 @@ public class ExecutorImpl implements Executor {
         }
     }
 
-    private ExecutionResult sendRequest(final @NonNull RequestDTO requestDTO) {
+    private ExecutionResult sendRequest(final @NonNull RequestDTO request) {
         final ExecutionResult executionResult = new ExecutionResult();
-        final ExecutionLogEntry requestLogEntry = executionLogEntryBuilder.build(requestDTO);
+        final ExecutionLogEntry requestLogEntry = executionLogEntryBuilder.build(request);
         executionResult.addExecutionLogEntry(requestLogEntry);
 
         try {
-            final ResponseDTO responseDTO = client.sendRequest(requestDTO);
-            final ExecutionLogEntry responseLogEntry = executionLogEntryBuilder.build(responseDTO);
+            final ResponseDTO response = client.sendRequest(request);
+            final ExecutionLogEntry responseLogEntry = executionLogEntryBuilder.build(response);
             executionResult.addExecutionLogEntry(responseLogEntry);
         } catch (final ClientException e) {
             final ExecutionLogEntry errorLogEntry = executionLogEntryBuilder.build("Failed to send request: " + e);

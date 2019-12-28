@@ -22,22 +22,22 @@ import java.util.List;
 public class ClientConverterImpl implements ClientConverter<String> {
 
     @Override
-    public RequestEntity<String> convert(final @NonNull RequestDTO requestDTO) throws ConverterException {
+    public RequestEntity<String> convert(final @NonNull RequestDTO request) throws ConverterException {
         try {
-            final MultiValueMap<String, String> uriVariables = convertRequestDTOParametersToQueryParams(requestDTO);
+            final MultiValueMap<String, String> uriVariables = convertRequestDTOParametersToQueryParams(request);
             final UriComponentsBuilder uriComponentsBuilder =
-                    UriComponentsBuilder.fromUri(new URI(requestDTO.getUrl())).queryParams(uriVariables);
+                    UriComponentsBuilder.fromUri(new URI(request.getUrl())).queryParams(uriVariables);
 
-            return RequestEntity.method(requestDTO.getMethod(), uriComponentsBuilder.build(uriVariables)).
-                    headers(requestDTO.getHeaders()).
-                    body(requestDTO.getBody());
+            return RequestEntity.method(request.getMethod(), uriComponentsBuilder.build(uriVariables)).
+                    headers(request.getHeaders()).
+                    body(request.getBody());
         } catch (final URISyntaxException e) {
-            throw new ConverterException("Failed to convert:\n" + requestDTO, e);
+            throw new ConverterException("Failed to convert request: " + request, e);
         }
     }
 
-    private MultiValueMap<String, String> convertRequestDTOParametersToQueryParams(final @NonNull RequestDTO requestDTO) {
-        final List<RequestParameterDTO> parameters = requestDTO.getParameters();
+    private MultiValueMap<String, String> convertRequestDTOParametersToQueryParams(final @NonNull RequestDTO request) {
+        final List<RequestParameterDTO> parameters = request.getParameters();
 
         if (!CollectionUtils.isEmpty(parameters)) {
             final MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
@@ -53,13 +53,13 @@ public class ClientConverterImpl implements ClientConverter<String> {
 
     @Override
     public ResponseDTO convert(final @NonNull ResponseEntity<String> responseEntity) {
-        final ResponseDTO responseDTO = new ResponseDTO();
+        final ResponseDTO response = new ResponseDTO();
 
-        responseDTO.setStatus(responseEntity.getStatusCode());
-        responseDTO.setHeaders(responseEntity.getHeaders());
-        responseDTO.setBody(responseEntity.getBody());
+        response.setStatus(responseEntity.getStatusCode());
+        response.setHeaders(responseEntity.getHeaders());
+        response.setBody(responseEntity.getBody());
 
-        return responseDTO;
+        return response;
     }
 
 }

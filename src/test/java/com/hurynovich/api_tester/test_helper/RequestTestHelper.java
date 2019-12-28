@@ -6,7 +6,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -14,7 +13,7 @@ import java.util.stream.IntStream;
 
 public class RequestTestHelper {
 
-    private static final Random random = new Random();
+    private static final Random RANDOM = new Random();
 
     private static final int REQUEST_HEADER_NAME_MAX_LENGTH = 10;
     private static final int REQUEST_HEADER_VALUE_MAX_LENGTH = 10;
@@ -25,10 +24,6 @@ public class RequestTestHelper {
     private static final int REQUEST_PARAMETER_VALUE_MAX_LENGTH = 10;
     private static final int REQUEST_BODY_MIN_LENGTH = 10;
     private static final int REQUEST_BODY_MAX_LENGTH = 100;
-
-    public static final String PARAMETERS_PREFIX = "?";
-    public static final String PARAMETERS_SEPARATOR = "&";
-    public static final String PARAMETER_NAME_VALUE_SEPARATOR = "=";
 
     public static HttpMethod generateRandomHttpMethod() {
         return RandomValueGenerator.generateRandomEnumValue(HttpMethod.class);
@@ -61,62 +56,23 @@ public class RequestTestHelper {
 
     public static List<RequestParameterDTO> generateRandomParameters(final int size) {
         return IntStream.range(1, size + 1).mapToObj(index -> {
-            final RequestParameterDTO requestParameterDTO = new RequestParameterDTO();
+            final RequestParameterDTO requestParameter = new RequestParameterDTO();
 
-            requestParameterDTO.setName(
+            requestParameter.setName(
                     RandomValueGenerator
-                            .generateRandomStringLettersOnly(random.nextInt(REQUEST_PARAMETER_NAME_MAX_LENGTH) + 1)
+                            .generateRandomStringLettersOnly(RANDOM.nextInt(REQUEST_PARAMETER_NAME_MAX_LENGTH) + 1)
                             .toLowerCase());
-            requestParameterDTO.setValue(
+            requestParameter.setValue(
                     RandomValueGenerator
-                            .generateRandomStringLettersOnly(random.nextInt(REQUEST_PARAMETER_VALUE_MAX_LENGTH) + 1)
+                            .generateRandomStringLettersOnly(RANDOM.nextInt(REQUEST_PARAMETER_VALUE_MAX_LENGTH) + 1)
                             .toLowerCase());
 
-            return requestParameterDTO;
+            return requestParameter;
         }).collect(Collectors.toList());
-    }
-
-    public static String clearParameters(final String url) {
-        final int parametersPrefixIndex = url.indexOf(PARAMETERS_PREFIX);
-
-        if (parametersPrefixIndex != -1) {
-            return url.substring(0, parametersPrefixIndex);
-        } else {
-            return url;
-        }
     }
 
     public static String generateRandomBody() {
         return RandomValueGenerator.generateRandomStringLettersOnly(REQUEST_BODY_MIN_LENGTH, REQUEST_BODY_MAX_LENGTH);
-    }
-
-    public static List<RequestParameterDTO> parseParameters(final String url) {
-        final List<RequestParameterDTO> requestParameterDTOS = new ArrayList<>();
-
-        final int parametersPrefixIndex = url.indexOf(PARAMETERS_PREFIX);
-
-        if (parametersPrefixIndex != -1 && url.length() > parametersPrefixIndex + 1) {
-            final String parametersString = url.substring(parametersPrefixIndex + 1);
-
-            final String[] parameters = parametersString.split(PARAMETERS_SEPARATOR);
-            if (parameters.length > 0) {
-                for (final String parameter : parameters) {
-                    requestParameterDTOS.add(buildRequestParameterDTO(parameter));
-                }
-            }
-        }
-
-        return requestParameterDTOS;
-    }
-
-    private static RequestParameterDTO buildRequestParameterDTO(final String parameter) {
-        final RequestParameterDTO requestParameterDTO = new RequestParameterDTO();
-
-        final String[] parameterEntry = parameter.split(PARAMETER_NAME_VALUE_SEPARATOR);
-        requestParameterDTO.setName(parameterEntry[0]);
-        requestParameterDTO.setValue(parameterEntry[1]);
-
-        return requestParameterDTO;
     }
 
 }
