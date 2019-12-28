@@ -10,7 +10,7 @@ public class ExecutionStateCacheKey implements CacheKey {
 
     private Long requestChainId;
 
-    public ExecutionStateCacheKey(@NonNull final Long userId, @NonNull final Long requestChainId) {
+    public ExecutionStateCacheKey(final @NonNull Long userId, final @NonNull Long requestChainId) {
         this.userId = userId;
         this.requestChainId = requestChainId;
     }

@@ -13,7 +13,7 @@ public class ExecutionResult {
         return executionState;
     }
 
-    public void setExecutionState(ExecutionState executionState) {
+    public void setExecutionState(final ExecutionState executionState) {
         this.executionState = executionState;
     }
 
@@ -21,7 +21,7 @@ public class ExecutionResult {
         return executionLogEntries;
     }
 
-    public void addExecutionLogEntry(ExecutionLogEntry executionLogEntry) {
+    public void addExecutionLogEntry(final ExecutionLogEntry executionLogEntry) {
         executionLogEntries.add(executionLogEntry);
     }
 

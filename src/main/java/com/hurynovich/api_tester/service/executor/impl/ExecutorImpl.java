@@ -26,7 +26,8 @@ public class ExecutorImpl implements Executor {
 
     private final ExecutionLogEntryBuilder executionLogEntryBuilder;
 
-    public ExecutorImpl(ExecutionHelper executionHelper, Client client, ExecutionLogEntryBuilder executionLogEntryBuilder) {
+    public ExecutorImpl(final @NonNull ExecutionHelper executionHelper, final @NonNull Client client,
+                        final @NonNull ExecutionLogEntryBuilder executionLogEntryBuilder) {
         this.executionHelper = executionHelper;
         this.client = client;
         this.executionLogEntryBuilder = executionLogEntryBuilder;
@@ -42,7 +43,7 @@ public class ExecutorImpl implements Executor {
             if (!CollectionUtils.isEmpty(requests)) {
                 final ExecutionResult executionResult = sendRequest(requests.remove(0));
 
-                // TODO send result by web-socket
+                // TODO send result by web-socket and save to DB (rename to ExecutionResultDTO
             } else {
 
             }
@@ -51,7 +52,7 @@ public class ExecutorImpl implements Executor {
         }
     }
 
-    private ExecutionResult sendRequest(final RequestDTO requestDTO) {
+    private ExecutionResult sendRequest(final @NonNull RequestDTO requestDTO) {
         final ExecutionResult executionResult = new ExecutionResult();
         final ExecutionLogEntry requestLogEntry = executionLogEntryBuilder.build(requestDTO);
         executionResult.addExecutionLogEntry(requestLogEntry);

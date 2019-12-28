@@ -14,7 +14,7 @@ import java.time.ZoneId;
 public class ExecutionLogEntryBuilderImpl implements ExecutionLogEntryBuilder {
 
     @Override
-    public ExecutionLogEntry build(@NonNull final RequestDTO requestDTO) {
+    public ExecutionLogEntry build(final @NonNull RequestDTO requestDTO) {
         final ExecutionLogEntry executionLogEntry = new ExecutionLogEntry();
 
         executionLogEntry.setType(ExecutionLogEntryType.REQUEST);
@@ -28,7 +28,7 @@ public class ExecutionLogEntryBuilderImpl implements ExecutionLogEntryBuilder {
     }
 
     @Override
-    public ExecutionLogEntry build(@NonNull final ResponseDTO responseDTO) {
+    public ExecutionLogEntry build(final @NonNull ResponseDTO responseDTO) {
         final ExecutionLogEntry executionLogEntry = new ExecutionLogEntry();
 
         executionLogEntry.setType(ExecutionLogEntryType.RESPONSE);
@@ -41,7 +41,7 @@ public class ExecutionLogEntryBuilderImpl implements ExecutionLogEntryBuilder {
     }
 
     @Override
-    public ExecutionLogEntry build(final String errorMessage) {
+    public ExecutionLogEntry build(final @NonNull String errorMessage) {
         final ExecutionLogEntry executionLogEntry = new ExecutionLogEntry();
 
         executionLogEntry.setType(ExecutionLogEntryType.ERROR);

@@ -8,6 +8,7 @@ import com.hurynovich.api_tester.model.dto.impl.ResponseDTO;
 
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -21,7 +22,7 @@ import java.util.List;
 public class ClientConverterImpl implements ClientConverter<String> {
 
     @Override
-    public RequestEntity<String> convert(final RequestDTO requestDTO) throws ConverterException {
+    public RequestEntity<String> convert(final @NonNull RequestDTO requestDTO) throws ConverterException {
         try {
             final MultiValueMap<String, String> uriVariables = convertRequestDTOParametersToQueryParams(requestDTO);
             final UriComponentsBuilder uriComponentsBuilder =
@@ -35,7 +36,7 @@ public class ClientConverterImpl implements ClientConverter<String> {
         }
     }
 
-    private MultiValueMap<String, String> convertRequestDTOParametersToQueryParams(final RequestDTO requestDTO) {
+    private MultiValueMap<String, String> convertRequestDTOParametersToQueryParams(final @NonNull RequestDTO requestDTO) {
         final List<RequestParameterDTO> parameters = requestDTO.getParameters();
 
         if (!CollectionUtils.isEmpty(parameters)) {
@@ -51,7 +52,7 @@ public class ClientConverterImpl implements ClientConverter<String> {
     }
 
     @Override
-    public ResponseDTO convert(final ResponseEntity<String> responseEntity) {
+    public ResponseDTO convert(final @NonNull ResponseEntity<String> responseEntity) {
         final ResponseDTO responseDTO = new ResponseDTO();
 
         responseDTO.setStatus(responseEntity.getStatusCode());

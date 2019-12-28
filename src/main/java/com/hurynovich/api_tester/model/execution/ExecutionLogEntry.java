@@ -30,7 +30,7 @@ public class ExecutionLogEntry {
         return type;
     }
 
-    public void setType(ExecutionLogEntryType type) {
+    public void setType(final ExecutionLogEntryType type) {
         this.type = type;
     }
 
@@ -38,7 +38,7 @@ public class ExecutionLogEntry {
         return dateTime;
     }
 
-    public void setDateTime(LocalDateTime dateTime) {
+    public void setDateTime(final LocalDateTime dateTime) {
         this.dateTime = dateTime;
     }
 
@@ -46,7 +46,7 @@ public class ExecutionLogEntry {
         return method;
     }
 
-    public void setMethod(HttpMethod method) {
+    public void setMethod(final HttpMethod method) {
         this.method = method;
     }
 
@@ -54,7 +54,7 @@ public class ExecutionLogEntry {
         return headers;
     }
 
-    public void setHeaders(HttpHeaders headers) {
+    public void setHeaders(final HttpHeaders headers) {
         this.headers = headers;
     }
 
@@ -62,7 +62,7 @@ public class ExecutionLogEntry {
         return url;
     }
 
-    public void setUrl(String url) {
+    public void setUrl(final String url) {
         this.url = url;
     }
 
@@ -70,7 +70,7 @@ public class ExecutionLogEntry {
         return status;
     }
 
-    public void setStatus(HttpStatus status) {
+    public void setStatus(final HttpStatus status) {
         this.status = status;
     }
 
@@ -78,7 +78,7 @@ public class ExecutionLogEntry {
         return body;
     }
 
-    public void setBody(String body) {
+    public void setBody(final String body) {
         this.body = body;
     }
 
@@ -86,7 +86,7 @@ public class ExecutionLogEntry {
         return errorMessage;
     }
 
-    public void setErrorMessage(String errorMessage) {
+    public void setErrorMessage(final String errorMessage) {
         this.errorMessage = errorMessage;
     }
 

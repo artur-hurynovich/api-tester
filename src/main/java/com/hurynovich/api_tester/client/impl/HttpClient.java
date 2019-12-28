@@ -9,6 +9,7 @@ import com.hurynovich.api_tester.model.dto.impl.ResponseDTO;
 
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.web.client.RestTemplate;
 
 public class HttpClient implements Client {
@@ -17,14 +18,14 @@ public class HttpClient implements Client {
 
     private ClientConverter<String> clientConverter;
 
-    public HttpClient(final RestTemplate restTemplate,
-                      final ClientConverter<String> clientConverter) {
+    public HttpClient(final @NonNull RestTemplate restTemplate,
+                      final @NonNull ClientConverter<String> clientConverter) {
         this.restTemplate = restTemplate;
         this.clientConverter = clientConverter;
     }
 
     @Override
-    public ResponseDTO sendRequest(final RequestDTO request) throws ClientException {
+    public ResponseDTO sendRequest(final @NonNull RequestDTO request) throws ClientException {
         try {
             final RequestEntity<String> requestEntity = clientConverter.convert(request);
 
@@ -32,7 +33,7 @@ public class HttpClient implements Client {
 
             return clientConverter.convert(response);
         } catch (final ConverterException e) {
-            throw new ClientException("Failed to send request:\n" + request, e);
+            throw new ClientException("Failed to send request: " + request, e);
         }
     }
 

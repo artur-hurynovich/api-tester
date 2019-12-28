@@ -9,6 +9,8 @@ import com.hurynovich.api_tester.model.execution.ExecutionSignal;
 import com.hurynovich.api_tester.model.execution.ExecutionState;
 import com.hurynovich.api_tester.service.dto_service.DTOService;
 import com.hurynovich.api_tester.service.execution_helper.ExecutionHelper;
+import com.hurynovich.api_tester.service.execution_transition_container.ExecutionTransitionContainer;
+import com.hurynovich.api_tester.service.execution_transition_container.impl.ExecutionTransitionContainerImpl;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -39,7 +41,11 @@ public class ExecutionHelperImplTest {
 
     private static final DTOService<RequestChainDTO, Long> REQUEST_CHAIN_SERVICE = Mockito.mock(DTOService.class);
 
-    private static final ExecutionHelper EXECUTION_HELPER = new ExecutionHelperImpl(EXECUTION_STATE_CACHE, REQUEST_CHAIN_SERVICE);
+    private static final ExecutionTransitionContainer EXECUTION_TRANSITION_CONTAINER =
+            new ExecutionTransitionContainerImpl();
+
+    private static final ExecutionHelper EXECUTION_HELPER = new ExecutionHelperImpl(EXECUTION_TRANSITION_CONTAINER,
+            EXECUTION_STATE_CACHE, REQUEST_CHAIN_SERVICE);
 
     final ExecutionState PENDING_RUNNING_EXECUTION_STATE = buildExecutionState(PENDING_RUNNING);
     final ExecutionState RUNNING_EXECUTION_STATE = buildExecutionState(RUNNING);
@@ -53,7 +59,7 @@ public class ExecutionHelperImplTest {
     @Test
     public void resolveValidExecutionSignalTypesTest() {
         checkValidExecutionSignalTypes(null, Collections.singletonList(RUN));
-        checkValidExecutionSignalTypes(PENDING_RUNNING_EXECUTION_STATE, Collections.singletonList(RUN));
+        checkValidExecutionSignalTypes(PENDING_RUNNING_EXECUTION_STATE, Arrays.asList(RUN, RESUME));
         checkValidExecutionSignalTypes(RUNNING_EXECUTION_STATE, Arrays.asList(PAUSE, STOP));
         checkValidExecutionSignalTypes(PENDING_PAUSED_EXECUTION_STATE, Collections.singletonList(PAUSE));
         checkValidExecutionSignalTypes(PAUSED_EXECUTION_STATE, Arrays.asList(RESUME, STOP));
@@ -65,45 +71,45 @@ public class ExecutionHelperImplTest {
 
     @Test
     public void resolveTransitionToExecutionStateTypeTest() {
-        checkTransitionToExecutionStateType(buildExecutionSignal(RUN), null, PENDING_RUNNING);
-        checkTransitionToExecutionStateType(buildExecutionSignal(RUN), PENDING_RUNNING_EXECUTION_STATE, RUNNING);
-        checkTransitionToExecutionStateType(buildExecutionSignal(RUN), RUNNING_EXECUTION_STATE, ERROR);
-        checkTransitionToExecutionStateType(buildExecutionSignal(RUN), PENDING_PAUSED_EXECUTION_STATE, ERROR);
-        checkTransitionToExecutionStateType(buildExecutionSignal(RUN), PAUSED_EXECUTION_STATE, ERROR);
-        checkTransitionToExecutionStateType(buildExecutionSignal(RUN), PENDING_STOPPED_EXECUTION_STATE, ERROR);
-        checkTransitionToExecutionStateType(buildExecutionSignal(RUN), STOPPED_EXECUTION_STATE, PENDING_RUNNING);
-        checkTransitionToExecutionStateType(buildExecutionSignal(RUN), FINISHED_EXECUTION_STATE, PENDING_RUNNING);
-        checkTransitionToExecutionStateType(buildExecutionSignal(RUN), ERROR_EXECUTION_STATE, PENDING_RUNNING);
+        checkTransitionToExecutionStateType(null, buildExecutionSignal(RUN), PENDING_RUNNING);
+        checkTransitionToExecutionStateType(PENDING_RUNNING_EXECUTION_STATE, buildExecutionSignal(RUN), RUNNING);
+        checkTransitionToExecutionStateType(RUNNING_EXECUTION_STATE, buildExecutionSignal(RUN), ERROR);
+        checkTransitionToExecutionStateType(PENDING_PAUSED_EXECUTION_STATE, buildExecutionSignal(RUN), ERROR);
+        checkTransitionToExecutionStateType(PAUSED_EXECUTION_STATE, buildExecutionSignal(RUN), ERROR);
+        checkTransitionToExecutionStateType(PENDING_STOPPED_EXECUTION_STATE, buildExecutionSignal(RUN), ERROR);
+        checkTransitionToExecutionStateType(STOPPED_EXECUTION_STATE, buildExecutionSignal(RUN), PENDING_RUNNING);
+        checkTransitionToExecutionStateType(FINISHED_EXECUTION_STATE, buildExecutionSignal(RUN), PENDING_RUNNING);
+        checkTransitionToExecutionStateType(ERROR_EXECUTION_STATE, buildExecutionSignal(RUN), PENDING_RUNNING);
 
-        checkTransitionToExecutionStateType(buildExecutionSignal(PAUSE), null, ERROR);
-        checkTransitionToExecutionStateType(buildExecutionSignal(PAUSE), PENDING_RUNNING_EXECUTION_STATE, ERROR);
-        checkTransitionToExecutionStateType(buildExecutionSignal(PAUSE), RUNNING_EXECUTION_STATE, PENDING_PAUSED);
-        checkTransitionToExecutionStateType(buildExecutionSignal(PAUSE), PENDING_PAUSED_EXECUTION_STATE, PAUSED);
-        checkTransitionToExecutionStateType(buildExecutionSignal(PAUSE), PAUSED_EXECUTION_STATE, ERROR);
-        checkTransitionToExecutionStateType(buildExecutionSignal(PAUSE), PENDING_STOPPED_EXECUTION_STATE, ERROR);
-        checkTransitionToExecutionStateType(buildExecutionSignal(PAUSE), STOPPED_EXECUTION_STATE, ERROR);
-        checkTransitionToExecutionStateType(buildExecutionSignal(PAUSE), FINISHED_EXECUTION_STATE, ERROR);
-        checkTransitionToExecutionStateType(buildExecutionSignal(PAUSE), ERROR_EXECUTION_STATE, ERROR);
+        checkTransitionToExecutionStateType(null, buildExecutionSignal(PAUSE), ERROR);
+        checkTransitionToExecutionStateType(PENDING_RUNNING_EXECUTION_STATE, buildExecutionSignal(PAUSE), ERROR);
+        checkTransitionToExecutionStateType(RUNNING_EXECUTION_STATE, buildExecutionSignal(PAUSE), PENDING_PAUSED);
+        checkTransitionToExecutionStateType(PENDING_PAUSED_EXECUTION_STATE, buildExecutionSignal(PAUSE), PAUSED);
+        checkTransitionToExecutionStateType(PAUSED_EXECUTION_STATE, buildExecutionSignal(PAUSE), ERROR);
+        checkTransitionToExecutionStateType(PENDING_STOPPED_EXECUTION_STATE, buildExecutionSignal(PAUSE), ERROR);
+        checkTransitionToExecutionStateType(STOPPED_EXECUTION_STATE, buildExecutionSignal(PAUSE), ERROR);
+        checkTransitionToExecutionStateType(FINISHED_EXECUTION_STATE, buildExecutionSignal(PAUSE), ERROR);
+        checkTransitionToExecutionStateType(ERROR_EXECUTION_STATE, buildExecutionSignal(PAUSE), ERROR);
 
-        checkTransitionToExecutionStateType(buildExecutionSignal(RESUME), null, ERROR);
-        checkTransitionToExecutionStateType(buildExecutionSignal(RESUME), PENDING_RUNNING_EXECUTION_STATE, RUNNING);
-        checkTransitionToExecutionStateType(buildExecutionSignal(RESUME), RUNNING_EXECUTION_STATE, ERROR);
-        checkTransitionToExecutionStateType(buildExecutionSignal(RESUME), PENDING_PAUSED_EXECUTION_STATE, ERROR);
-        checkTransitionToExecutionStateType(buildExecutionSignal(RESUME), PAUSED_EXECUTION_STATE, PENDING_RUNNING);
-        checkTransitionToExecutionStateType(buildExecutionSignal(RESUME), PENDING_STOPPED_EXECUTION_STATE, ERROR);
-        checkTransitionToExecutionStateType(buildExecutionSignal(RESUME), STOPPED_EXECUTION_STATE, ERROR);
-        checkTransitionToExecutionStateType(buildExecutionSignal(RESUME), FINISHED_EXECUTION_STATE, ERROR);
-        checkTransitionToExecutionStateType(buildExecutionSignal(RESUME), ERROR_EXECUTION_STATE, ERROR);
+        checkTransitionToExecutionStateType(null, buildExecutionSignal(RESUME), ERROR);
+        checkTransitionToExecutionStateType(PENDING_RUNNING_EXECUTION_STATE, buildExecutionSignal(RESUME), RUNNING);
+        checkTransitionToExecutionStateType(RUNNING_EXECUTION_STATE, buildExecutionSignal(RESUME), ERROR);
+        checkTransitionToExecutionStateType(PENDING_PAUSED_EXECUTION_STATE, buildExecutionSignal(RESUME), ERROR);
+        checkTransitionToExecutionStateType(PAUSED_EXECUTION_STATE, buildExecutionSignal(RESUME), PENDING_RUNNING);
+        checkTransitionToExecutionStateType(PENDING_STOPPED_EXECUTION_STATE, buildExecutionSignal(RESUME), ERROR);
+        checkTransitionToExecutionStateType(STOPPED_EXECUTION_STATE, buildExecutionSignal(RESUME), ERROR);
+        checkTransitionToExecutionStateType(FINISHED_EXECUTION_STATE, buildExecutionSignal(RESUME), ERROR);
+        checkTransitionToExecutionStateType(ERROR_EXECUTION_STATE, buildExecutionSignal(RESUME), ERROR);
 
-        checkTransitionToExecutionStateType(buildExecutionSignal(STOP), null, ERROR);
-        checkTransitionToExecutionStateType(buildExecutionSignal(STOP), PENDING_RUNNING_EXECUTION_STATE, ERROR);
-        checkTransitionToExecutionStateType(buildExecutionSignal(STOP), RUNNING_EXECUTION_STATE, PENDING_STOPPED);
-        checkTransitionToExecutionStateType(buildExecutionSignal(STOP), PENDING_PAUSED_EXECUTION_STATE, ERROR);
-        checkTransitionToExecutionStateType(buildExecutionSignal(STOP), PAUSED_EXECUTION_STATE, PENDING_STOPPED);
-        checkTransitionToExecutionStateType(buildExecutionSignal(STOP), PENDING_STOPPED_EXECUTION_STATE, STOPPED);
-        checkTransitionToExecutionStateType(buildExecutionSignal(STOP), STOPPED_EXECUTION_STATE, ERROR);
-        checkTransitionToExecutionStateType(buildExecutionSignal(STOP), FINISHED_EXECUTION_STATE, ERROR);
-        checkTransitionToExecutionStateType(buildExecutionSignal(STOP), ERROR_EXECUTION_STATE, ERROR);
+        checkTransitionToExecutionStateType(null, buildExecutionSignal(STOP), ERROR);
+        checkTransitionToExecutionStateType(PENDING_RUNNING_EXECUTION_STATE, buildExecutionSignal(STOP), ERROR);
+        checkTransitionToExecutionStateType(RUNNING_EXECUTION_STATE, buildExecutionSignal(STOP), PENDING_STOPPED);
+        checkTransitionToExecutionStateType(PENDING_PAUSED_EXECUTION_STATE, buildExecutionSignal(STOP), ERROR);
+        checkTransitionToExecutionStateType(PAUSED_EXECUTION_STATE, buildExecutionSignal(STOP), PENDING_STOPPED);
+        checkTransitionToExecutionStateType(PENDING_STOPPED_EXECUTION_STATE, buildExecutionSignal(STOP), STOPPED);
+        checkTransitionToExecutionStateType(STOPPED_EXECUTION_STATE, buildExecutionSignal(STOP), ERROR);
+        checkTransitionToExecutionStateType(FINISHED_EXECUTION_STATE, buildExecutionSignal(STOP), ERROR);
+        checkTransitionToExecutionStateType(ERROR_EXECUTION_STATE, buildExecutionSignal(STOP), ERROR);
     }
 
     private void checkValidExecutionSignalTypes(final ExecutionState executionState,
@@ -113,8 +119,8 @@ public class ExecutionHelperImplTest {
         Assertions.assertEquals(expectedSignalTypes, executionSignalTypes);
     }
 
-    private void checkTransitionToExecutionStateType(final ExecutionSignal signal,
-                                                     final ExecutionState currentState,
+    private void checkTransitionToExecutionStateType(final ExecutionState currentState,
+                                                     final ExecutionSignal signal,
                                                      final ExecutionStateType expectedExecutionStateType) {
         Mockito.when(EXECUTION_STATE_CACHE.get(Mockito.any(ExecutionStateCacheKey.class))).thenReturn(currentState);
 

@@ -13,6 +13,8 @@ import com.hurynovich.api_tester.service.dto_service.DTOService;
 import com.hurynovich.api_tester.service.execution_helper.ExecutionHelper;
 import com.hurynovich.api_tester.validator.Validator;
 
+import org.springframework.lang.NonNull;
+
 import java.util.ArrayList;
 
 public class ExecutionSignalValidator implements Validator<ExecutionSignal> {
@@ -24,10 +26,10 @@ public class ExecutionSignalValidator implements Validator<ExecutionSignal> {
 
     private final ExecutionHelper executionHelper;
 
-    public ExecutionSignalValidator(final Cache<ExecutionStateCacheKey, ExecutionState> executionStateCache,
-                                    final DTOService<UserDTO, Long> userService,
-                                    final DTOService<RequestChainDTO, Long> requestChainService,
-                                    final ExecutionHelper executionHelper) {
+    public ExecutionSignalValidator(final @NonNull Cache<ExecutionStateCacheKey, ExecutionState> executionStateCache,
+                                    final @NonNull DTOService<UserDTO, Long> userService,
+                                    final @NonNull DTOService<RequestChainDTO, Long> requestChainService,
+                                    final @NonNull ExecutionHelper executionHelper) {
         this.executionStateCache = executionStateCache;
         this.userService = userService;
         this.requestChainService = requestChainService;
@@ -35,7 +37,7 @@ public class ExecutionSignalValidator implements Validator<ExecutionSignal> {
     }
 
     @Override
-    public ValidationResult validate(final ExecutionSignal signal) {
+    public ValidationResult validate(final @NonNull ExecutionSignal signal) {
         final ValidationResult validationResult = new ValidationResult();
         validationResult.setType(ValidationResultType.VALID);
         validationResult.setDescriptions(new ArrayList<>());
@@ -47,7 +49,7 @@ public class ExecutionSignalValidator implements Validator<ExecutionSignal> {
         return validationResult;
     }
 
-    private void validateType(final ExecutionSignal signal, final ValidationResult validationResult) {
+    private void validateType(final @NonNull ExecutionSignal signal, final @NonNull ValidationResult validationResult) {
         final ExecutionSignalType type = signal.getType();
 
         if (type == null) {
@@ -58,8 +60,8 @@ public class ExecutionSignalValidator implements Validator<ExecutionSignal> {
         }
     }
 
-    private void processNotNullSignalTypeValidation(final ExecutionSignal signal,
-                                                    final ValidationResult validationResult) {
+    private void processNotNullSignalTypeValidation(final @NonNull ExecutionSignal signal,
+                                                    final @NonNull ValidationResult validationResult) {
         final Long userId = signal.getUserId();
         final Long requestChainId = signal.getRequestChainId();
         final ExecutionState executionState =
@@ -95,12 +97,12 @@ public class ExecutionSignalValidator implements Validator<ExecutionSignal> {
         }
     }
 
-    private boolean nonValidSignalType(final ExecutionSignal signal,
-                                       final ExecutionState executionState) {
+    private boolean nonValidSignalType(final @NonNull ExecutionSignal signal,
+                                       final @NonNull ExecutionState executionState) {
         return !executionHelper.resolveValidExecutionSignalTypes(executionState).contains(signal.getType());
     }
 
-    private void validateUserId(final ExecutionSignal signal, final ValidationResult validationResult) {
+    private void validateUserId(final @NonNull ExecutionSignal signal, final @NonNull ValidationResult validationResult) {
         final Long userId = signal.getUserId();
 
         if (userId == null) {
@@ -115,7 +117,7 @@ public class ExecutionSignalValidator implements Validator<ExecutionSignal> {
         }
     }
 
-    private void validateRequestChainId(final ExecutionSignal signal, final ValidationResult validationResult) {
+    private void validateRequestChainId(final @NonNull ExecutionSignal signal, final @NonNull ValidationResult validationResult) {
         final Long requestChainId = signal.getRequestChainId();
 
         if (requestChainId == null) {

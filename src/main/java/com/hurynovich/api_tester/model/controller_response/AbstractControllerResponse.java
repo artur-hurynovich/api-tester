@@ -2,6 +2,8 @@ package com.hurynovich.api_tester.model.controller_response;
 
 import com.hurynovich.api_tester.model.validation.ValidationResult;
 
+import org.springframework.lang.NonNull;
+
 public abstract class AbstractControllerResponse<T> {
 
     private T payload;
@@ -12,7 +14,7 @@ public abstract class AbstractControllerResponse<T> {
         return payload;
     }
 
-    public void setPayload(T payload) {
+    public void setPayload(final @NonNull T payload) {
         this.payload = payload;
     }
 
@@ -20,7 +22,7 @@ public abstract class AbstractControllerResponse<T> {
         return validationResult;
     }
 
-    public void setValidationResult(ValidationResult validationResult) {
+    public void setValidationResult(final @NonNull ValidationResult validationResult) {
         this.validationResult = validationResult;
     }
 

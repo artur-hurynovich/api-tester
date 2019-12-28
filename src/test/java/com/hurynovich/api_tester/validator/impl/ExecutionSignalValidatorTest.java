@@ -13,6 +13,8 @@ import com.hurynovich.api_tester.model.validation.ValidationResult;
 import com.hurynovich.api_tester.service.dto_service.DTOService;
 import com.hurynovich.api_tester.service.execution_helper.ExecutionHelper;
 import com.hurynovich.api_tester.service.execution_helper.impl.ExecutionHelperImpl;
+import com.hurynovich.api_tester.service.execution_transition_container.ExecutionTransitionContainer;
+import com.hurynovich.api_tester.service.execution_transition_container.impl.ExecutionTransitionContainerImpl;
 import com.hurynovich.api_tester.test_helper.ExecutionTestHelper;
 import com.hurynovich.api_tester.test_helper.RandomValueGenerator;
 import com.hurynovich.api_tester.validator.Validator;
@@ -29,14 +31,19 @@ import java.util.stream.Collectors;
 
 public class ExecutionSignalValidatorTest {
 
-    private static final Cache<ExecutionStateCacheKey, ExecutionState> EXECUTION_STATE_CACHE = Mockito.mock(Cache.class);
+    private static final Cache<ExecutionStateCacheKey, ExecutionState> EXECUTION_STATE_CACHE =
+            Mockito.mock(Cache.class);
 
     private static final DTOService<UserDTO, Long> USER_SERVICE = Mockito.mock(DTOService.class);
     private static final DTOService<RequestChainDTO, Long> REQUEST_CHAIN_SERVICE = Mockito.mock(DTOService.class);
 
     private static final ExecutionState EXECUTION_STATE = Mockito.mock(ExecutionState.class);
 
-    private static final ExecutionHelper EXECUTION_HELPER = new ExecutionHelperImpl(EXECUTION_STATE_CACHE, REQUEST_CHAIN_SERVICE);
+    private static final ExecutionTransitionContainer EXECUTION_TRANSITION_CONTAINER =
+            new ExecutionTransitionContainerImpl();
+
+    private static final ExecutionHelper EXECUTION_HELPER = new ExecutionHelperImpl(EXECUTION_TRANSITION_CONTAINER,
+            EXECUTION_STATE_CACHE, REQUEST_CHAIN_SERVICE);
 
     private static final Validator<ExecutionSignal> SIGNAL_VALIDATOR =
             new ExecutionSignalValidator(EXECUTION_STATE_CACHE, USER_SERVICE, REQUEST_CHAIN_SERVICE, EXECUTION_HELPER);

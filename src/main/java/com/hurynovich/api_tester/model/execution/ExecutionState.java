@@ -11,8 +11,6 @@ public class ExecutionState {
 
     private ExecutionStateType type;
 
-    private List<ExecutionError> errors;
-
     public List<RequestDTO> getRequests() {
         return requests;
     }
@@ -27,14 +25,6 @@ public class ExecutionState {
 
     public void setType(final ExecutionStateType type) {
         this.type = type;
-    }
-
-    public List<ExecutionError> getErrors() {
-        return errors;
-    }
-
-    public void setErrors(final List<ExecutionError> errors) {
-        this.errors = errors;
     }
 
 }
