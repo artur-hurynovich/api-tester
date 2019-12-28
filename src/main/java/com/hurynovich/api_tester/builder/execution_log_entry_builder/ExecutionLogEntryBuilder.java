@@ -6,9 +6,9 @@ import com.hurynovich.api_tester.model.execution.ExecutionLogEntry;
 
 public interface ExecutionLogEntryBuilder {
 
-    ExecutionLogEntry build(RequestDTO requestDTO);
+    ExecutionLogEntry build(RequestDTO request);
 
-    ExecutionLogEntry build(ResponseDTO responseDTO);
+    ExecutionLogEntry build(ResponseDTO response);
 
     ExecutionLogEntry build(String message);
 

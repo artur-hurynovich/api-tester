@@ -14,28 +14,28 @@ import java.time.ZoneId;
 public class ExecutionLogEntryBuilderImpl implements ExecutionLogEntryBuilder {
 
     @Override
-    public ExecutionLogEntry build(final @NonNull RequestDTO requestDTO) {
+    public ExecutionLogEntry build(final @NonNull RequestDTO request) {
         final ExecutionLogEntry executionLogEntry = new ExecutionLogEntry();
 
         executionLogEntry.setType(ExecutionLogEntryType.REQUEST);
         executionLogEntry.setDateTime(LocalDateTime.now(ZoneId.systemDefault()));
-        executionLogEntry.setMethod(requestDTO.getMethod());
-        executionLogEntry.setHeaders(requestDTO.getHeaders());
-        executionLogEntry.setUrl(requestDTO.getUrl());
-        executionLogEntry.setBody(requestDTO.getBody());
+        executionLogEntry.setMethod(request.getMethod());
+        executionLogEntry.setHeaders(request.getHeaders());
+        executionLogEntry.setUrl(request.getUrl());
+        executionLogEntry.setBody(request.getBody());
 
         return executionLogEntry;
     }
 
     @Override
-    public ExecutionLogEntry build(final @NonNull ResponseDTO responseDTO) {
+    public ExecutionLogEntry build(final @NonNull ResponseDTO response) {
         final ExecutionLogEntry executionLogEntry = new ExecutionLogEntry();
 
         executionLogEntry.setType(ExecutionLogEntryType.RESPONSE);
         executionLogEntry.setDateTime(LocalDateTime.now(ZoneId.systemDefault()));
-        executionLogEntry.setStatus(responseDTO.getStatus());
-        executionLogEntry.setHeaders(responseDTO.getHeaders());
-        executionLogEntry.setBody(responseDTO.getBody());
+        executionLogEntry.setStatus(response.getStatus());
+        executionLogEntry.setHeaders(response.getHeaders());
+        executionLogEntry.setBody(response.getBody());
 
         return executionLogEntry;
     }
