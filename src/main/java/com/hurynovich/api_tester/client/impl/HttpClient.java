@@ -14,9 +14,9 @@ import org.springframework.web.client.RestTemplate;
 
 public class HttpClient implements Client {
 
-    private RestTemplate restTemplate;
+    private final RestTemplate restTemplate;
 
-    private ClientConverter<String> clientConverter;
+    private final ClientConverter<String> clientConverter;
 
     public HttpClient(final @NonNull RestTemplate restTemplate,
                       final @NonNull ClientConverter<String> clientConverter) {

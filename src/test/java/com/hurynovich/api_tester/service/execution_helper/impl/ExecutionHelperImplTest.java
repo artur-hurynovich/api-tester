@@ -37,13 +37,14 @@ import static com.hurynovich.api_tester.test_helper.ExecutionTestHelper.buildExe
 @ExtendWith(MockitoExtension.class)
 public class ExecutionHelperImplTest {
 
+    private final ExecutionTransitionContainer EXECUTION_TRANSITION_CONTAINER =
+            new ExecutionTransitionContainerImpl();
+
     @Mock
     private Cache<ExecutionStateCacheKey, ExecutionState> EXECUTION_STATE_CACHE;
 
     @Mock
     private DTOService<RequestChainDTO, Long> REQUEST_CHAIN_SERVICE;
-
-    private ExecutionTransitionContainer EXECUTION_TRANSITION_CONTAINER = new ExecutionTransitionContainerImpl();
 
     private ExecutionHelper EXECUTION_HELPER;
 

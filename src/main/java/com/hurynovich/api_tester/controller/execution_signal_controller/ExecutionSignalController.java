@@ -1,6 +1,6 @@
 package com.hurynovich.api_tester.controller.execution_signal_controller;
 
-import com.hurynovich.api_tester.model.controller_response.impl.ExecutionSignalControllerResponse;
+import com.hurynovich.api_tester.model.controller_response.ControllerResponse;
 import com.hurynovich.api_tester.model.enumeration.ValidationResultType;
 import com.hurynovich.api_tester.model.execution.ExecutionSignal;
 import com.hurynovich.api_tester.model.execution.ExecutionState;
@@ -29,10 +29,10 @@ public class ExecutionSignalController {
     }
 
     @PostMapping("/signal")
-    public ResponseEntity<ExecutionSignalControllerResponse> postSignal(final @NonNull @RequestBody ExecutionSignal executionSignal) {
+    public ResponseEntity<ControllerResponse<ExecutionState>> postSignal(final @NonNull @RequestBody ExecutionSignal executionSignal) {
         final ValidationResult validationResult = signalValidator.validate(executionSignal);
 
-        final ExecutionSignalControllerResponse response = new ExecutionSignalControllerResponse();
+        final ControllerResponse<ExecutionState> response = new ControllerResponse<>();
         if (validationResult.getType() == ValidationResultType.VALID) {
             final ExecutionState executionState = executionHelper.updateExecutionStateCache(executionSignal);
             response.setPayload(executionState);

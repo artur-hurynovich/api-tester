@@ -34,6 +34,9 @@ import static com.hurynovich.api_tester.model.enumeration.ValidationResultType.V
 @ExtendWith(MockitoExtension.class)
 public class ExecutorExecutionSignalValidatorTest {
 
+    private final ExecutionTransitionContainer EXECUTION_TRANSITION_CONTAINER =
+            new ExecutionTransitionContainerImpl();
+
     @Mock
     private Cache<ExecutionStateCacheKey, ExecutionState> EXECUTION_STATE_CACHE;
 
@@ -45,8 +48,6 @@ public class ExecutorExecutionSignalValidatorTest {
 
     @Mock
     private ExecutionState EXECUTION_STATE;
-
-    private ExecutionTransitionContainer EXECUTION_TRANSITION_CONTAINER = new ExecutionTransitionContainerImpl();
 
     private Validator<ExecutionSignal> SIGNAL_VALIDATOR;
 
