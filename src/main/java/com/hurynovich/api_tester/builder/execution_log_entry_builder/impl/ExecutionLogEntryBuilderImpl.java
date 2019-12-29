@@ -5,12 +5,13 @@ import com.hurynovich.api_tester.model.dto.impl.RequestDTO;
 import com.hurynovich.api_tester.model.dto.impl.ResponseDTO;
 import com.hurynovich.api_tester.model.enumeration.ExecutionLogEntryType;
 import com.hurynovich.api_tester.model.execution.ExecutionLogEntry;
-
 import org.springframework.lang.NonNull;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
+@Service
 public class ExecutionLogEntryBuilderImpl implements ExecutionLogEntryBuilder {
 
     @Override

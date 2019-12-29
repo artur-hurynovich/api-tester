@@ -16,10 +16,12 @@ import com.hurynovich.api_tester.validator.Validator;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.lang.NonNull;
+import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
+@Service
 public class ExecutorImpl implements Executor {
 
     private final Validator<ExecutionSignal> signalValidator;

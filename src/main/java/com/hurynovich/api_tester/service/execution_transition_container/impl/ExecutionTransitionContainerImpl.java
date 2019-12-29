@@ -3,8 +3,8 @@ package com.hurynovich.api_tester.service.execution_transition_container.impl;
 import com.hurynovich.api_tester.model.enumeration.ExecutionSignalType;
 import com.hurynovich.api_tester.model.enumeration.ExecutionStateType;
 import com.hurynovich.api_tester.service.execution_transition_container.ExecutionTransitionContainer;
-
 import org.springframework.lang.NonNull;
+import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
@@ -25,6 +25,7 @@ import static com.hurynovich.api_tester.model.enumeration.ExecutionStateType.PEN
 import static com.hurynovich.api_tester.model.enumeration.ExecutionStateType.RUNNING;
 import static com.hurynovich.api_tester.model.enumeration.ExecutionStateType.STOPPED;
 
+@Component
 public class ExecutionTransitionContainerImpl implements ExecutionTransitionContainer {
 
     private static final String NOT_ALL_STATES_ASSERTION_MESSAGE = "Not all executionStateTypes listed in container";
@@ -47,7 +48,7 @@ public class ExecutionTransitionContainerImpl implements ExecutionTransitionCont
         transitions.add(ERROR, new Transition(RUN, PENDING_RUNNING));
 
         assert transitions.keySet().containsAll(Arrays.asList(ExecutionStateType.values())) :
-            NOT_ALL_STATES_ASSERTION_MESSAGE;
+                NOT_ALL_STATES_ASSERTION_MESSAGE;
     }
 
     @Override
@@ -84,6 +85,4 @@ public class ExecutionTransitionContainerImpl implements ExecutionTransitionCont
         }
     }
 
-
 }
-

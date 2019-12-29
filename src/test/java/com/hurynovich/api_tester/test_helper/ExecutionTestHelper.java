@@ -25,14 +25,22 @@ public class ExecutionTestHelper {
 
         executionSignal.setType(type);
 
-        final ExecutionStateCacheKey key = new ExecutionStateCacheKey();
-        final long userId = RandomValueGenerator.generateRandomPositiveInt();
-        final long requestChainId = RandomValueGenerator.generateRandomPositiveInt();
-        key.setUserId(userId);
-        key.setRequestChainId(requestChainId);
+        final ExecutionStateCacheKey key = buildExecutionStateCacheKey();
         executionSignal.setKey(key);
 
         return executionSignal;
+    }
+
+    public static ExecutionStateCacheKey buildExecutionStateCacheKey() {
+        final ExecutionStateCacheKey key = new ExecutionStateCacheKey();
+
+        final long userId = RandomValueGenerator.generateRandomPositiveInt();
+        key.setUserId(userId);
+
+        final long requestChainId = RandomValueGenerator.generateRandomPositiveInt();
+        key.setRequestChainId(requestChainId);
+
+        return key;
     }
 
 }

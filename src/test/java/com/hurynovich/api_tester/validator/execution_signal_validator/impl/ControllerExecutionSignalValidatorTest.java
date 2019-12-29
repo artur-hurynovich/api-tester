@@ -1,18 +1,17 @@
 package com.hurynovich.api_tester.validator.execution_signal_validator.impl;
 
-import com.hurynovich.api_tester.model.dto.impl.RequestChainDTO;
-import com.hurynovich.api_tester.model.dto.impl.UserDTO;
+import com.hurynovich.api_tester.cache.cache_key.impl.ExecutionStateCacheKey;
 import com.hurynovich.api_tester.model.enumeration.ExecutionSignalType;
 import com.hurynovich.api_tester.model.enumeration.ExecutionStateType;
 import com.hurynovich.api_tester.model.execution.ExecutionSignal;
 import com.hurynovich.api_tester.model.execution.ExecutionState;
 import com.hurynovich.api_tester.model.validation.ValidationResult;
-import com.hurynovich.api_tester.service.dto_service.DTOService;
 import com.hurynovich.api_tester.service.execution_helper.ExecutionHelper;
 import com.hurynovich.api_tester.service.execution_transition_container.ExecutionTransitionContainer;
 import com.hurynovich.api_tester.service.execution_transition_container.impl.ExecutionTransitionContainerImpl;
 import com.hurynovich.api_tester.test_helper.ExecutionTestHelper;
 import com.hurynovich.api_tester.test_helper.RandomValueGenerator;
+import com.hurynovich.api_tester.test_helper.ValidatorTestHelper;
 import com.hurynovich.api_tester.validator.Validator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,10 +34,7 @@ public class ControllerExecutionSignalValidatorTest {
             new ExecutionTransitionContainerImpl();
 
     @Mock
-    private DTOService<UserDTO, Long> userService;
-
-    @Mock
-    private DTOService<RequestChainDTO, Long> requestChainService;
+    private Validator<ExecutionStateCacheKey> keyValidator;
 
     @Mock
     private ExecutionHelper executionHelper;
@@ -50,8 +46,7 @@ public class ControllerExecutionSignalValidatorTest {
 
     @BeforeEach
     public void init() {
-        signalValidator = new ControllerExecutionSignalValidator(userService, requestChainService,
-                executionHelper);
+        signalValidator = new ControllerExecutionSignalValidator(keyValidator, executionHelper);
     }
 
     @Test
@@ -60,8 +55,8 @@ public class ControllerExecutionSignalValidatorTest {
                 RandomValueGenerator.generateRandomEnumValue(ExecutionSignalType.class);
         final ExecutionSignal signal = ExecutionTestHelper.buildExecutionSignal(executionSignalType);
 
-        Mockito.when(userService.existsById(signal.getKey().getUserId())).thenReturn(true);
-        Mockito.when(requestChainService.existsById(signal.getKey().getRequestChainId())).thenReturn(true);
+        final ValidationResult keyValidationResult = ValidatorTestHelper.buildValidValidationResult();
+        Mockito.when(keyValidator.validate(signal.getKey())).thenReturn(keyValidationResult);
 
         Mockito.when(executionHelper.getExecutionState(signal.getKey())).thenReturn(executionState);
         Mockito.when(executionHelper.resolveValidSignalTypesOnInit(executionState)).
@@ -81,8 +76,8 @@ public class ControllerExecutionSignalValidatorTest {
                 RandomValueGenerator.generateRandomEnumValue(ExecutionSignalType.class);
         final ExecutionSignal signal = ExecutionTestHelper.buildExecutionSignal(executionSignalType);
 
-        Mockito.when(userService.existsById(signal.getKey().getUserId())).thenReturn(true);
-        Mockito.when(requestChainService.existsById(signal.getKey().getRequestChainId())).thenReturn(true);
+        final ValidationResult keyValidationResult = ValidatorTestHelper.buildValidValidationResult();
+        Mockito.when(keyValidator.validate(signal.getKey())).thenReturn(keyValidationResult);
 
         Mockito.when(executionHelper.getExecutionState(signal.getKey())).thenReturn(executionState);
         Mockito.when(executionHelper.resolveValidSignalTypesOnInit(executionState)).

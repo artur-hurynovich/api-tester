@@ -12,6 +12,7 @@ import com.hurynovich.api_tester.service.execution_helper.ExecutionHelper;
 import com.hurynovich.api_tester.service.execution_transition_container.ExecutionTransitionContainer;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
+import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
@@ -19,6 +20,7 @@ import java.util.List;
 import static com.hurynovich.api_tester.model.enumeration.ExecutionSignalType.RUN;
 import static com.hurynovich.api_tester.model.enumeration.ExecutionStateType.PENDING_RUNNING;
 
+@Service
 public class ExecutionHelperImpl implements ExecutionHelper {
 
     private final ExecutionTransitionContainer executionTransitionContainer;
@@ -36,7 +38,7 @@ public class ExecutionHelperImpl implements ExecutionHelper {
     }
 
     @Override
-    public ExecutionState getExecutionState(ExecutionStateCacheKey key) {
+    public ExecutionState getExecutionState(final @NonNull ExecutionStateCacheKey key) {
         return executionStateCache.get(key);
     }
 

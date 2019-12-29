@@ -1,14 +1,12 @@
 package com.hurynovich.api_tester.validator.execution_signal_validator.impl;
 
 import com.hurynovich.api_tester.cache.cache_key.impl.ExecutionStateCacheKey;
-import com.hurynovich.api_tester.model.dto.impl.RequestChainDTO;
-import com.hurynovich.api_tester.model.dto.impl.UserDTO;
 import com.hurynovich.api_tester.model.enumeration.ExecutionSignalType;
 import com.hurynovich.api_tester.model.execution.ExecutionSignal;
 import com.hurynovich.api_tester.model.execution.ExecutionState;
 import com.hurynovich.api_tester.model.validation.ValidationResult;
-import com.hurynovich.api_tester.service.dto_service.DTOService;
 import com.hurynovich.api_tester.service.execution_helper.ExecutionHelper;
+import com.hurynovich.api_tester.validator.Validator;
 import com.hurynovich.api_tester.validator.execution_signal_validator.AbstractExecutionSignalValidator;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
@@ -20,10 +18,9 @@ public class ControllerExecutionSignalValidator extends AbstractExecutionSignalV
 
     private final ExecutionHelper executionHelper;
 
-    public ControllerExecutionSignalValidator(final @NonNull DTOService<UserDTO, Long> userService,
-                                              final @NonNull DTOService<RequestChainDTO, Long> requestChainService,
+    public ControllerExecutionSignalValidator(final @NonNull Validator<ExecutionStateCacheKey> keyValidator,
                                               final @NonNull ExecutionHelper executionHelper) {
-        super(userService, requestChainService);
+        super(keyValidator);
 
         this.executionHelper = executionHelper;
     }

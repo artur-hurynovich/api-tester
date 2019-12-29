@@ -1,16 +1,14 @@
 package com.hurynovich.api_tester.validator.execution_signal_validator;
 
-import com.hurynovich.api_tester.model.dto.impl.RequestChainDTO;
-import com.hurynovich.api_tester.model.dto.impl.UserDTO;
+import com.hurynovich.api_tester.cache.cache_key.impl.ExecutionStateCacheKey;
 import com.hurynovich.api_tester.model.enumeration.ExecutionSignalType;
 import com.hurynovich.api_tester.model.enumeration.ValidationResultType;
 import com.hurynovich.api_tester.model.execution.ExecutionSignal;
 import com.hurynovich.api_tester.model.validation.ValidationResult;
-import com.hurynovich.api_tester.service.dto_service.DTOService;
 import com.hurynovich.api_tester.test_helper.ExecutionTestHelper;
 import com.hurynovich.api_tester.test_helper.RandomValueGenerator;
+import com.hurynovich.api_tester.test_helper.ValidatorTestHelper;
 import com.hurynovich.api_tester.validator.Validator;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,17 +23,14 @@ import java.util.List;
 public class AbstractExecutionSignalValidatorTest {
 
     @Mock
-    private DTOService<UserDTO, Long> userService;
-
-    @Mock
-    private DTOService<RequestChainDTO, Long> requestChainService;
+    private Validator<ExecutionStateCacheKey> keyValidator;
 
     private Validator<ExecutionSignal> signalValidator;
 
     @BeforeEach
     public void init() {
         signalValidator =
-                new AbstractExecutionSignalValidator(userService, requestChainService) {
+                new AbstractExecutionSignalValidator(keyValidator) {
                     @Override
                     protected void processNotNullSignalTypeValidation(ExecutionSignal signal, ValidationResult validationResult) {
 
@@ -48,8 +43,8 @@ public class AbstractExecutionSignalValidatorTest {
         final ExecutionSignalType type = RandomValueGenerator.generateRandomEnumValue(ExecutionSignalType.class);
         final ExecutionSignal signal = ExecutionTestHelper.buildExecutionSignal(type);
 
-        Mockito.when(userService.existsById(signal.getKey().getUserId())).thenReturn(true);
-        Mockito.when(requestChainService.existsById(signal.getKey().getRequestChainId())).thenReturn(true);
+        final ValidationResult keyValidationResult = ValidatorTestHelper.buildValidValidationResult();
+        Mockito.when(keyValidator.validate(signal.getKey())).thenReturn(keyValidationResult);
 
         final ValidationResult validationResult = signalValidator.validate(signal);
 
@@ -72,108 +67,6 @@ public class AbstractExecutionSignalValidatorTest {
         Assertions.assertEquals(1, descriptions.size());
 
         Assertions.assertEquals("'key' can't be null", descriptions.get(0));
-    }
-
-    @Test
-    public void userIdNullFailureValidationTest() {
-        final ExecutionSignalType type = RandomValueGenerator.generateRandomEnumValue(ExecutionSignalType.class);
-        final ExecutionSignal signal = ExecutionTestHelper.buildExecutionSignal(type);
-
-        signal.getKey().setUserId(null);
-
-        Mockito.when(requestChainService.existsById(signal.getKey().getRequestChainId())).thenReturn(true);
-
-        final ValidationResult validationResult = signalValidator.validate(signal);
-        Assertions.assertEquals(ValidationResultType.NON_VALID, validationResult.getType());
-
-        final List<String> descriptions = validationResult.getDescriptions();
-        Assertions.assertEquals(1, descriptions.size());
-        Assertions.assertEquals("'userId' can't be null", descriptions.get(0));
-    }
-
-    @Test
-    public void userIdZeroOrNegativeFailureValidationTest() {
-        final ExecutionSignalType type = RandomValueGenerator.generateRandomEnumValue(ExecutionSignalType.class);
-        final ExecutionSignal signal = ExecutionTestHelper.buildExecutionSignal(type);
-
-        signal.getKey().setUserId((long) RandomValueGenerator.generateRandomNegativeOrZeroInt());
-
-        Mockito.when(requestChainService.existsById(signal.getKey().getRequestChainId())).thenReturn(true);
-
-        final ValidationResult validationResult = signalValidator.validate(signal);
-        Assertions.assertEquals(ValidationResultType.NON_VALID, validationResult.getType());
-
-        final List<String> descriptions = validationResult.getDescriptions();
-        Assertions.assertEquals(1, descriptions.size());
-        Assertions.assertEquals("'userId' can't be negative or zero", descriptions.get(0));
-    }
-
-    @Test
-    public void userIdNonExistentFailureValidationTest() {
-        final ExecutionSignalType type = RandomValueGenerator.generateRandomEnumValue(ExecutionSignalType.class);
-        final ExecutionSignal signal = ExecutionTestHelper.buildExecutionSignal(type);
-
-        final Long userId = signal.getKey().getUserId();
-        Mockito.when(userService.existsById(userId)).thenReturn(false);
-        Mockito.when(requestChainService.existsById(signal.getKey().getRequestChainId())).thenReturn(true);
-
-        final ValidationResult validationResult = signalValidator.validate(signal);
-        Assertions.assertEquals(ValidationResultType.NON_VALID, validationResult.getType());
-
-        final List<String> descriptions = validationResult.getDescriptions();
-        Assertions.assertEquals(1, descriptions.size());
-        Assertions.assertEquals("No UserDTO found for userId = " + userId, descriptions.get(0));
-    }
-
-    @Test
-    public void requestChainIdNullFailureValidationTest() {
-        final ExecutionSignalType type = RandomValueGenerator.generateRandomEnumValue(ExecutionSignalType.class);
-        final ExecutionSignal signal = ExecutionTestHelper.buildExecutionSignal(type);
-
-        signal.getKey().setRequestChainId(null);
-
-        Mockito.when(userService.existsById(signal.getKey().getUserId())).thenReturn(true);
-
-        final ValidationResult validationResult = signalValidator.validate(signal);
-        Assertions.assertEquals(ValidationResultType.NON_VALID, validationResult.getType());
-
-        final List<String> descriptions = validationResult.getDescriptions();
-        Assertions.assertEquals(1, descriptions.size());
-        Assertions.assertEquals("'requestChainId' can't be null", descriptions.get(0));
-    }
-
-    @Test
-    public void requestChainIdZeroOrNegativeFailureValidationTest() {
-        final ExecutionSignalType type = RandomValueGenerator.generateRandomEnumValue(ExecutionSignalType.class);
-        final ExecutionSignal signal = ExecutionTestHelper.buildExecutionSignal(type);
-
-        signal.getKey().setRequestChainId((long) RandomValueGenerator.generateRandomNegativeOrZeroInt());
-
-        Mockito.when(userService.existsById(signal.getKey().getUserId())).thenReturn(true);
-
-        final ValidationResult validationResult = signalValidator.validate(signal);
-        Assertions.assertEquals(ValidationResultType.NON_VALID, validationResult.getType());
-
-        final List<String> descriptions = validationResult.getDescriptions();
-        Assertions.assertEquals(1, descriptions.size());
-        Assertions.assertEquals("'requestChainId' can't be negative or zero", descriptions.get(0));
-    }
-
-    @Test
-    public void requestChainIdNonExistentFailureValidationTest() {
-        final ExecutionSignalType type = RandomValueGenerator.generateRandomEnumValue(ExecutionSignalType.class);
-        final ExecutionSignal signal = ExecutionTestHelper.buildExecutionSignal(type);
-
-        final Long requestChainId = signal.getKey().getRequestChainId();
-        Mockito.when(userService.existsById(signal.getKey().getUserId())).thenReturn(true);
-        Mockito.when(requestChainService.existsById(requestChainId)).thenReturn(false);
-
-        final ValidationResult validationResult = signalValidator.validate(signal);
-        Assertions.assertEquals(ValidationResultType.NON_VALID, validationResult.getType());
-
-        final List<String> descriptions = validationResult.getDescriptions();
-        Assertions.assertEquals(1, descriptions.size());
-        Assertions.assertEquals("No RequestChainDTO found for requestChainId = " + requestChainId, descriptions.get(0));
     }
 
 }

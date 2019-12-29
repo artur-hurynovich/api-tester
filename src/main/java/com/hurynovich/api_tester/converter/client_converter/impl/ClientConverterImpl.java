@@ -5,10 +5,10 @@ import com.hurynovich.api_tester.converter.exception.ConverterException;
 import com.hurynovich.api_tester.model.dto.impl.RequestDTO;
 import com.hurynovich.api_tester.model.dto.impl.RequestParameterDTO;
 import com.hurynovich.api_tester.model.dto.impl.ResponseDTO;
-
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
+import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -19,6 +19,7 @@ import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.List;
 
+@Service
 public class ClientConverterImpl implements ClientConverter<String> {
 
     @Override
