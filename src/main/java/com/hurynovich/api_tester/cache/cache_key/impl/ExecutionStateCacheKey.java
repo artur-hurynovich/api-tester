@@ -2,8 +2,6 @@ package com.hurynovich.api_tester.cache.cache_key.impl;
 
 import com.hurynovich.api_tester.cache.cache_key.CacheKey;
 
-import org.springframework.lang.NonNull;
-
 import java.util.Objects;
 
 public class ExecutionStateCacheKey implements CacheKey {
@@ -12,8 +10,19 @@ public class ExecutionStateCacheKey implements CacheKey {
 
     private Long requestChainId;
 
-    public ExecutionStateCacheKey(final @NonNull Long userId, final @NonNull Long requestChainId) {
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(final Long userId) {
         this.userId = userId;
+    }
+
+    public Long getRequestChainId() {
+        return requestChainId;
+    }
+
+    public void setRequestChainId(final Long requestChainId) {
         this.requestChainId = requestChainId;
     }
 
@@ -37,4 +46,5 @@ public class ExecutionStateCacheKey implements CacheKey {
     public int hashCode() {
         return Objects.hash(userId, requestChainId);
     }
+
 }

@@ -8,7 +8,9 @@ import com.hurynovich.api_tester.model.validation.ValidationResult;
 import com.hurynovich.api_tester.service.execution_helper.ExecutionHelper;
 import com.hurynovich.api_tester.validator.Validator;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,14 +22,14 @@ public class ExecutionSignalController {
 
     private final ExecutionHelper executionHelper;
 
-    public ExecutionSignalController(final Validator<ExecutionSignal> signalValidator,
-                                     final ExecutionHelper executionHelper) {
+    public ExecutionSignalController(final @NonNull @Qualifier("controllerExecutionSignalValidator") Validator<ExecutionSignal> signalValidator,
+                                     final @NonNull ExecutionHelper executionHelper) {
         this.signalValidator = signalValidator;
         this.executionHelper = executionHelper;
     }
 
     @PostMapping("/signal")
-    public ResponseEntity<ExecutionSignalControllerResponse> postSignal(final @RequestBody ExecutionSignal executionSignal) {
+    public ResponseEntity<ExecutionSignalControllerResponse> postSignal(final @NonNull @RequestBody ExecutionSignal executionSignal) {
         final ValidationResult validationResult = signalValidator.validate(executionSignal);
 
         final ExecutionSignalControllerResponse response = new ExecutionSignalControllerResponse();

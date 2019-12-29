@@ -5,6 +5,10 @@ public enum ExecutionSignalType {
     RUN,
     PAUSE,
     RESUME,
-    STOP
+    STOP;
+
+    public static ExecutionSignalType initialSignalType() {
+        return RUN;
+    }
 
 }

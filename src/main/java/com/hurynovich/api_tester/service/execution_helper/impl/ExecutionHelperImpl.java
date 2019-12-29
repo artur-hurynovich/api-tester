@@ -12,13 +12,9 @@ import com.hurynovich.api_tester.service.execution_helper.ExecutionHelper;
 import com.hurynovich.api_tester.service.execution_transition_container.ExecutionTransitionContainer;
 
 import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
 
-import java.util.Collections;
 import java.util.List;
 
-import static com.hurynovich.api_tester.model.enumeration.ExecutionSignalType.RUN;
-import static com.hurynovich.api_tester.model.enumeration.ExecutionStateType.ERROR;
 import static com.hurynovich.api_tester.model.enumeration.ExecutionStateType.PENDING_RUNNING;
 
 public class ExecutionHelperImpl implements ExecutionHelper {
@@ -39,15 +35,13 @@ public class ExecutionHelperImpl implements ExecutionHelper {
 
     @Override
     public ExecutionState updateExecutionStateCache(final @NonNull ExecutionSignal executionSignal) {
-        final Long userId = executionSignal.getUserId();
-        final Long requestChainId = executionSignal.getRequestChainId();
-        final ExecutionStateCacheKey executionStateCacheKey = new ExecutionStateCacheKey(userId, requestChainId);
+        final ExecutionStateCacheKey executionStateCacheKey = executionSignal.getKey();
 
         ExecutionState executionState = executionStateCache.get(executionStateCacheKey);
         if (executionState == null) {
             executionState = new ExecutionState();
 
-            final RequestChainDTO requestChain = requestChainService.getById(executionSignal.getRequestChainId());
+            final RequestChainDTO requestChain = requestChainService.getById(executionStateCacheKey.getRequestChainId());
             executionState.setRequests(requestChain.getRequests());
         }
 
@@ -57,17 +51,8 @@ public class ExecutionHelperImpl implements ExecutionHelper {
     }
 
     @Override
-    public List<ExecutionSignalType> resolveValidExecutionSignalTypes(final @Nullable ExecutionState executionState) {
-        if (executionState == null) {
-            return Collections.singletonList(RUN);
-        } else {
-            return executionTransitionContainer.getValidSignalTypesForState(executionState.getType());
-        }
-    }
-
-    @Override
     public ExecutionStateType resolveTransitionToExecutionStateType(final @NonNull ExecutionSignal executionSignal) {
-        final ExecutionState currentExecutionState = getCurrentExecutionState(executionSignal);
+        final ExecutionState currentExecutionState = executionStateCache.get(executionSignal.getKey());
 
         final ExecutionStateType executionStateType;
 
@@ -78,27 +63,19 @@ public class ExecutionHelperImpl implements ExecutionHelper {
                     executionTransitionContainer.getTransitionsToState(currentExecutionStateType, executionSignalType);
 
             if (transitionsToState.size() != 1) {
-                executionStateType = ERROR;
+                executionStateType = ExecutionStateType.errorStateType();
             } else {
                 executionStateType = transitionsToState.get(0);
             }
         } else {
-            if (executionSignal.getType() == RUN) {
+            if (ExecutionSignalType.initialSignalType() == executionSignal.getType()) {
                 executionStateType = PENDING_RUNNING;
             } else {
-                executionStateType = ERROR;
+                executionStateType = ExecutionStateType.errorStateType();
             }
         }
 
         return executionStateType;
-    }
-
-    private ExecutionState getCurrentExecutionState(final @NonNull ExecutionSignal executionSignal) {
-        final Long userId = executionSignal.getUserId();
-        final Long requestChainId = executionSignal.getRequestChainId();
-        final ExecutionStateCacheKey executionStateCacheKey = new ExecutionStateCacheKey(userId, requestChainId);
-
-        return executionStateCache.get(executionStateCacheKey);
     }
 
 }

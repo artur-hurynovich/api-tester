@@ -1,14 +1,13 @@
 package com.hurynovich.api_tester.model.execution;
 
+import com.hurynovich.api_tester.cache.cache_key.impl.ExecutionStateCacheKey;
 import com.hurynovich.api_tester.model.enumeration.ExecutionSignalType;
 
 public class ExecutionSignal {
 
     private ExecutionSignalType type;
 
-    private Long userId;
-
-    private Long requestChainId;
+    private ExecutionStateCacheKey key;
 
     public ExecutionSignalType getType() {
         return type;
@@ -18,20 +17,12 @@ public class ExecutionSignal {
         this.type = type;
     }
 
-    public Long getUserId() {
-        return userId;
+    public ExecutionStateCacheKey getKey() {
+        return key;
     }
 
-    public void setUserId(final Long userId) {
-        this.userId = userId;
-    }
-
-    public Long getRequestChainId() {
-        return requestChainId;
-    }
-
-    public void setRequestChainId(final Long requestChainId) {
-        this.requestChainId = requestChainId;
+    public void setKey(final ExecutionStateCacheKey key) {
+        this.key = key;
     }
 
 }
