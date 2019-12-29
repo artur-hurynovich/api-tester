@@ -57,19 +57,6 @@ public class ExecutionHelperImplTest {
     final ExecutionState ERROR_EXECUTION_STATE = buildExecutionState(ERROR);
 
     @Test
-    public void resolveValidExecutionSignalTypesTest() {
-        checkValidExecutionSignalTypes(null, Collections.singletonList(RUN));
-        checkValidExecutionSignalTypes(PENDING_RUNNING_EXECUTION_STATE, Arrays.asList(RUN, RESUME));
-        checkValidExecutionSignalTypes(RUNNING_EXECUTION_STATE, Arrays.asList(PAUSE, STOP));
-        checkValidExecutionSignalTypes(PENDING_PAUSED_EXECUTION_STATE, Collections.singletonList(PAUSE));
-        checkValidExecutionSignalTypes(PAUSED_EXECUTION_STATE, Arrays.asList(RESUME, STOP));
-        checkValidExecutionSignalTypes(PENDING_STOPPED_EXECUTION_STATE, Collections.singletonList(STOP));
-        checkValidExecutionSignalTypes(STOPPED_EXECUTION_STATE, Collections.singletonList(RUN));
-        checkValidExecutionSignalTypes(FINISHED_EXECUTION_STATE, Collections.singletonList(RUN));
-        checkValidExecutionSignalTypes(ERROR_EXECUTION_STATE, Collections.singletonList(RUN));
-    }
-
-    @Test
     public void resolveTransitionToExecutionStateTypeTest() {
         checkTransitionToExecutionStateType(null, buildExecutionSignal(RUN), PENDING_RUNNING);
         checkTransitionToExecutionStateType(PENDING_RUNNING_EXECUTION_STATE, buildExecutionSignal(RUN), RUNNING);
@@ -110,13 +97,6 @@ public class ExecutionHelperImplTest {
         checkTransitionToExecutionStateType(STOPPED_EXECUTION_STATE, buildExecutionSignal(STOP), ERROR);
         checkTransitionToExecutionStateType(FINISHED_EXECUTION_STATE, buildExecutionSignal(STOP), ERROR);
         checkTransitionToExecutionStateType(ERROR_EXECUTION_STATE, buildExecutionSignal(STOP), ERROR);
-    }
-
-    private void checkValidExecutionSignalTypes(final ExecutionState executionState,
-                                                final List<ExecutionSignalType> expectedSignalTypes) {
-        final List<ExecutionSignalType> executionSignalTypes = EXECUTION_HELPER.resolveValidExecutionSignalTypes(executionState);
-
-        Assertions.assertEquals(expectedSignalTypes, executionSignalTypes);
     }
 
     private void checkTransitionToExecutionStateType(final ExecutionState currentState,
