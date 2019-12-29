@@ -21,7 +21,7 @@ import static com.hurynovich.api_tester.model.enumeration.ValidationResultType.N
 @Service("executorExecutionSignalValidator")
 public class ExecutorExecutionSignalValidator extends AbstractExecutionSignalValidator {
 
-    final Cache<ExecutionStateCacheKey, ExecutionState> executionStateCache;
+    private final Cache<ExecutionStateCacheKey, ExecutionState> executionStateCache;
 
     private final ExecutionTransitionContainer executionTransitionContainer;
 
