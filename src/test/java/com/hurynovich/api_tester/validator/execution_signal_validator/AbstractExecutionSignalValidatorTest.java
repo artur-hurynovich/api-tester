@@ -25,17 +25,17 @@ import java.util.List;
 public class AbstractExecutionSignalValidatorTest {
 
     @Mock
-    private DTOService<UserDTO, Long> USER_SERVICE;
+    private DTOService<UserDTO, Long> userService;
 
     @Mock
-    private DTOService<RequestChainDTO, Long> REQUEST_CHAIN_SERVICE;
+    private DTOService<RequestChainDTO, Long> requestChainService;
 
-    private Validator<ExecutionSignal> SIGNAL_VALIDATOR;
+    private Validator<ExecutionSignal> signalValidator;
 
     @BeforeEach
     public void init() {
-        SIGNAL_VALIDATOR =
-                new AbstractExecutionSignalValidator(USER_SERVICE, REQUEST_CHAIN_SERVICE) {
+        signalValidator =
+                new AbstractExecutionSignalValidator(userService, requestChainService) {
                     @Override
                     protected void processNotNullSignalTypeValidation(ExecutionSignal signal, ValidationResult validationResult) {
 
@@ -48,10 +48,10 @@ public class AbstractExecutionSignalValidatorTest {
         final ExecutionSignalType type = RandomValueGenerator.generateRandomEnumValue(ExecutionSignalType.class);
         final ExecutionSignal signal = ExecutionTestHelper.buildExecutionSignal(type);
 
-        Mockito.when(USER_SERVICE.existsById(signal.getKey().getUserId())).thenReturn(true);
-        Mockito.when(REQUEST_CHAIN_SERVICE.existsById(signal.getKey().getRequestChainId())).thenReturn(true);
+        Mockito.when(userService.existsById(signal.getKey().getUserId())).thenReturn(true);
+        Mockito.when(requestChainService.existsById(signal.getKey().getRequestChainId())).thenReturn(true);
 
-        final ValidationResult validationResult = SIGNAL_VALIDATOR.validate(signal);
+        final ValidationResult validationResult = signalValidator.validate(signal);
 
         Assertions.assertEquals(ValidationResultType.VALID, validationResult.getType());
         Assertions.assertTrue(validationResult.getDescriptions().isEmpty());
@@ -64,7 +64,7 @@ public class AbstractExecutionSignalValidatorTest {
 
         signal.setKey(null);
 
-        final ValidationResult validationResult = SIGNAL_VALIDATOR.validate(signal);
+        final ValidationResult validationResult = signalValidator.validate(signal);
 
         Assertions.assertEquals(ValidationResultType.NON_VALID, validationResult.getType());
 
@@ -81,9 +81,9 @@ public class AbstractExecutionSignalValidatorTest {
 
         signal.getKey().setUserId(null);
 
-        Mockito.when(REQUEST_CHAIN_SERVICE.existsById(signal.getKey().getRequestChainId())).thenReturn(true);
+        Mockito.when(requestChainService.existsById(signal.getKey().getRequestChainId())).thenReturn(true);
 
-        final ValidationResult validationResult = SIGNAL_VALIDATOR.validate(signal);
+        final ValidationResult validationResult = signalValidator.validate(signal);
         Assertions.assertEquals(ValidationResultType.NON_VALID, validationResult.getType());
 
         final List<String> descriptions = validationResult.getDescriptions();
@@ -98,9 +98,9 @@ public class AbstractExecutionSignalValidatorTest {
 
         signal.getKey().setUserId((long) RandomValueGenerator.generateRandomNegativeOrZeroInt());
 
-        Mockito.when(REQUEST_CHAIN_SERVICE.existsById(signal.getKey().getRequestChainId())).thenReturn(true);
+        Mockito.when(requestChainService.existsById(signal.getKey().getRequestChainId())).thenReturn(true);
 
-        final ValidationResult validationResult = SIGNAL_VALIDATOR.validate(signal);
+        final ValidationResult validationResult = signalValidator.validate(signal);
         Assertions.assertEquals(ValidationResultType.NON_VALID, validationResult.getType());
 
         final List<String> descriptions = validationResult.getDescriptions();
@@ -114,10 +114,10 @@ public class AbstractExecutionSignalValidatorTest {
         final ExecutionSignal signal = ExecutionTestHelper.buildExecutionSignal(type);
 
         final Long userId = signal.getKey().getUserId();
-        Mockito.when(USER_SERVICE.existsById(userId)).thenReturn(false);
-        Mockito.when(REQUEST_CHAIN_SERVICE.existsById(signal.getKey().getRequestChainId())).thenReturn(true);
+        Mockito.when(userService.existsById(userId)).thenReturn(false);
+        Mockito.when(requestChainService.existsById(signal.getKey().getRequestChainId())).thenReturn(true);
 
-        final ValidationResult validationResult = SIGNAL_VALIDATOR.validate(signal);
+        final ValidationResult validationResult = signalValidator.validate(signal);
         Assertions.assertEquals(ValidationResultType.NON_VALID, validationResult.getType());
 
         final List<String> descriptions = validationResult.getDescriptions();
@@ -132,9 +132,9 @@ public class AbstractExecutionSignalValidatorTest {
 
         signal.getKey().setRequestChainId(null);
 
-        Mockito.when(USER_SERVICE.existsById(signal.getKey().getUserId())).thenReturn(true);
+        Mockito.when(userService.existsById(signal.getKey().getUserId())).thenReturn(true);
 
-        final ValidationResult validationResult = SIGNAL_VALIDATOR.validate(signal);
+        final ValidationResult validationResult = signalValidator.validate(signal);
         Assertions.assertEquals(ValidationResultType.NON_VALID, validationResult.getType());
 
         final List<String> descriptions = validationResult.getDescriptions();
@@ -149,9 +149,9 @@ public class AbstractExecutionSignalValidatorTest {
 
         signal.getKey().setRequestChainId((long) RandomValueGenerator.generateRandomNegativeOrZeroInt());
 
-        Mockito.when(USER_SERVICE.existsById(signal.getKey().getUserId())).thenReturn(true);
+        Mockito.when(userService.existsById(signal.getKey().getUserId())).thenReturn(true);
 
-        final ValidationResult validationResult = SIGNAL_VALIDATOR.validate(signal);
+        final ValidationResult validationResult = signalValidator.validate(signal);
         Assertions.assertEquals(ValidationResultType.NON_VALID, validationResult.getType());
 
         final List<String> descriptions = validationResult.getDescriptions();
@@ -165,10 +165,10 @@ public class AbstractExecutionSignalValidatorTest {
         final ExecutionSignal signal = ExecutionTestHelper.buildExecutionSignal(type);
 
         final Long requestChainId = signal.getKey().getRequestChainId();
-        Mockito.when(USER_SERVICE.existsById(signal.getKey().getUserId())).thenReturn(true);
-        Mockito.when(REQUEST_CHAIN_SERVICE.existsById(requestChainId)).thenReturn(false);
+        Mockito.when(userService.existsById(signal.getKey().getUserId())).thenReturn(true);
+        Mockito.when(requestChainService.existsById(requestChainId)).thenReturn(false);
 
-        final ValidationResult validationResult = SIGNAL_VALIDATOR.validate(signal);
+        final ValidationResult validationResult = signalValidator.validate(signal);
         Assertions.assertEquals(ValidationResultType.NON_VALID, validationResult.getType());
 
         final List<String> descriptions = validationResult.getDescriptions();

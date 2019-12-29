@@ -36,6 +36,11 @@ public class ExecutionHelperImpl implements ExecutionHelper {
     }
 
     @Override
+    public ExecutionState getExecutionState(ExecutionStateCacheKey key) {
+        return executionStateCache.get(key);
+    }
+
+    @Override
     public ExecutionState updateExecutionStateCache(final @NonNull ExecutionSignal executionSignal) {
         final ExecutionStateCacheKey executionStateCacheKey = executionSignal.getKey();
 

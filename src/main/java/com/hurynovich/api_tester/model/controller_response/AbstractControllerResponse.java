@@ -4,19 +4,9 @@ import com.hurynovich.api_tester.model.validation.ValidationResult;
 
 import org.springframework.lang.NonNull;
 
-public class ControllerResponse<T> {
-
-    private T payload;
+public abstract class AbstractControllerResponse {
 
     private ValidationResult validationResult;
-
-    public T getPayload() {
-        return payload;
-    }
-
-    public void setPayload(final @NonNull T payload) {
-        this.payload = payload;
-    }
 
     public ValidationResult getValidationResult() {
         return validationResult;

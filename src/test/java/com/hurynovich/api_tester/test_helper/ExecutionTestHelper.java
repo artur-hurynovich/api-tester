@@ -8,6 +8,10 @@ import com.hurynovich.api_tester.model.execution.ExecutionState;
 
 public class ExecutionTestHelper {
 
+    private ExecutionTestHelper() {
+
+    }
+
     public static ExecutionState buildExecutionState(final ExecutionStateType type) {
         final ExecutionState executionState = new ExecutionState();
 
