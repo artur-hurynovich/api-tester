@@ -17,8 +17,12 @@ import com.hurynovich.api_tester.test_helper.RandomValueGenerator;
 import com.hurynovich.api_tester.validator.Validator;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -27,19 +31,30 @@ import static com.hurynovich.api_tester.model.enumeration.ExecutionStateType.PEN
 import static com.hurynovich.api_tester.model.enumeration.ValidationResultType.NON_VALID;
 import static com.hurynovich.api_tester.model.enumeration.ValidationResultType.VALID;
 
+@ExtendWith(MockitoExtension.class)
 public class ExecutorExecutionSignalValidatorTest {
 
-    private static final Cache<ExecutionStateCacheKey, ExecutionState> EXECUTION_STATE_CACHE = Mockito.mock(Cache.class);
+    @Mock
+    private Cache<ExecutionStateCacheKey, ExecutionState> EXECUTION_STATE_CACHE;
 
-    private static final DTOService<UserDTO, Long> USER_SERVICE = Mockito.mock(DTOService.class);
-    private static final DTOService<RequestChainDTO, Long> REQUEST_CHAIN_SERVICE = Mockito.mock(DTOService.class);
+    @Mock
+    private DTOService<UserDTO, Long> USER_SERVICE;
 
-    private static final ExecutionTransitionContainer EXECUTION_TRANSITION_CONTAINER = new ExecutionTransitionContainerImpl();
+    @Mock
+    private DTOService<RequestChainDTO, Long> REQUEST_CHAIN_SERVICE;
 
-    private static final Validator<ExecutionSignal> SIGNAL_VALIDATOR =
-            new ExecutorExecutionSignalValidator(EXECUTION_STATE_CACHE, USER_SERVICE, REQUEST_CHAIN_SERVICE, EXECUTION_TRANSITION_CONTAINER);
+    @Mock
+    private ExecutionState EXECUTION_STATE;
 
-    private static final ExecutionState EXECUTION_STATE = Mockito.mock(ExecutionState.class);
+    private ExecutionTransitionContainer EXECUTION_TRANSITION_CONTAINER = new ExecutionTransitionContainerImpl();
+
+    private Validator<ExecutionSignal> SIGNAL_VALIDATOR;
+
+    @BeforeEach
+    public void init() {
+        SIGNAL_VALIDATOR = new ExecutorExecutionSignalValidator(EXECUTION_STATE_CACHE, USER_SERVICE,
+                REQUEST_CHAIN_SERVICE, EXECUTION_TRANSITION_CONTAINER);
+    }
 
     @Test
     public void executionStateNullValidationTest() {

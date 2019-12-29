@@ -3,7 +3,6 @@ package com.hurynovich.api_tester.service.execution_helper.impl;
 import com.hurynovich.api_tester.cache.Cache;
 import com.hurynovich.api_tester.cache.cache_key.impl.ExecutionStateCacheKey;
 import com.hurynovich.api_tester.model.dto.impl.RequestChainDTO;
-import com.hurynovich.api_tester.model.enumeration.ExecutionSignalType;
 import com.hurynovich.api_tester.model.enumeration.ExecutionStateType;
 import com.hurynovich.api_tester.model.execution.ExecutionSignal;
 import com.hurynovich.api_tester.model.execution.ExecutionState;
@@ -13,12 +12,12 @@ import com.hurynovich.api_tester.service.execution_transition_container.Executio
 import com.hurynovich.api_tester.service.execution_transition_container.impl.ExecutionTransitionContainerImpl;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static com.hurynovich.api_tester.model.enumeration.ExecutionSignalType.PAUSE;
 import static com.hurynovich.api_tester.model.enumeration.ExecutionSignalType.RESUME;
@@ -35,26 +34,33 @@ import static com.hurynovich.api_tester.model.enumeration.ExecutionStateType.STO
 import static com.hurynovich.api_tester.test_helper.ExecutionTestHelper.buildExecutionSignal;
 import static com.hurynovich.api_tester.test_helper.ExecutionTestHelper.buildExecutionState;
 
+@ExtendWith(MockitoExtension.class)
 public class ExecutionHelperImplTest {
 
-    private static final Cache<ExecutionStateCacheKey, ExecutionState> EXECUTION_STATE_CACHE = Mockito.mock(Cache.class);
+    @Mock
+    private Cache<ExecutionStateCacheKey, ExecutionState> EXECUTION_STATE_CACHE;
 
-    private static final DTOService<RequestChainDTO, Long> REQUEST_CHAIN_SERVICE = Mockito.mock(DTOService.class);
+    @Mock
+    private DTOService<RequestChainDTO, Long> REQUEST_CHAIN_SERVICE;
 
-    private static final ExecutionTransitionContainer EXECUTION_TRANSITION_CONTAINER =
-            new ExecutionTransitionContainerImpl();
+    private ExecutionTransitionContainer EXECUTION_TRANSITION_CONTAINER = new ExecutionTransitionContainerImpl();
 
-    private static final ExecutionHelper EXECUTION_HELPER = new ExecutionHelperImpl(EXECUTION_TRANSITION_CONTAINER,
-            EXECUTION_STATE_CACHE, REQUEST_CHAIN_SERVICE);
+    private ExecutionHelper EXECUTION_HELPER;
 
-    final ExecutionState PENDING_RUNNING_EXECUTION_STATE = buildExecutionState(PENDING_RUNNING);
-    final ExecutionState RUNNING_EXECUTION_STATE = buildExecutionState(RUNNING);
-    final ExecutionState PENDING_PAUSED_EXECUTION_STATE = buildExecutionState(PENDING_PAUSED);
-    final ExecutionState PAUSED_EXECUTION_STATE = buildExecutionState(PAUSED);
-    final ExecutionState PENDING_STOPPED_EXECUTION_STATE = buildExecutionState(PENDING_STOPPED);
-    final ExecutionState STOPPED_EXECUTION_STATE = buildExecutionState(STOPPED);
-    final ExecutionState FINISHED_EXECUTION_STATE = buildExecutionState(FINISHED);
-    final ExecutionState ERROR_EXECUTION_STATE = buildExecutionState(ERROR);
+    private final ExecutionState PENDING_RUNNING_EXECUTION_STATE = buildExecutionState(PENDING_RUNNING);
+    private final ExecutionState RUNNING_EXECUTION_STATE = buildExecutionState(RUNNING);
+    private final ExecutionState PENDING_PAUSED_EXECUTION_STATE = buildExecutionState(PENDING_PAUSED);
+    private final ExecutionState PAUSED_EXECUTION_STATE = buildExecutionState(PAUSED);
+    private final ExecutionState PENDING_STOPPED_EXECUTION_STATE = buildExecutionState(PENDING_STOPPED);
+    private final ExecutionState STOPPED_EXECUTION_STATE = buildExecutionState(STOPPED);
+    private final ExecutionState FINISHED_EXECUTION_STATE = buildExecutionState(FINISHED);
+    private final ExecutionState ERROR_EXECUTION_STATE = buildExecutionState(ERROR);
+
+    @BeforeEach
+    public void init() {
+        EXECUTION_HELPER = new ExecutionHelperImpl(EXECUTION_TRANSITION_CONTAINER, EXECUTION_STATE_CACHE,
+                REQUEST_CHAIN_SERVICE);
+    }
 
     @Test
     public void resolveTransitionToExecutionStateTypeTest() {

@@ -12,23 +12,36 @@ import com.hurynovich.api_tester.test_helper.RandomValueGenerator;
 import com.hurynovich.api_tester.validator.Validator;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
+@ExtendWith(MockitoExtension.class)
 public class AbstractExecutionSignalValidatorTest {
 
-    private static final DTOService<UserDTO, Long> USER_SERVICE = Mockito.mock(DTOService.class);
-    private static final DTOService<RequestChainDTO, Long> REQUEST_CHAIN_SERVICE = Mockito.mock(DTOService.class);
+    @Mock
+    private DTOService<UserDTO, Long> USER_SERVICE;
 
-    private static final Validator<ExecutionSignal> SIGNAL_VALIDATOR =
-            new AbstractExecutionSignalValidator(USER_SERVICE, REQUEST_CHAIN_SERVICE) {
-                @Override
-                protected void processNotNullSignalTypeValidation(ExecutionSignal signal, ValidationResult validationResult) {
+    @Mock
+    private DTOService<RequestChainDTO, Long> REQUEST_CHAIN_SERVICE;
 
-                }
-            };
+    private Validator<ExecutionSignal> SIGNAL_VALIDATOR;
+
+    @BeforeEach
+    public void init() {
+        SIGNAL_VALIDATOR =
+                new AbstractExecutionSignalValidator(USER_SERVICE, REQUEST_CHAIN_SERVICE) {
+                    @Override
+                    protected void processNotNullSignalTypeValidation(ExecutionSignal signal, ValidationResult validationResult) {
+
+                    }
+                };
+    }
 
     @Test
     public void successValidationTest() {
