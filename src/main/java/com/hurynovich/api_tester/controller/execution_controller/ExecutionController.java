@@ -1,8 +1,7 @@
-package com.hurynovich.api_tester.controller.execution_signal_controller;
+package com.hurynovich.api_tester.controller.execution_controller;
 
 import com.hurynovich.api_tester.cache.cache_key.impl.ExecutionStateCacheKey;
-import com.hurynovich.api_tester.model.controller_response.impl.GetValidSignalsResponse;
-import com.hurynovich.api_tester.model.controller_response.impl.PostSignalResponse;
+import com.hurynovich.api_tester.model.controller_response.impl.GenericExecutionControllerResponse;
 import com.hurynovich.api_tester.model.enumeration.ExecutionSignalType;
 import com.hurynovich.api_tester.model.enumeration.ValidationResultType;
 import com.hurynovich.api_tester.model.execution.ExecutionSignal;
@@ -37,10 +36,10 @@ public class ExecutionController {
     }
 
     @PostMapping("/signal")
-    public ResponseEntity<PostSignalResponse> postSignal(final @NonNull @RequestBody ExecutionSignal executionSignal) {
+    public ResponseEntity<GenericExecutionControllerResponse> postSignal(final @NonNull @RequestBody ExecutionSignal executionSignal) {
         final ValidationResult validationResult = executionSignalValidator.validate(executionSignal);
 
-        final PostSignalResponse response = new PostSignalResponse();
+        final GenericExecutionControllerResponse response = new GenericExecutionControllerResponse();
         response.setValidationResult(validationResult);
         if (validationResult.getType() == ValidationResultType.VALID) {
             final ExecutionState executionState = executionHelper.updateExecutionStateCache(executionSignal);
@@ -48,7 +47,7 @@ public class ExecutionController {
 
             final List<ExecutionSignalType> validSignalTypes =
                     executionHelper.resolveValidSignalTypesOnInit(executionState);
-            response.setTypes(validSignalTypes);
+            response.setValidSignals(validSignalTypes);
 
             // TODO send signal to Kafka
 
@@ -59,17 +58,18 @@ public class ExecutionController {
     }
 
     @GetMapping("/validSignals")
-    public ResponseEntity<GetValidSignalsResponse> getValidSignalTypes(final @NonNull @RequestBody ExecutionStateCacheKey key) {
+    public ResponseEntity<GenericExecutionControllerResponse> getValidSignalTypes(final @NonNull @RequestBody ExecutionStateCacheKey key) {
         final ValidationResult validationResult = executionStateCacheKeyValidator.validate(key);
 
-        final GetValidSignalsResponse response = new GetValidSignalsResponse();
+        final GenericExecutionControllerResponse response = new GenericExecutionControllerResponse();
         response.setValidationResult(validationResult);
         if (validationResult.getType() == ValidationResultType.VALID) {
             final ExecutionState executionState = executionHelper.getExecutionState(key);
-            List<ExecutionSignalType> validSignalTypes =
-                    executionHelper.resolveValidSignalTypesOnInit(executionState);
+            response.setState(executionState.getType());
 
-            response.setTypes(validSignalTypes);
+            final List<ExecutionSignalType> validSignalTypes =
+                    executionHelper.resolveValidSignalTypesOnInit(executionState);
+            response.setValidSignals(validSignalTypes);
 
             return ResponseEntity.ok(response);
         } else {

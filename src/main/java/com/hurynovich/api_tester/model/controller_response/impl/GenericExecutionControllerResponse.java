@@ -6,11 +6,11 @@ import com.hurynovich.api_tester.model.enumeration.ExecutionStateType;
 
 import java.util.List;
 
-public class PostSignalResponse extends AbstractControllerResponse {
+public class GenericExecutionControllerResponse extends AbstractControllerResponse {
 
     private ExecutionStateType state;
 
-    private List<ExecutionSignalType> types;
+    private List<ExecutionSignalType> validSignals;
 
     public ExecutionStateType getState() {
         return state;
@@ -20,12 +20,12 @@ public class PostSignalResponse extends AbstractControllerResponse {
         this.state = state;
     }
 
-    public List<ExecutionSignalType> getTypes() {
-        return types;
+    public List<ExecutionSignalType> getValidSignals() {
+        return validSignals;
     }
 
-    public void setTypes(List<ExecutionSignalType> types) {
-        this.types = types;
+    public void setValidSignals(List<ExecutionSignalType> validSignals) {
+        this.validSignals = validSignals;
     }
 
 }
