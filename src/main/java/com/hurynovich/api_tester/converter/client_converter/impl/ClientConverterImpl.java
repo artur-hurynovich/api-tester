@@ -2,25 +2,28 @@ package com.hurynovich.api_tester.converter.client_converter.impl;
 
 import com.hurynovich.api_tester.converter.client_converter.ClientConverter;
 import com.hurynovich.api_tester.converter.exception.ConverterException;
+import com.hurynovich.api_tester.converter.generic_request_element_converter.GenericRequestElementConverter;
 import com.hurynovich.api_tester.model.dto.impl.RequestDTO;
-import com.hurynovich.api_tester.model.dto.impl.RequestParameterDTO;
 import com.hurynovich.api_tester.model.dto.impl.ResponseDTO;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Collections;
-import java.util.List;
 
 @Service
 public class ClientConverterImpl implements ClientConverter<String> {
+
+    private final GenericRequestElementConverter genericRequestElementConverter;
+
+    public ClientConverterImpl(final @NonNull GenericRequestElementConverter genericRequestElementConverter) {
+        this.genericRequestElementConverter = genericRequestElementConverter;
+    }
 
     @Override
     public RequestEntity<String> convert(final @NonNull RequestDTO request) throws ConverterException {
@@ -30,26 +33,13 @@ public class ClientConverterImpl implements ClientConverter<String> {
             final UriComponentsBuilder uriComponentsBuilder =
                     UriComponentsBuilder.fromUri(new URI(request.getUrl())).queryParams(uriVariables);
 
+            final HttpHeaders httpHeaders =
+                    genericRequestElementConverter.convertToHttpHeaders(request.getHeaders());
             return RequestEntity.method(request.getMethod(), uriComponentsBuilder.build(uriVariables)).
-                    headers(request.getHeaders()).
+                    headers(httpHeaders).
                     body(request.getBody());
         } catch (final URISyntaxException e) {
             throw new ConverterException("Failed to convert request: " + request, e);
-        }
-    }
-
-    private MultiValueMap<String, String> convertRequestDTOParametersToQueryParams(final @NonNull RequestDTO request) {
-        final List<RequestParameterDTO> parameters = request.getParameters();
-
-        if (!CollectionUtils.isEmpty(parameters)) {
-            final MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
-
-            parameters.forEach(
-                    parameter -> queryParams.put(parameter.getName(), Collections.singletonList(parameter.getValue())));
-
-            return queryParams;
-        } else {
-            return new LinkedMultiValueMap<>();
         }
     }
 

@@ -11,7 +11,7 @@ public enum ExecutionStateType {
     FINISHED(false),
     ERROR(false);
 
-    final boolean pendingState;
+    private final boolean pendingState;
 
     ExecutionStateType(final boolean pendingState) {
         this.pendingState = pendingState;

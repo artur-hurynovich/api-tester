@@ -40,24 +40,6 @@ public class RandomValueGenerator {
         }
     }
 
-    public static <E extends Enum<E>> E generateRandomEnumValueExcluding(final @NonNull Class<E> enumClass,
-                                                                         final @NonNull List<E> excluded) {
-        if (enumClass.isEnum()) {
-            final E[] enumConstants = enumClass.getEnumConstants();
-
-            if (enumConstants != null && enumConstants.length > 0) {
-                final List<E> enumConstantsList = new ArrayList<>(Arrays.asList(enumConstants));
-                enumConstantsList.removeAll(excluded);
-
-                return getRandomListElement(enumConstantsList);
-            } else {
-                throw new RuntimeException(enumClass + " has no elements");
-            }
-        } else {
-            throw new RuntimeException(enumClass + " is not a Enum");
-        }
-    }
-
     private static <E> E getRandomListElement(final List<E> list) {
         if (!CollectionUtils.isEmpty(list)) {
             final int randomIndex = RANDOM.nextInt(list.size());

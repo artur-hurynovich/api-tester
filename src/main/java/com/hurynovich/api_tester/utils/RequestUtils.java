@@ -1,7 +1,7 @@
 package com.hurynovich.api_tester.utils;
 
-import com.hurynovich.api_tester.model.dto.impl.RequestParameterDTO;
-
+import com.hurynovich.api_tester.model.dto.impl.GenericRequestElementDTO;
+import com.hurynovich.api_tester.model.enumeration.GenericRequestElementType;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.lang.NonNull;
 
@@ -31,7 +31,7 @@ public class RequestUtils {
     }
 
     public static String appendParameters(final @NonNull String url,
-                                          final @NonNull List<RequestParameterDTO> parameters) {
+                                          final @NonNull List<GenericRequestElementDTO> parameters) {
         final StringBuilder urlBuilder = new StringBuilder(url);
 
         if (!parameters.isEmpty()) {
@@ -67,8 +67,8 @@ public class RequestUtils {
         return !url.endsWith(PARAMETERS_PREFIX) && !url.endsWith(PARAMETERS_SEPARATOR);
     }
 
-    public static List<RequestParameterDTO> parseParameters(final @NonNull String url) {
-        final List<RequestParameterDTO> requestParameters;
+    public static List<GenericRequestElementDTO> parseParameters(final @NonNull String url) {
+        final List<GenericRequestElementDTO> requestParameters;
 
         final int parametersPrefixIndex = url.indexOf(PARAMETERS_PREFIX);
 
@@ -88,8 +88,8 @@ public class RequestUtils {
         return requestParameters;
     }
 
-    private static RequestParameterDTO buildParameter(final @NonNull String parameter) {
-        final RequestParameterDTO requestParameter = new RequestParameterDTO();
+    private static GenericRequestElementDTO buildParameter(final @NonNull String parameter) {
+        final GenericRequestElementDTO requestParameter = new GenericRequestElementDTO();
 
         final String[] parameterEntry = parameter.split(PARAMETER_NAME_VALUE_SEPARATOR);
         requestParameter.setName(parameterEntry[0]);
