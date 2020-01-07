@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import static com.hurynovich.api_tester.model.enumeration.ExecutionLogEntryType.ERROR;
@@ -50,8 +51,8 @@ public class ExecutionLogEntryBuilderImplTest {
 
         final LocalDateTime logEntryDateTime = executionLogEntry.getDateTime();
         final LocalDateTime currentDateTime = LocalDateTime.now(ZoneId.systemDefault());
-        Assertions.assertTrue(logEntryDateTime.isAfter(currentDateTime.minusSeconds(1L)) &&
-                logEntryDateTime.isBefore(currentDateTime));
+        Assertions.assertTrue(!logEntryDateTime.isBefore(currentDateTime.minus(500L, ChronoUnit.MILLIS)) &&
+                !logEntryDateTime.isAfter(currentDateTime));
 
         Assertions.assertEquals(method, executionLogEntry.getMethod());
         Assertions.assertEquals(headers, executionLogEntry.getHeaders());
@@ -78,8 +79,8 @@ public class ExecutionLogEntryBuilderImplTest {
 
         final LocalDateTime logEntryDateTime = executionLogEntry.getDateTime();
         final LocalDateTime currentDateTime = LocalDateTime.now(ZoneId.systemDefault());
-        Assertions.assertTrue(logEntryDateTime.isAfter(currentDateTime.minusSeconds(1L)) &&
-                logEntryDateTime.isBefore(currentDateTime));
+        Assertions.assertTrue(!logEntryDateTime.isBefore(currentDateTime.minus(500L, ChronoUnit.MILLIS)) &&
+                !logEntryDateTime.isAfter(currentDateTime));
 
         Assertions.assertEquals(status, executionLogEntry.getStatus());
         Assertions.assertEquals(headers, executionLogEntry.getHeaders());
@@ -96,8 +97,8 @@ public class ExecutionLogEntryBuilderImplTest {
 
         final LocalDateTime logEntryDateTime = executionLogEntry.getDateTime();
         final LocalDateTime currentDateTime = LocalDateTime.now(ZoneId.systemDefault());
-        Assertions.assertTrue(logEntryDateTime.isAfter(currentDateTime.minusSeconds(1L)) &&
-                logEntryDateTime.isBefore(currentDateTime));
+        Assertions.assertTrue(!logEntryDateTime.isBefore(currentDateTime.minus(500L, ChronoUnit.MILLIS)) &&
+                !logEntryDateTime.isAfter(currentDateTime));
 
         Assertions.assertEquals(errorMessage, executionLogEntry.getErrorMessage());
     }

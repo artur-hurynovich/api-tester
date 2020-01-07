@@ -98,6 +98,8 @@ public class RequestUtils {
             requestParameter.setValue(parameterEntry[1]);
         }
 
+        requestParameter.setType(GenericRequestElementType.VALUE);
+
         return requestParameter;
     }
 

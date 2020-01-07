@@ -25,7 +25,8 @@ public class ClientConverterImpl implements ClientConverter<String> {
     @Override
     public RequestEntity<String> convert(final @NonNull RequestDTO request) throws ConverterException {
         try {
-            final MultiValueMap<String, String> uriVariables = convertRequestDTOParametersToQueryParams(request);
+            final MultiValueMap<String, String> uriVariables =
+                    genericRequestElementConverter.convertToMultiValueMap(request.getParameters());
             final UriComponentsBuilder uriComponentsBuilder =
                     UriComponentsBuilder.fromUri(new URI(request.getUrl())).queryParams(uriVariables);
 

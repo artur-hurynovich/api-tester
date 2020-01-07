@@ -59,15 +59,4 @@ public class RequestDTO extends AbstractDTO {
         this.body = body;
     }
 
-    @Override
-    public String toString() {
-        return "RequestDTO {" +
-                "method = " + method +
-                ", headers = " + headers +
-                ", url = '" + url + '\'' +
-                ", parameters = " + parameters +
-                ", body = '" + body + '\'' +
-                '}';
-    }
-
 }

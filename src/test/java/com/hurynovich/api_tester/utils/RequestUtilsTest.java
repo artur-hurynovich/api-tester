@@ -41,9 +41,8 @@ public class RequestUtilsTest {
     public void appendParametersTest() {
         final List<RequestParameterDTO> requestParameters = RequestTestHelper.generateRandomParameters(3);
 
-        final RequestParameterDTO firstRequestParameter = requestParameters.get(0);
-        final String firstParameter =
-                firstRequestParameter.getName() + PARAMETER_NAME_VALUE_SEPARATOR + firstRequestParameter.getValue();
+        final GenericRequestElementDTO firstRequestParameter = requestParameters.get(0);
+        final String firstParameter = buildUrlParameter(firstRequestParameter);
 
         final RequestParameterDTO secondRequestParameter = requestParameters.get(1);
         final String secondParameter =
@@ -111,9 +110,8 @@ public class RequestUtilsTest {
         final String firstParameter =
                 firstRequestParameter.getName() + PARAMETER_NAME_VALUE_SEPARATOR + firstRequestParameter.getValue();
 
-        final RequestParameterDTO secondRequestParameter = requestParameters.get(1);
-        final String secondParameter =
-                secondRequestParameter.getName() + PARAMETER_NAME_VALUE_SEPARATOR + secondRequestParameter.getValue();
+        final GenericRequestElementDTO secondRequestParameter = requestParameters.get(1);
+        final String secondParameter = buildUrlParameter(secondRequestParameter);
 
         checkParseParameters(URL_NO_PARAMETERS, Collections.emptyList());
 
@@ -138,6 +136,15 @@ public class RequestUtilsTest {
                 Arrays.asList(firstRequestParameter, secondRequestParameter));
         checkParseParameters(URL_NO_PARAMETERS_WITH_PREFIX + PARAMETERS_SEPARATOR + firstParameter + PARAMETERS_SEPARATOR + secondParameter + PARAMETERS_SEPARATOR,
                 Arrays.asList(firstRequestParameter, secondRequestParameter));
+    }
+
+    private String buildUrlParameter(final GenericRequestElementDTO requestParameter) {
+        String value = requestParameter.getValue();
+        if (value == null) {
+            value = "";
+        }
+
+        return requestParameter.getName() + PARAMETER_NAME_VALUE_SEPARATOR + value;
     }
 
     private void checkAppendParameters(final String initialUrl, final String expectedUrl, final List<RequestParameterDTO> parameters) {
