@@ -1,8 +1,7 @@
 package com.hurynovich.api_tester.cache.cache_key.impl;
 
 import com.hurynovich.api_tester.cache.cache_key.CacheKey;
-
-import java.util.Objects;
+import com.hurynovich.api_tester.utils.ObjectUtils;
 
 public class ExecutionStateCacheKey implements CacheKey {
 
@@ -36,15 +35,19 @@ public class ExecutionStateCacheKey implements CacheKey {
             return false;
         }
 
-        final ExecutionStateCacheKey key = (ExecutionStateCacheKey) o;
-
-        return userId.equals(key.userId) &&
-                requestChainId.equals(key.requestChainId);
+        final ExecutionStateCacheKey that = (ExecutionStateCacheKey) o;
+        return ObjectUtils.EqualsChecker.getInstance().
+                with(userId, that.getUserId()).
+                with(requestChainId, that.getRequestChainId()).
+                check();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userId, requestChainId);
+        return ObjectUtils.HashCodeCalculator.getInstance().
+                with(userId).
+                with(requestChainId).
+                calculate();
     }
 
 }
