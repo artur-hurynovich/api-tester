@@ -1,6 +1,6 @@
 package com.hurynovich.api_tester.test_helper;
 
-import com.hurynovich.api_tester.cache.cache_key.impl.ExecutionStateCacheKey;
+import com.hurynovich.api_tester.cache.cache_key.impl.GenericExecutionCacheKey;
 import com.hurynovich.api_tester.model.enumeration.ExecutionSignalType;
 import com.hurynovich.api_tester.model.enumeration.ExecutionStateType;
 import com.hurynovich.api_tester.model.execution.ExecutionSignal;
@@ -25,14 +25,14 @@ public class ExecutionTestHelper {
 
         executionSignal.setType(type);
 
-        final ExecutionStateCacheKey key = buildExecutionStateCacheKey();
+        final GenericExecutionCacheKey key = buildExecutionStateCacheKey();
         executionSignal.setKey(key);
 
         return executionSignal;
     }
 
-    public static ExecutionStateCacheKey buildExecutionStateCacheKey() {
-        final ExecutionStateCacheKey key = new ExecutionStateCacheKey();
+    public static GenericExecutionCacheKey buildExecutionStateCacheKey() {
+        final GenericExecutionCacheKey key = new GenericExecutionCacheKey();
 
         final long userId = RandomValueGenerator.generateRandomPositiveInt();
         key.setUserId(userId);

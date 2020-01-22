@@ -2,6 +2,7 @@ package com.hurynovich.api_tester.converter.generic_request_element_converter.im
 
 import com.hurynovich.api_tester.converter.generic_request_element_converter.GenericRequestElementConverter;
 import com.hurynovich.api_tester.model.dto.impl.GenericRequestElementDTO;
+import com.hurynovich.api_tester.model.enumeration.GenericRequestElementType;
 import org.springframework.http.HttpHeaders;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,9 @@ import org.springframework.util.MultiValueMap;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class GenericRequestElementConverterImpl implements GenericRequestElementConverter {
@@ -42,4 +46,19 @@ public class GenericRequestElementConverterImpl implements GenericRequestElement
         }
     }
 
+    @Override
+    public List<GenericRequestElementDTO> convertToRequestElements(final @NonNull HttpHeaders httpHeaders) {
+        final Set<Map.Entry<String, List<String>>> entries = httpHeaders.entrySet();
+
+        return entries.stream().flatMap(entry ->
+                entry.getValue().stream().map(value -> {
+                    final GenericRequestElementDTO requestElement = new GenericRequestElementDTO();
+
+                    requestElement.setName(entry.getKey());
+                    requestElement.setValue(value);
+                    requestElement.setType(GenericRequestElementType.VALUE);
+
+                    return requestElement;
+                })).collect(Collectors.toList());
+    }
 }

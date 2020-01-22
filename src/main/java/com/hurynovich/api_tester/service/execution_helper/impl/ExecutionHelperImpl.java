@@ -1,7 +1,8 @@
 package com.hurynovich.api_tester.service.execution_helper.impl;
 
 import com.hurynovich.api_tester.cache.Cache;
-import com.hurynovich.api_tester.cache.cache_key.impl.ExecutionStateCacheKey;
+import com.hurynovich.api_tester.cache.cache_key.impl.GenericExecutionCacheKey;
+import com.hurynovich.api_tester.model.dto.impl.ExecutionLogDTO;
 import com.hurynovich.api_tester.model.dto.impl.RequestChainDTO;
 import com.hurynovich.api_tester.model.enumeration.ExecutionSignalType;
 import com.hurynovich.api_tester.model.enumeration.ExecutionStateType;
@@ -25,38 +26,46 @@ public class ExecutionHelperImpl implements ExecutionHelper {
 
     private final ExecutionTransitionContainer executionTransitionContainer;
 
-    private final Cache<ExecutionStateCacheKey, ExecutionState> executionStateCache;
+    private final Cache<GenericExecutionCacheKey, ExecutionState> executionStateCache;
+    private final Cache<GenericExecutionCacheKey, ExecutionLogDTO> executionLogCache;
 
     private final DTOService<RequestChainDTO, Long> requestChainService;
 
     public ExecutionHelperImpl(final @NonNull ExecutionTransitionContainer executionTransitionContainer,
-                               final @NonNull Cache<ExecutionStateCacheKey, ExecutionState> executionStateCache,
+                               final @NonNull Cache<GenericExecutionCacheKey, ExecutionState> executionStateCache,
+                               final @NonNull Cache<GenericExecutionCacheKey, ExecutionLogDTO> executionLogCache,
                                final @NonNull DTOService<RequestChainDTO, Long> requestChainService) {
         this.executionTransitionContainer = executionTransitionContainer;
         this.executionStateCache = executionStateCache;
+        this.executionLogCache = executionLogCache;
         this.requestChainService = requestChainService;
     }
 
     @Override
-    public ExecutionState getExecutionState(final @NonNull ExecutionStateCacheKey key) {
+    public ExecutionState getExecutionState(final @NonNull GenericExecutionCacheKey key) {
         return executionStateCache.get(key);
     }
 
     @Override
     public ExecutionState updateExecutionStateCache(final @NonNull ExecutionSignal executionSignal) {
-        final ExecutionStateCacheKey executionStateCacheKey = executionSignal.getKey();
+        final GenericExecutionCacheKey genericExecutionCacheKey = executionSignal.getKey();
 
-        ExecutionState executionState = executionStateCache.get(executionStateCacheKey);
+        ExecutionState executionState = executionStateCache.get(genericExecutionCacheKey);
         if (executionState == null) {
             executionState = new ExecutionState();
 
-            final RequestChainDTO requestChain = requestChainService.getById(executionStateCacheKey.getRequestChainId());
+            final RequestChainDTO requestChain = requestChainService.getById(genericExecutionCacheKey.getRequestChainId());
             executionState.setRequests(requestChain.getRequests());
         }
 
         executionState.setType(resolveTransitionToExecutionStateType(executionSignal));
 
-        return executionStateCache.put(executionStateCacheKey, executionState);
+        return executionStateCache.put(genericExecutionCacheKey, executionState);
+    }
+
+    @Override
+    public ExecutionLogDTO getExecutionLog(final GenericExecutionCacheKey key) {
+        return executionLogCache.get(key);
     }
 
     @Override

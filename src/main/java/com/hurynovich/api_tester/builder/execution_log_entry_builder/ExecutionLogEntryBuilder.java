@@ -2,14 +2,14 @@ package com.hurynovich.api_tester.builder.execution_log_entry_builder;
 
 import com.hurynovich.api_tester.model.dto.impl.RequestDTO;
 import com.hurynovich.api_tester.model.dto.impl.ResponseDTO;
-import com.hurynovich.api_tester.model.execution.ExecutionLogEntry;
+import com.hurynovich.api_tester.model.dto.impl.ExecutionLogEntryDTO;
 
 public interface ExecutionLogEntryBuilder {
 
-    ExecutionLogEntry build(RequestDTO request);
+    ExecutionLogEntryDTO build(RequestDTO request);
 
-    ExecutionLogEntry build(ResponseDTO response);
+    ExecutionLogEntryDTO build(ResponseDTO response);
 
-    ExecutionLogEntry build(String message);
+    ExecutionLogEntryDTO build(String message);
 
 }

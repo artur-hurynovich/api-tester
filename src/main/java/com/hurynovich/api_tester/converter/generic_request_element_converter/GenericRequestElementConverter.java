@@ -12,4 +12,6 @@ public interface GenericRequestElementConverter {
 
     HttpHeaders convertToHttpHeaders(List<GenericRequestElementDTO> elements);
 
+    List<GenericRequestElementDTO> convertToRequestElements(HttpHeaders httpHeaders);
+
 }

@@ -1,6 +1,6 @@
 package com.hurynovich.api_tester.validator.execution_signal_validator.impl;
 
-import com.hurynovich.api_tester.cache.cache_key.impl.ExecutionStateCacheKey;
+import com.hurynovich.api_tester.cache.cache_key.impl.GenericExecutionCacheKey;
 import com.hurynovich.api_tester.model.enumeration.ExecutionSignalType;
 import com.hurynovich.api_tester.model.execution.ExecutionSignal;
 import com.hurynovich.api_tester.model.execution.ExecutionState;
@@ -18,7 +18,7 @@ public class ControllerExecutionSignalValidator extends AbstractExecutionSignalV
 
     private final ExecutionHelper executionHelper;
 
-    public ControllerExecutionSignalValidator(final @NonNull Validator<ExecutionStateCacheKey> keyValidator,
+    public ControllerExecutionSignalValidator(final @NonNull Validator<GenericExecutionCacheKey> keyValidator,
                                               final @NonNull ExecutionHelper executionHelper) {
         super(keyValidator);
 
@@ -28,8 +28,8 @@ public class ControllerExecutionSignalValidator extends AbstractExecutionSignalV
     @Override
     protected void processNotNullSignalTypeValidation(final @NonNull ExecutionSignal signal,
                                                       final @NonNull ValidationResult validationResult) {
-        final ExecutionStateCacheKey executionStateCacheKey = signal.getKey();
-        final ExecutionState executionState = executionHelper.getExecutionState(executionStateCacheKey);
+        final GenericExecutionCacheKey genericExecutionCacheKey = signal.getKey();
+        final ExecutionState executionState = executionHelper.getExecutionState(genericExecutionCacheKey);
 
         final ExecutionSignalType signalType = signal.getType();
         if (!executionHelper.resolveValidSignalTypesOnInit(executionState).contains(signalType)) {

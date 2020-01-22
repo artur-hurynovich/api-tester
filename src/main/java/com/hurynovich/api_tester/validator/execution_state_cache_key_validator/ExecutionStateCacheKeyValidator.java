@@ -1,6 +1,6 @@
 package com.hurynovich.api_tester.validator.execution_state_cache_key_validator;
 
-import com.hurynovich.api_tester.cache.cache_key.impl.ExecutionStateCacheKey;
+import com.hurynovich.api_tester.cache.cache_key.impl.GenericExecutionCacheKey;
 import com.hurynovich.api_tester.model.dto.impl.RequestChainDTO;
 import com.hurynovich.api_tester.model.dto.impl.UserDTO;
 import com.hurynovich.api_tester.model.enumeration.ValidationResultType;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 
 @Service
-public class ExecutionStateCacheKeyValidator implements Validator<ExecutionStateCacheKey> {
+public class ExecutionStateCacheKeyValidator implements Validator<GenericExecutionCacheKey> {
 
     private final DTOService<UserDTO, Long> userService;
 
@@ -26,7 +26,7 @@ public class ExecutionStateCacheKeyValidator implements Validator<ExecutionState
     }
 
     @Override
-    public ValidationResult validate(final @NonNull ExecutionStateCacheKey key) {
+    public ValidationResult validate(final @NonNull GenericExecutionCacheKey key) {
         final ValidationResult validationResult = new ValidationResult();
         validationResult.setType(ValidationResultType.VALID);
         validationResult.setDescriptions(new ArrayList<>());
@@ -38,7 +38,7 @@ public class ExecutionStateCacheKeyValidator implements Validator<ExecutionState
         return validationResult;
     }
 
-    private void validateUserId(final @NonNull ExecutionStateCacheKey key,
+    private void validateUserId(final @NonNull GenericExecutionCacheKey key,
                                 final @NonNull ValidationResult validationResult) {
         final Long userId = key.getUserId();
 
@@ -54,7 +54,7 @@ public class ExecutionStateCacheKeyValidator implements Validator<ExecutionState
         }
     }
 
-    private void validateRequestChainId(final @NonNull ExecutionStateCacheKey key,
+    private void validateRequestChainId(final @NonNull GenericExecutionCacheKey key,
                                         final @NonNull ValidationResult validationResult) {
         final Long requestChainId = key.getRequestChainId();
 

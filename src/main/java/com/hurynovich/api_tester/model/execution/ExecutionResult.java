@@ -1,13 +1,12 @@
 package com.hurynovich.api_tester.model.execution;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.hurynovich.api_tester.model.dto.impl.ExecutionLogDTO;
 
 public class ExecutionResult {
 
     private ExecutionState executionState;
 
-    private final List<ExecutionLogEntry> executionLogEntries = new ArrayList<>();
+    private ExecutionLogDTO executionLog;
 
     public ExecutionState getExecutionState() {
         return executionState;
@@ -17,12 +16,12 @@ public class ExecutionResult {
         this.executionState = executionState;
     }
 
-    public List<ExecutionLogEntry> getExecutionLogEntries() {
-        return executionLogEntries;
+    public ExecutionLogDTO getExecutionLog() {
+        return executionLog;
     }
 
-    public void addExecutionLogEntry(final ExecutionLogEntry executionLogEntry) {
-        executionLogEntries.add(executionLogEntry);
+    public void setExecutionLog(final ExecutionLogDTO executionLog) {
+        this.executionLog = executionLog;
     }
 
 }

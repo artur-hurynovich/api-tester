@@ -1,6 +1,6 @@
 package com.hurynovich.api_tester.controller.execution_controller;
 
-import com.hurynovich.api_tester.cache.cache_key.impl.ExecutionStateCacheKey;
+import com.hurynovich.api_tester.cache.cache_key.impl.GenericExecutionCacheKey;
 import com.hurynovich.api_tester.model.controller_response.impl.GenericExecutionControllerResponse;
 import com.hurynovich.api_tester.model.enumeration.ExecutionSignalType;
 import com.hurynovich.api_tester.model.enumeration.ValidationResultType;
@@ -23,12 +23,12 @@ import java.util.List;
 public class ExecutionController {
 
     private final Validator<ExecutionSignal> executionSignalValidator;
-    private final Validator<ExecutionStateCacheKey> executionStateCacheKeyValidator;
+    private final Validator<GenericExecutionCacheKey> executionStateCacheKeyValidator;
 
     private final ExecutionHelper executionHelper;
 
     public ExecutionController(final @NonNull @Qualifier("controllerExecutionSignalValidator") Validator<ExecutionSignal> executionSignalValidator,
-                               final @NonNull Validator<ExecutionStateCacheKey> executionStateCacheKeyValidator,
+                               final @NonNull Validator<GenericExecutionCacheKey> executionStateCacheKeyValidator,
                                final @NonNull ExecutionHelper executionHelper) {
         this.executionSignalValidator = executionSignalValidator;
         this.executionStateCacheKeyValidator = executionStateCacheKeyValidator;
@@ -58,7 +58,7 @@ public class ExecutionController {
     }
 
     @GetMapping("/validSignals")
-    public ResponseEntity<GenericExecutionControllerResponse> getValidSignalTypes(final @NonNull @RequestBody ExecutionStateCacheKey key) {
+    public ResponseEntity<GenericExecutionControllerResponse> getValidSignalTypes(final @NonNull @RequestBody GenericExecutionCacheKey key) {
         final ValidationResult validationResult = executionStateCacheKeyValidator.validate(key);
 
         final GenericExecutionControllerResponse response = new GenericExecutionControllerResponse();

@@ -1,6 +1,6 @@
 package com.hurynovich.api_tester.validator.execution_signal_validator.impl;
 
-import com.hurynovich.api_tester.cache.cache_key.impl.ExecutionStateCacheKey;
+import com.hurynovich.api_tester.cache.cache_key.impl.GenericExecutionCacheKey;
 import com.hurynovich.api_tester.model.enumeration.ExecutionSignalType;
 import com.hurynovich.api_tester.model.enumeration.ExecutionStateType;
 import com.hurynovich.api_tester.model.execution.ExecutionSignal;
@@ -34,7 +34,7 @@ public class ExecutorExecutionSignalValidatorTest {
             new ExecutionTransitionContainerImpl();
 
     @Mock
-    private Validator<ExecutionStateCacheKey> keyValidator;
+    private Validator<GenericExecutionCacheKey> keyValidator;
 
     @Mock
     private ExecutionHelper executionHelper;

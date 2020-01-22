@@ -3,7 +3,7 @@ package com.hurynovich.api_tester.cache.cache_key.impl;
 import com.hurynovich.api_tester.cache.cache_key.CacheKey;
 import com.hurynovich.api_tester.utils.ObjectUtils;
 
-public class ExecutionStateCacheKey implements CacheKey {
+public class GenericExecutionCacheKey implements CacheKey {
 
     private Long userId;
 
@@ -35,7 +35,7 @@ public class ExecutionStateCacheKey implements CacheKey {
             return false;
         }
 
-        final ExecutionStateCacheKey that = (ExecutionStateCacheKey) o;
+        final GenericExecutionCacheKey that = (GenericExecutionCacheKey) o;
         return ObjectUtils.EqualsChecker.getInstance().
                 with(userId, that.getUserId()).
                 with(requestChainId, that.getRequestChainId()).

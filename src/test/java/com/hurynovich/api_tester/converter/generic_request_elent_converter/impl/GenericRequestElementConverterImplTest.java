@@ -37,6 +37,16 @@ public class GenericRequestElementConverterImplTest {
         checkHttpHeaders(headers, httpHeaders);
     }
 
+    @Test
+    public void convertHttpHeadersToRequestElementsTest() {
+        final HttpHeaders httpHeaders = RequestTestHelper.generateRandomHttpHeaders(3);
+
+        final List<GenericRequestElementDTO> requestElements =
+                genericRequestElementConverter.convertToRequestElements(httpHeaders);
+
+        checkHttpHeaders(requestElements, httpHeaders);
+    }
+
     private void checkMultiValueMap(final List<GenericRequestElementDTO> parameters,
                                     final MultiValueMap<String, String> multiValueMap) {
         Assertions.assertEquals(parameters.size(), multiValueMap.size());
@@ -53,11 +63,11 @@ public class GenericRequestElementConverterImplTest {
         });
     }
 
-    private void checkHttpHeaders(final List<GenericRequestElementDTO> parameters,
+    private void checkHttpHeaders(final List<GenericRequestElementDTO> requestElements,
                                   final HttpHeaders httpHeaders) {
-        Assertions.assertEquals(parameters.size(), httpHeaders.size());
+        Assertions.assertEquals(requestElements.size(), httpHeaders.size());
 
-        parameters.forEach(parameter -> {
+        requestElements.forEach(parameter -> {
             final String name = parameter.getName();
             final String value = parameter.getValue();
 

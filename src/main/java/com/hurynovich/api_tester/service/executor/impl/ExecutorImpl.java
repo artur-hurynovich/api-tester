@@ -3,10 +3,11 @@ package com.hurynovich.api_tester.service.executor.impl;
 import com.hurynovich.api_tester.builder.execution_log_entry_builder.ExecutionLogEntryBuilder;
 import com.hurynovich.api_tester.client.Client;
 import com.hurynovich.api_tester.client.exception.ClientException;
+import com.hurynovich.api_tester.model.dto.impl.ExecutionLogDTO;
 import com.hurynovich.api_tester.model.dto.impl.RequestDTO;
 import com.hurynovich.api_tester.model.dto.impl.ResponseDTO;
 import com.hurynovich.api_tester.model.enumeration.ExecutionStateType;
-import com.hurynovich.api_tester.model.execution.ExecutionLogEntry;
+import com.hurynovich.api_tester.model.dto.impl.ExecutionLogEntryDTO;
 import com.hurynovich.api_tester.model.execution.ExecutionResult;
 import com.hurynovich.api_tester.model.execution.ExecutionSignal;
 import com.hurynovich.api_tester.model.execution.ExecutionState;
@@ -15,10 +16,14 @@ import com.hurynovich.api_tester.service.executor.Executor;
 import com.hurynovich.api_tester.validator.Validator;
 
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -42,41 +47,53 @@ public class ExecutorImpl implements Executor {
         this.executionLogEntryBuilder = executionLogEntryBuilder;
     }
 
+    // TODO refactor
     @Override
     public void execute(final @NonNull ExecutionSignal executionSignal) {
         // TODO validation
         final ExecutionState executionState = executionHelper.updateExecutionStateCache(executionSignal);
 
+        final List<RequestDTO> requests = executionState.getRequests();
+        ExecutionLogDTO executionLog = executionHelper.
+                getExecutionLog(executionSignal.getKey());
+        if (executionLog == null) {
+            executionLog = new ExecutionLogDTO();
+            executionLog.setDate(LocalDate.now(ZoneId.systemDefault()));
+            executionLog.setEntries(new ArrayList<>());
+        }
+
         while (executionState.getType() == ExecutionStateType.RUNNING) {
-            final List<RequestDTO> requests = executionState.getRequests();
-
             if (!CollectionUtils.isEmpty(requests)) {
-                final ExecutionResult executionResult = sendRequest(requests.remove(0));
 
-                // TODO send result by web-socket and save to DB (rename to ExecutionResultDTO
+                final RequestDTO request = requests.get(0);
+
+                final ExecutionLogEntryDTO requestLogEntry = executionLogEntryBuilder.build(request);
+                executionLog.getEntries().add(requestLogEntry);
+
+                try {
+                    final ResponseDTO response = client.sendRequest(request);
+                    final ExecutionLogEntryDTO responseLogEntry = executionLogEntryBuilder.build(response);
+                    executionLog.getEntries().add(responseLogEntry);
+
+                    if (response.getStatus() != HttpStatus.OK) {
+                        executionState.setType(ExecutionStateType.ERROR);
+                    }
+                } catch (final ClientException e) {
+                    final ExecutionLogEntryDTO errorLogEntry = executionLogEntryBuilder.
+                            build("Failed to send request: " + e);
+                    executionLog.getEntries().add(errorLogEntry);
+                    executionState.setType(ExecutionStateType.ERROR);
+                }
             } else {
-
+                executionState.setType(ExecutionStateType.FINISHED);
             }
 
-            // TODO handle result and set new state if necessary
+            final ExecutionResult executionResult = new ExecutionResult();
+            executionResult.setExecutionState(executionState);
+            executionResult.setExecutionLog(executionLog);
+            // TODO send result via web-socket and save executionLog to DB
+            // TODO handle ExecutionState- and ExecutionLog- caches
         }
-    }
-
-    private ExecutionResult sendRequest(final @NonNull RequestDTO request) {
-        final ExecutionResult executionResult = new ExecutionResult();
-        final ExecutionLogEntry requestLogEntry = executionLogEntryBuilder.build(request);
-        executionResult.addExecutionLogEntry(requestLogEntry);
-
-        try {
-            final ResponseDTO response = client.sendRequest(request);
-            final ExecutionLogEntry responseLogEntry = executionLogEntryBuilder.build(response);
-            executionResult.addExecutionLogEntry(responseLogEntry);
-        } catch (final ClientException e) {
-            final ExecutionLogEntry errorLogEntry = executionLogEntryBuilder.build("Failed to send request: " + e);
-            executionResult.addExecutionLogEntry(errorLogEntry);
-        }
-
-        return executionResult;
     }
 
 }

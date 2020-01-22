@@ -6,11 +6,10 @@ import com.hurynovich.api_tester.converter.generic_request_element_converter.imp
 import com.hurynovich.api_tester.model.dto.impl.GenericRequestElementDTO;
 import com.hurynovich.api_tester.model.dto.impl.RequestDTO;
 import com.hurynovich.api_tester.model.dto.impl.ResponseDTO;
-import com.hurynovich.api_tester.model.execution.ExecutionLogEntry;
+import com.hurynovich.api_tester.model.dto.impl.ExecutionLogEntryDTO;
 import com.hurynovich.api_tester.test_helper.RandomValueGenerator;
 import com.hurynovich.api_tester.test_helper.RequestTestHelper;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -56,7 +55,7 @@ public class ExecutionLogEntryBuilderImplTest {
         request.setParameters(parameters);
         request.setBody(body);
 
-        final ExecutionLogEntry executionLogEntry = executionLogEntryBuilder.build(request);
+        final ExecutionLogEntryDTO executionLogEntry = executionLogEntryBuilder.build(request);
 
         Assertions.assertEquals(REQUEST, executionLogEntry.getType());
 
@@ -67,8 +66,7 @@ public class ExecutionLogEntryBuilderImplTest {
 
         Assertions.assertEquals(method, executionLogEntry.getMethod());
 
-        Assertions.assertEquals(genericRequestElementConverter.convertToHttpHeaders(headers),
-                executionLogEntry.getHeaders());
+        Assertions.assertEquals(headers, executionLogEntry.getHeaders());
         Assertions.assertEquals(url, executionLogEntry.getUrl());
         Assertions.assertEquals(body, executionLogEntry.getBody());
 
@@ -86,7 +84,7 @@ public class ExecutionLogEntryBuilderImplTest {
         response.setHeaders(headers);
         response.setBody(body);
 
-        final ExecutionLogEntry executionLogEntry = executionLogEntryBuilder.build(response);
+        final ExecutionLogEntryDTO executionLogEntry = executionLogEntryBuilder.build(response);
 
         Assertions.assertEquals(RESPONSE, executionLogEntry.getType());
 
@@ -96,7 +94,8 @@ public class ExecutionLogEntryBuilderImplTest {
                 !logEntryDateTime.isAfter(currentDateTime));
 
         Assertions.assertEquals(status, executionLogEntry.getStatus());
-        Assertions.assertEquals(headers, executionLogEntry.getHeaders());
+        Assertions.assertEquals(genericRequestElementConverter.convertToRequestElements(headers),
+                executionLogEntry.getHeaders());
         Assertions.assertEquals(body, executionLogEntry.getBody());
     }
 
@@ -104,7 +103,7 @@ public class ExecutionLogEntryBuilderImplTest {
     public void buildOfErrorMessageTest() {
         final String errorMessage = RandomValueGenerator.generateRandomStringLettersOnly(10);
 
-        final ExecutionLogEntry executionLogEntry = executionLogEntryBuilder.build(errorMessage);
+        final ExecutionLogEntryDTO executionLogEntry = executionLogEntryBuilder.build(errorMessage);
 
         Assertions.assertEquals(ERROR, executionLogEntry.getType());
 

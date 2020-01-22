@@ -1,14 +1,14 @@
-package com.hurynovich.api_tester.model.execution;
+package com.hurynovich.api_tester.model.dto.impl;
 
+import com.hurynovich.api_tester.model.dto.AbstractDTO;
 import com.hurynovich.api_tester.model.enumeration.ExecutionLogEntryType;
-
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
-public class ExecutionLogEntry {
+public class ExecutionLogEntryDTO extends AbstractDTO {
 
     private ExecutionLogEntryType type;
 
@@ -16,7 +16,7 @@ public class ExecutionLogEntry {
 
     private HttpMethod method;
 
-    private HttpHeaders headers;
+    private List<GenericRequestElementDTO> headers;
 
     private String url;
 
@@ -50,11 +50,11 @@ public class ExecutionLogEntry {
         this.method = method;
     }
 
-    public HttpHeaders getHeaders() {
+    public List<GenericRequestElementDTO> getHeaders() {
         return headers;
     }
 
-    public void setHeaders(final HttpHeaders headers) {
+    public void setHeaders(final List<GenericRequestElementDTO> headers) {
         this.headers = headers;
     }
 

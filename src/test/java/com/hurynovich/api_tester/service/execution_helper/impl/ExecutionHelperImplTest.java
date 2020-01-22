@@ -1,7 +1,8 @@
 package com.hurynovich.api_tester.service.execution_helper.impl;
 
 import com.hurynovich.api_tester.cache.Cache;
-import com.hurynovich.api_tester.cache.cache_key.impl.ExecutionStateCacheKey;
+import com.hurynovich.api_tester.cache.cache_key.impl.GenericExecutionCacheKey;
+import com.hurynovich.api_tester.model.dto.impl.ExecutionLogDTO;
 import com.hurynovich.api_tester.model.dto.impl.RequestChainDTO;
 import com.hurynovich.api_tester.model.enumeration.ExecutionSignalType;
 import com.hurynovich.api_tester.model.enumeration.ExecutionStateType;
@@ -55,7 +56,10 @@ public class ExecutionHelperImplTest {
             new ExecutionTransitionContainerImpl();
 
     @Mock
-    private Cache<ExecutionStateCacheKey, ExecutionState> executionStateCache;
+    private Cache<GenericExecutionCacheKey, ExecutionState> executionStateCache;
+
+    @Mock
+    private Cache<GenericExecutionCacheKey, ExecutionLogDTO> executionLogCache;
 
     @Mock
     private DTOService<RequestChainDTO, Long> requestChainService;
@@ -64,8 +68,8 @@ public class ExecutionHelperImplTest {
 
     @BeforeEach
     public void init() {
-        executionHelper = new ExecutionHelperImpl(EXECUTION_TRANSITION_CONTAINER, executionStateCache,
-                requestChainService);
+        executionHelper = new ExecutionHelperImpl(EXECUTION_TRANSITION_CONTAINER,
+                executionStateCache, executionLogCache, requestChainService);
     }
 
     @Test
@@ -151,7 +155,7 @@ public class ExecutionHelperImplTest {
     private void checkTransitionToExecutionStateType(final ExecutionState currentState,
                                                      final ExecutionSignal signal,
                                                      final ExecutionStateType expectedExecutionStateType) {
-        Mockito.when(executionStateCache.get(Mockito.any(ExecutionStateCacheKey.class))).thenReturn(currentState);
+        Mockito.when(executionStateCache.get(Mockito.any(GenericExecutionCacheKey.class))).thenReturn(currentState);
 
         final ExecutionStateType executionStateType = executionHelper.resolveTransitionToExecutionStateType(signal);
         Assertions.assertEquals(expectedExecutionStateType, executionStateType);

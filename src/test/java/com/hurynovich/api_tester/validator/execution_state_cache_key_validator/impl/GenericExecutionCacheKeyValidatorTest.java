@@ -1,6 +1,6 @@
 package com.hurynovich.api_tester.validator.execution_state_cache_key_validator.impl;
 
-import com.hurynovich.api_tester.cache.cache_key.impl.ExecutionStateCacheKey;
+import com.hurynovich.api_tester.cache.cache_key.impl.GenericExecutionCacheKey;
 import com.hurynovich.api_tester.model.dto.impl.RequestChainDTO;
 import com.hurynovich.api_tester.model.dto.impl.UserDTO;
 import com.hurynovich.api_tester.model.enumeration.ValidationResultType;
@@ -21,7 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 
 @ExtendWith({MockitoExtension.class})
-public class ExecutionStateCacheKeyValidatorTest {
+public class GenericExecutionCacheKeyValidatorTest {
 
     @Mock
     private DTOService<UserDTO, Long> userService;
@@ -29,7 +29,7 @@ public class ExecutionStateCacheKeyValidatorTest {
     @Mock
     private DTOService<RequestChainDTO, Long> requestChainService;
 
-    private Validator<ExecutionStateCacheKey> keyValidator;
+    private Validator<GenericExecutionCacheKey> keyValidator;
 
     @BeforeEach
     public void init() {
@@ -38,7 +38,7 @@ public class ExecutionStateCacheKeyValidatorTest {
 
     @Test
     public void successValidationTest() {
-        final ExecutionStateCacheKey key = ExecutionTestHelper.buildExecutionStateCacheKey();
+        final GenericExecutionCacheKey key = ExecutionTestHelper.buildExecutionStateCacheKey();
 
         Mockito.when(userService.existsById(key.getUserId())).thenReturn(true);
         Mockito.when(requestChainService.existsById(key.getRequestChainId())).thenReturn(true);
@@ -51,7 +51,7 @@ public class ExecutionStateCacheKeyValidatorTest {
 
     @Test
     public void userIdNullFailureValidationTest() {
-        final ExecutionStateCacheKey key = ExecutionTestHelper.buildExecutionStateCacheKey();
+        final GenericExecutionCacheKey key = ExecutionTestHelper.buildExecutionStateCacheKey();
 
         key.setUserId(null);
 
@@ -67,7 +67,7 @@ public class ExecutionStateCacheKeyValidatorTest {
 
     @Test
     public void userIdZeroOrNegativeFailureValidationTest() {
-        final ExecutionStateCacheKey key = ExecutionTestHelper.buildExecutionStateCacheKey();
+        final GenericExecutionCacheKey key = ExecutionTestHelper.buildExecutionStateCacheKey();
 
         key.setUserId((long) RandomValueGenerator.generateRandomNegativeOrZeroInt());
 
@@ -83,7 +83,7 @@ public class ExecutionStateCacheKeyValidatorTest {
 
     @Test
     public void userIdNonExistentFailureValidationTest() {
-        final ExecutionStateCacheKey key = ExecutionTestHelper.buildExecutionStateCacheKey();
+        final GenericExecutionCacheKey key = ExecutionTestHelper.buildExecutionStateCacheKey();
 
         final Long userId = key.getUserId();
         Mockito.when(userService.existsById(userId)).thenReturn(false);
@@ -99,7 +99,7 @@ public class ExecutionStateCacheKeyValidatorTest {
 
     @Test
     public void requestChainIdNullFailureValidationTest() {
-        final ExecutionStateCacheKey key = ExecutionTestHelper.buildExecutionStateCacheKey();
+        final GenericExecutionCacheKey key = ExecutionTestHelper.buildExecutionStateCacheKey();
 
         key.setRequestChainId(null);
 
@@ -115,7 +115,7 @@ public class ExecutionStateCacheKeyValidatorTest {
 
     @Test
     public void requestChainIdZeroOrNegativeFailureValidationTest() {
-        final ExecutionStateCacheKey key = ExecutionTestHelper.buildExecutionStateCacheKey();
+        final GenericExecutionCacheKey key = ExecutionTestHelper.buildExecutionStateCacheKey();
 
         key.setRequestChainId((long) RandomValueGenerator.generateRandomNegativeOrZeroInt());
 
@@ -131,7 +131,7 @@ public class ExecutionStateCacheKeyValidatorTest {
 
     @Test
     public void requestChainIdNonExistentFailureValidationTest() {
-        final ExecutionStateCacheKey key = ExecutionTestHelper.buildExecutionStateCacheKey();
+        final GenericExecutionCacheKey key = ExecutionTestHelper.buildExecutionStateCacheKey();
 
         final Long requestChainId = key.getRequestChainId();
         Mockito.when(userService.existsById(key.getUserId())).thenReturn(true);
