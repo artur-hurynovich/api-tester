@@ -90,6 +90,7 @@ public class ExecutorImpl implements Executor {
 
             final ExecutionResult executionResult = new ExecutionResult();
             executionResult.setExecutionState(executionState);
+            executionResult.setValidSignals(executionHelper.resolveValidSignalTypesOnExecution(executionState));
             executionResult.setExecutionLog(executionLog);
             // TODO send result via web-socket and save executionLog to DB
             // TODO handle ExecutionState- and ExecutionLog- caches
