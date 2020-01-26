@@ -38,7 +38,7 @@ public class RequestUtilsTest {
 
     @Test
     public void appendParametersTest() {
-        final List<RequestElementDTO> requestParameters = RequestTestHelper.generateRandomRequestElements(3);
+        final List<RequestElementDTO> requestParameters = RequestTestHelper.generateRandomRequestElementDTOs(3);
 
         final RequestElementDTO firstRequestParameter = requestParameters.get(0);
         final String firstParameter = buildUrlParameter(firstRequestParameter);
@@ -101,7 +101,7 @@ public class RequestUtilsTest {
 
     @Test
     public void parseParametersTest() {
-        final List<RequestElementDTO> requestParameters = RequestTestHelper.generateRandomRequestElements(2);
+        final List<RequestElementDTO> requestParameters = RequestTestHelper.generateRandomRequestElementDTOs(2);
 
         final RequestElementDTO firstRequestParameter = requestParameters.get(0);
         final String firstParameter = buildUrlParameter(firstRequestParameter);

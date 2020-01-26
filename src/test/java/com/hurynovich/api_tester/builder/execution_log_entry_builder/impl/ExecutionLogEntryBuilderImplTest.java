@@ -41,10 +41,10 @@ public class ExecutionLogEntryBuilderImplTest {
     public void buildOfRequestDTOTest() {
         final HttpMethod method = RequestTestHelper.generateRandomHttpMethod();
         final List<RequestElementDTO> headers =
-                RequestTestHelper.generateRandomRequestElements(REQUEST_HEADERS_SIZE);
+                RequestTestHelper.generateRandomRequestElementDTOs(REQUEST_HEADERS_SIZE);
         final String url = RequestTestHelper.generateRandomHttpUrl();
         final List<RequestElementDTO> parameters =
-                RequestTestHelper.generateRandomRequestElements(REQUEST_PARAMETERS_SIZE);
+                RequestTestHelper.generateRandomRequestElementDTOs(REQUEST_PARAMETERS_SIZE);
         final String body = RequestTestHelper.generateRandomBody();
 
         final RequestDTO request = new RequestDTO();

@@ -17,7 +17,7 @@ public class RequestElementConverterImplTest {
 
     @Test
     public void convertToMultiValueMapTest() {
-        final List<RequestElementDTO> parameters = RequestTestHelper.generateRandomRequestElements(3);
+        final List<RequestElementDTO> parameters = RequestTestHelper.generateRandomRequestElementDTOs(3);
 
         final MultiValueMap<String, String> multiValueMap = requestElementConverter.convertToMultiValueMap(parameters);
 
@@ -26,7 +26,7 @@ public class RequestElementConverterImplTest {
 
     @Test
     public void convertToHttpHeadersTest() {
-        final List<RequestElementDTO> headers = RequestTestHelper.generateRandomRequestElements(3);
+        final List<RequestElementDTO> headers = RequestTestHelper.generateRandomRequestElementDTOs(3);
 
         final HttpHeaders httpHeaders = requestElementConverter.convertToHttpHeaders(headers);
 

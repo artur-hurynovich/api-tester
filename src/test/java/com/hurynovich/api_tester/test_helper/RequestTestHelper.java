@@ -1,6 +1,7 @@
 package com.hurynovich.api_tester.test_helper;
 
 import com.hurynovich.api_tester.model.dto.impl.RequestElementDTO;
+import com.hurynovich.api_tester.model.entity.impl.RequestElementEntity;
 import com.hurynovich.api_tester.model.enumeration.RequestElementType;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -14,6 +15,7 @@ public class RequestTestHelper {
 
     private static final int GENERIC_REQUEST_ELEMENT_NAME_MAX_LENGTH = 10;
     private static final int GENERIC_REQUEST_ELEMENT_VALUE_MAX_LENGTH = 10;
+    private static final int GENERIC_REQUEST_ELEMENT_EXPRESSION_MAX_LENGTH = 10;
     private static final String HTTP_PROTOCOL = "http";
     private static final int DOMAIN_NAME_LENGTH = 7;
     private static final int DOMAIN_LENGTH = 2;
@@ -41,7 +43,7 @@ public class RequestTestHelper {
         return headers;
     }
 
-    public static List<RequestElementDTO> generateRandomRequestElements(final int size) {
+    public static List<RequestElementDTO> generateRandomRequestElementDTOs(final int size) {
         return IntStream.range(1, size + 1).mapToObj(index -> {
             final RequestElementDTO requestElement = new RequestElementDTO();
 
@@ -51,7 +53,29 @@ public class RequestTestHelper {
             requestElement.setValue(RandomValueGenerator.generateRandomStringLettersOnly(
                     GENERIC_REQUEST_ELEMENT_VALUE_MAX_LENGTH));
 
-            requestElement.setType(RequestElementType.VALUE);
+            requestElement.setExpression(RandomValueGenerator.generateRandomStringLettersOnly(
+                    GENERIC_REQUEST_ELEMENT_EXPRESSION_MAX_LENGTH));
+
+            requestElement.setType(RandomValueGenerator.generateRandomEnumValue(RequestElementType.class));
+
+            return requestElement;
+        }).collect(Collectors.toList());
+    }
+
+    public static List<RequestElementEntity> generateRandomRequestElementEntities(final int size) {
+        return IntStream.range(1, size + 1).mapToObj(index -> {
+            final RequestElementEntity requestElement = new RequestElementEntity();
+
+            requestElement.setName(RandomValueGenerator.generateRandomStringLettersOnly(
+                    GENERIC_REQUEST_ELEMENT_NAME_MAX_LENGTH));
+
+            requestElement.setValue(RandomValueGenerator.generateRandomStringLettersOnly(
+                    GENERIC_REQUEST_ELEMENT_VALUE_MAX_LENGTH));
+
+            requestElement.setExpression(RandomValueGenerator.generateRandomStringLettersOnly(
+                    GENERIC_REQUEST_ELEMENT_EXPRESSION_MAX_LENGTH));
+
+            requestElement.setType(RandomValueGenerator.generateRandomEnumValue(RequestElementType.class));
 
             return requestElement;
         }).collect(Collectors.toList());
