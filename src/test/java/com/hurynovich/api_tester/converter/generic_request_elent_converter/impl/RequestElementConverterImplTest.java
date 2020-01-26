@@ -1,8 +1,8 @@
 package com.hurynovich.api_tester.converter.generic_request_elent_converter.impl;
 
-import com.hurynovich.api_tester.converter.generic_request_element_converter.GenericRequestElementConverter;
-import com.hurynovich.api_tester.converter.generic_request_element_converter.impl.GenericRequestElementConverterImpl;
-import com.hurynovich.api_tester.model.dto.impl.GenericRequestElementDTO;
+import com.hurynovich.api_tester.converter.generic_request_element_converter.RequestElementConverter;
+import com.hurynovich.api_tester.converter.generic_request_element_converter.impl.RequestElementConverterImpl;
+import com.hurynovich.api_tester.model.dto.impl.RequestElementDTO;
 import com.hurynovich.api_tester.test_helper.RequestTestHelper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -11,28 +11,24 @@ import org.springframework.util.MultiValueMap;
 
 import java.util.List;
 
-public class GenericRequestElementConverterImplTest {
+public class RequestElementConverterImplTest {
 
-    private final GenericRequestElementConverter genericRequestElementConverter =
-            new GenericRequestElementConverterImpl();
+    private final RequestElementConverter requestElementConverter = new RequestElementConverterImpl();
 
     @Test
     public void convertToMultiValueMapTest() {
-        final List<GenericRequestElementDTO> parameters =
-                RequestTestHelper.generateRandomGenericRequestElements(3);
+        final List<RequestElementDTO> parameters = RequestTestHelper.generateRandomRequestElements(3);
 
-        final MultiValueMap<String, String> multiValueMap =
-                genericRequestElementConverter.convertToMultiValueMap(parameters);
+        final MultiValueMap<String, String> multiValueMap = requestElementConverter.convertToMultiValueMap(parameters);
 
         checkMultiValueMap(parameters, multiValueMap);
     }
 
     @Test
     public void convertToHttpHeadersTest() {
-        final List<GenericRequestElementDTO> headers =
-                RequestTestHelper.generateRandomGenericRequestElements(3);
+        final List<RequestElementDTO> headers = RequestTestHelper.generateRandomRequestElements(3);
 
-        final HttpHeaders httpHeaders = genericRequestElementConverter.convertToHttpHeaders(headers);
+        final HttpHeaders httpHeaders = requestElementConverter.convertToHttpHeaders(headers);
 
         checkHttpHeaders(headers, httpHeaders);
     }
@@ -41,13 +37,12 @@ public class GenericRequestElementConverterImplTest {
     public void convertHttpHeadersToRequestElementsTest() {
         final HttpHeaders httpHeaders = RequestTestHelper.generateRandomHttpHeaders(3);
 
-        final List<GenericRequestElementDTO> requestElements =
-                genericRequestElementConverter.convertToRequestElements(httpHeaders);
+        final List<RequestElementDTO> requestElements = requestElementConverter.convertToRequestElements(httpHeaders);
 
         checkHttpHeaders(requestElements, httpHeaders);
     }
 
-    private void checkMultiValueMap(final List<GenericRequestElementDTO> parameters,
+    private void checkMultiValueMap(final List<RequestElementDTO> parameters,
                                     final MultiValueMap<String, String> multiValueMap) {
         Assertions.assertEquals(parameters.size(), multiValueMap.size());
 
@@ -63,7 +58,7 @@ public class GenericRequestElementConverterImplTest {
         });
     }
 
-    private void checkHttpHeaders(final List<GenericRequestElementDTO> requestElements,
+    private void checkHttpHeaders(final List<RequestElementDTO> requestElements,
                                   final HttpHeaders httpHeaders) {
         Assertions.assertEquals(requestElements.size(), httpHeaders.size());
 

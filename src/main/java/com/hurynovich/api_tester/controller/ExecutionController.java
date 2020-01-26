@@ -1,7 +1,7 @@
-package com.hurynovich.api_tester.controller.execution_controller;
+package com.hurynovich.api_tester.controller;
 
 import com.hurynovich.api_tester.cache.cache_key.impl.GenericExecutionCacheKey;
-import com.hurynovich.api_tester.model.controller_response.impl.GenericExecutionControllerResponse;
+import com.hurynovich.api_tester.model.controller_response.impl.ExecutionControllerResponse;
 import com.hurynovich.api_tester.model.enumeration.ExecutionSignalType;
 import com.hurynovich.api_tester.model.enumeration.ValidationResultType;
 import com.hurynovich.api_tester.model.execution.ExecutionSignal;
@@ -36,11 +36,12 @@ public class ExecutionController {
     }
 
     @PostMapping("/signal")
-    public ResponseEntity<GenericExecutionControllerResponse> postSignal(final @NonNull @RequestBody ExecutionSignal executionSignal) {
+    public ResponseEntity<ExecutionControllerResponse> postSignal(final @NonNull @RequestBody ExecutionSignal executionSignal) {
         final ValidationResult validationResult = executionSignalValidator.validate(executionSignal);
 
-        final GenericExecutionControllerResponse response = new GenericExecutionControllerResponse();
+        final ExecutionControllerResponse response = new ExecutionControllerResponse();
         response.setValidationResult(validationResult);
+
         if (validationResult.getType() == ValidationResultType.VALID) {
             final ExecutionState executionState = executionHelper.updateExecutionStateCache(executionSignal);
             response.setState(executionState.getType());
@@ -58,11 +59,12 @@ public class ExecutionController {
     }
 
     @GetMapping("/validSignals")
-    public ResponseEntity<GenericExecutionControllerResponse> getValidSignalTypes(final @NonNull @RequestBody GenericExecutionCacheKey key) {
+    public ResponseEntity<ExecutionControllerResponse> getValidSignalTypes(final @NonNull @RequestBody GenericExecutionCacheKey key) {
         final ValidationResult validationResult = executionStateCacheKeyValidator.validate(key);
 
-        final GenericExecutionControllerResponse response = new GenericExecutionControllerResponse();
+        final ExecutionControllerResponse response = new ExecutionControllerResponse();
         response.setValidationResult(validationResult);
+
         if (validationResult.getType() == ValidationResultType.VALID) {
             final ExecutionState executionState = executionHelper.getExecutionState(key);
             response.setState(executionState.getType());

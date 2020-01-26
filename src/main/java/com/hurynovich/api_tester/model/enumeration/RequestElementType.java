@@ -1,6 +1,6 @@
 package com.hurynovich.api_tester.model.enumeration;
 
-public enum GenericRequestElementType {
+public enum RequestElementType {
 
     VALUE,
     EXPRESSION

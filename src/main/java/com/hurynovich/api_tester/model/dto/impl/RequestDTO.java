@@ -9,11 +9,11 @@ public class RequestDTO extends AbstractDTO {
 
     private HttpMethod method;
 
-    private List<GenericRequestElementDTO> headers;
+    private List<RequestElementDTO> headers;
 
     private String url;
 
-    private List<GenericRequestElementDTO> parameters;
+    private List<RequestElementDTO> parameters;
 
     private String body;
 
@@ -25,11 +25,11 @@ public class RequestDTO extends AbstractDTO {
         this.method = method;
     }
 
-    public List<GenericRequestElementDTO> getHeaders() {
+    public List<RequestElementDTO> getHeaders() {
         return headers;
     }
 
-    public void setHeaders(final List<GenericRequestElementDTO> headers) {
+    public void setHeaders(final List<RequestElementDTO> headers) {
         this.headers = headers;
     }
 
@@ -41,11 +41,11 @@ public class RequestDTO extends AbstractDTO {
         this.url = url;
     }
 
-    public List<GenericRequestElementDTO> getParameters() {
+    public List<RequestElementDTO> getParameters() {
         return parameters;
     }
 
-    public void setParameters(final List<GenericRequestElementDTO> parameters) {
+    public void setParameters(final List<RequestElementDTO> parameters) {
         this.parameters = parameters;
     }
 

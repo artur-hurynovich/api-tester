@@ -2,7 +2,7 @@ package com.hurynovich.api_tester.converter.client_converter.impl;
 
 import com.hurynovich.api_tester.converter.client_converter.ClientConverter;
 import com.hurynovich.api_tester.converter.exception.ConverterException;
-import com.hurynovich.api_tester.converter.generic_request_element_converter.GenericRequestElementConverter;
+import com.hurynovich.api_tester.converter.generic_request_element_converter.RequestElementConverter;
 import com.hurynovich.api_tester.model.dto.impl.RequestDTO;
 import com.hurynovich.api_tester.model.dto.impl.ResponseDTO;
 import org.springframework.http.HttpHeaders;
@@ -19,22 +19,22 @@ import java.net.URISyntaxException;
 @Service
 public class ClientConverterImpl implements ClientConverter<String> {
 
-    private final GenericRequestElementConverter genericRequestElementConverter;
+    private final RequestElementConverter requestElementConverter;
 
-    public ClientConverterImpl(final @NonNull GenericRequestElementConverter genericRequestElementConverter) {
-        this.genericRequestElementConverter = genericRequestElementConverter;
+    public ClientConverterImpl(final @NonNull RequestElementConverter requestElementConverter) {
+        this.requestElementConverter = requestElementConverter;
     }
 
     @Override
     public RequestEntity<String> convert(final @NonNull RequestDTO request) throws ConverterException {
         try {
             final MultiValueMap<String, String> uriVariables =
-                    genericRequestElementConverter.convertToMultiValueMap(request.getParameters());
+                    requestElementConverter.convertToMultiValueMap(request.getParameters());
             final UriComponentsBuilder uriComponentsBuilder =
                     UriComponentsBuilder.fromUri(new URI(request.getUrl())).queryParams(uriVariables);
 
             final HttpHeaders httpHeaders =
-                    genericRequestElementConverter.convertToHttpHeaders(request.getHeaders());
+                    requestElementConverter.convertToHttpHeaders(request.getHeaders());
             return RequestEntity.method(request.getMethod(), uriComponentsBuilder.build(uriVariables)).
                     headers(httpHeaders).
                     body(request.getBody());

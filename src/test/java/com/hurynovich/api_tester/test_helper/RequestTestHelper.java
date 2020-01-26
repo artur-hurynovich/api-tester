@@ -1,7 +1,7 @@
 package com.hurynovich.api_tester.test_helper;
 
-import com.hurynovich.api_tester.model.dto.impl.GenericRequestElementDTO;
-import com.hurynovich.api_tester.model.enumeration.GenericRequestElementType;
+import com.hurynovich.api_tester.model.dto.impl.RequestElementDTO;
+import com.hurynovich.api_tester.model.enumeration.RequestElementType;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -41,19 +41,19 @@ public class RequestTestHelper {
         return headers;
     }
 
-    public static List<GenericRequestElementDTO> generateRandomGenericRequestElements(final int size) {
+    public static List<RequestElementDTO> generateRandomRequestElements(final int size) {
         return IntStream.range(1, size + 1).mapToObj(index -> {
-            final GenericRequestElementDTO genericRequestElement = new GenericRequestElementDTO();
+            final RequestElementDTO requestElement = new RequestElementDTO();
 
-            genericRequestElement.setName(RandomValueGenerator.generateRandomStringLettersOnly(
+            requestElement.setName(RandomValueGenerator.generateRandomStringLettersOnly(
                     GENERIC_REQUEST_ELEMENT_NAME_MAX_LENGTH));
 
-            genericRequestElement.setValue(RandomValueGenerator.generateRandomStringLettersOnly(
+            requestElement.setValue(RandomValueGenerator.generateRandomStringLettersOnly(
                     GENERIC_REQUEST_ELEMENT_VALUE_MAX_LENGTH));
 
-            genericRequestElement.setType(GenericRequestElementType.VALUE);
+            requestElement.setType(RequestElementType.VALUE);
 
-            return genericRequestElement;
+            return requestElement;
         }).collect(Collectors.toList());
     }
 

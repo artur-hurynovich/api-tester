@@ -1,8 +1,8 @@
 package com.hurynovich.api_tester.converter.generic_request_element_converter.impl;
 
-import com.hurynovich.api_tester.converter.generic_request_element_converter.GenericRequestElementConverter;
-import com.hurynovich.api_tester.model.dto.impl.GenericRequestElementDTO;
-import com.hurynovich.api_tester.model.enumeration.GenericRequestElementType;
+import com.hurynovich.api_tester.converter.generic_request_element_converter.RequestElementConverter;
+import com.hurynovich.api_tester.model.dto.impl.RequestElementDTO;
+import com.hurynovich.api_tester.model.enumeration.RequestElementType;
 import org.springframework.http.HttpHeaders;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
@@ -17,10 +17,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-public class GenericRequestElementConverterImpl implements GenericRequestElementConverter {
+public class RequestElementConverterImpl implements RequestElementConverter {
 
     @Override
-    public MultiValueMap<String, String> convertToMultiValueMap(final @NonNull List<GenericRequestElementDTO> elements) {
+    public MultiValueMap<String, String> convertToMultiValueMap(final @NonNull List<RequestElementDTO> elements) {
         if (!CollectionUtils.isEmpty(elements)) {
             final MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<>();
 
@@ -34,7 +34,7 @@ public class GenericRequestElementConverterImpl implements GenericRequestElement
     }
 
     @Override
-    public HttpHeaders convertToHttpHeaders(final @NonNull List<GenericRequestElementDTO> elements) {
+    public HttpHeaders convertToHttpHeaders(final @NonNull List<RequestElementDTO> elements) {
         if (!CollectionUtils.isEmpty(elements)) {
             final HttpHeaders httpHeaders = new HttpHeaders();
 
@@ -47,18 +47,19 @@ public class GenericRequestElementConverterImpl implements GenericRequestElement
     }
 
     @Override
-    public List<GenericRequestElementDTO> convertToRequestElements(final @NonNull HttpHeaders httpHeaders) {
+    public List<RequestElementDTO> convertToRequestElements(final @NonNull HttpHeaders httpHeaders) {
         final Set<Map.Entry<String, List<String>>> entries = httpHeaders.entrySet();
 
         return entries.stream().flatMap(entry ->
                 entry.getValue().stream().map(value -> {
-                    final GenericRequestElementDTO requestElement = new GenericRequestElementDTO();
+                    final RequestElementDTO requestElement = new RequestElementDTO();
 
                     requestElement.setName(entry.getKey());
                     requestElement.setValue(value);
-                    requestElement.setType(GenericRequestElementType.VALUE);
+                    requestElement.setType(RequestElementType.VALUE);
 
                     return requestElement;
                 })).collect(Collectors.toList());
     }
+
 }

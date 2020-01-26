@@ -6,7 +6,7 @@ import com.hurynovich.api_tester.model.enumeration.ExecutionStateType;
 
 import java.util.List;
 
-public class GenericExecutionControllerResponse extends AbstractControllerResponse {
+public class ExecutionControllerResponse extends AbstractControllerResponse {
 
     private ExecutionStateType state;
 

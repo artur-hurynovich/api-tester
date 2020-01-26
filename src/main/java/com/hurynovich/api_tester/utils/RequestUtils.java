@@ -1,7 +1,7 @@
 package com.hurynovich.api_tester.utils;
 
-import com.hurynovich.api_tester.model.dto.impl.GenericRequestElementDTO;
-import com.hurynovich.api_tester.model.enumeration.GenericRequestElementType;
+import com.hurynovich.api_tester.model.dto.impl.RequestElementDTO;
+import com.hurynovich.api_tester.model.enumeration.RequestElementType;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.lang.NonNull;
 
@@ -31,7 +31,7 @@ public class RequestUtils {
     }
 
     public static String appendParameters(final @NonNull String url,
-                                          final @NonNull List<GenericRequestElementDTO> parameters) {
+                                          final @NonNull List<RequestElementDTO> parameters) {
         final StringBuilder urlBuilder = new StringBuilder(url);
 
         if (!parameters.isEmpty()) {
@@ -67,8 +67,8 @@ public class RequestUtils {
         return !url.endsWith(PARAMETERS_PREFIX) && !url.endsWith(PARAMETERS_SEPARATOR);
     }
 
-    public static List<GenericRequestElementDTO> parseParameters(final @NonNull String url) {
-        final List<GenericRequestElementDTO> requestParameters;
+    public static List<RequestElementDTO> parseParameters(final @NonNull String url) {
+        final List<RequestElementDTO> requestParameters;
 
         final int parametersPrefixIndex = url.indexOf(PARAMETERS_PREFIX);
 
@@ -88,8 +88,8 @@ public class RequestUtils {
         return requestParameters;
     }
 
-    private static GenericRequestElementDTO buildParameter(final @NonNull String parameter) {
-        final GenericRequestElementDTO requestParameter = new GenericRequestElementDTO();
+    private static RequestElementDTO buildParameter(final @NonNull String parameter) {
+        final RequestElementDTO requestParameter = new RequestElementDTO();
 
         final String[] parameterEntry = parameter.split(PARAMETER_NAME_VALUE_SEPARATOR);
         requestParameter.setName(parameterEntry[0]);
@@ -98,7 +98,7 @@ public class RequestUtils {
             requestParameter.setValue(parameterEntry[1]);
         }
 
-        requestParameter.setType(GenericRequestElementType.VALUE);
+        requestParameter.setType(RequestElementType.VALUE);
 
         return requestParameter;
     }

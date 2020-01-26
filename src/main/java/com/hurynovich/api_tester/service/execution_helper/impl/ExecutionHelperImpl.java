@@ -54,7 +54,8 @@ public class ExecutionHelperImpl implements ExecutionHelper {
         if (executionState == null) {
             executionState = new ExecutionState();
 
-            final RequestChainDTO requestChain = requestChainService.getById(genericExecutionCacheKey.getRequestChainId());
+            final RequestChainDTO requestChain =
+                    requestChainService.readById(genericExecutionCacheKey.getRequestChainId());
             executionState.setRequests(requestChain.getRequests());
         }
 

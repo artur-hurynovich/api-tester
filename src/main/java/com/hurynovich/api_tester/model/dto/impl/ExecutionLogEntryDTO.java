@@ -16,7 +16,7 @@ public class ExecutionLogEntryDTO extends AbstractDTO {
 
     private HttpMethod method;
 
-    private List<GenericRequestElementDTO> headers;
+    private List<RequestElementDTO> headers;
 
     private String url;
 
@@ -50,11 +50,11 @@ public class ExecutionLogEntryDTO extends AbstractDTO {
         this.method = method;
     }
 
-    public List<GenericRequestElementDTO> getHeaders() {
+    public List<RequestElementDTO> getHeaders() {
         return headers;
     }
 
-    public void setHeaders(final List<GenericRequestElementDTO> headers) {
+    public void setHeaders(final List<RequestElementDTO> headers) {
         this.headers = headers;
     }
 
