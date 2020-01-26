@@ -40,10 +40,10 @@ public class ClientConverterImplTest {
     public void convertRequestDTOToRequestEntityTest() throws ConverterException {
         final HttpMethod method = RequestTestHelper.generateRandomHttpMethod();
         final List<RequestElementDTO> headers =
-                RequestTestHelper.generateRandomRequestElements(REQUEST_HEADERS_SIZE);
+                RequestTestHelper.generateRandomRequestElementDTOs(REQUEST_HEADERS_SIZE);
         final String url = RequestTestHelper.generateRandomHttpUrl();
         final List<RequestElementDTO> parameters =
-                RequestTestHelper.generateRandomRequestElements(REQUEST_PARAMETERS_SIZE);
+                RequestTestHelper.generateRandomRequestElementDTOs(REQUEST_PARAMETERS_SIZE);
         final String body = RequestTestHelper.generateRandomBody();
 
         final RequestDTO request = new RequestDTO();
@@ -86,10 +86,10 @@ public class ClientConverterImplTest {
     public void convertRequestDTOWithIncorrectUrlToRequestEntityTest() {
         final HttpMethod method = RequestTestHelper.generateRandomHttpMethod();
         final List<RequestElementDTO> headers =
-                RequestTestHelper.generateRandomRequestElements(REQUEST_HEADERS_SIZE);
+                RequestTestHelper.generateRandomRequestElementDTOs(REQUEST_HEADERS_SIZE);
         final String nonValidUrl = "1 2 3";
         final List<RequestElementDTO> parameters =
-                RequestTestHelper.generateRandomRequestElements(REQUEST_PARAMETERS_SIZE);
+                RequestTestHelper.generateRandomRequestElementDTOs(REQUEST_PARAMETERS_SIZE);
         final String body = RequestTestHelper.generateRandomBody();
 
         final RequestDTO request = new RequestDTO();
@@ -106,7 +106,7 @@ public class ClientConverterImplTest {
     public void convertResponseEntityToResponseDTOTest() {
         final HttpStatus httpStatus = RequestTestHelper.generateRandomHttpStatus();
         final List<RequestElementDTO> headers =
-                RequestTestHelper.generateRandomRequestElements(REQUEST_HEADERS_SIZE);
+                RequestTestHelper.generateRandomRequestElementDTOs(REQUEST_HEADERS_SIZE);
         final String body = RequestTestHelper.generateRandomBody();
 
         final ResponseEntity<String> responseEntity =
