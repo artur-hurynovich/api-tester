@@ -2,21 +2,21 @@ package com.hurynovich.api_tester.model.dto.impl;
 
 import com.hurynovich.api_tester.model.dto.AbstractDTO;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class ExecutionLogDTO extends AbstractDTO {
 
-    private LocalDate date;
+    private LocalDateTime startDateTime;
 
     private List<ExecutionLogEntryDTO> entries;
 
-    public LocalDate getDate() {
-        return date;
+    public LocalDateTime getStartDateTime() {
+        return startDateTime;
     }
 
-    public void setDate(final LocalDate date) {
-        this.date = date;
+    public void setStartDateTime(final LocalDateTime startDateTime) {
+        this.startDateTime = startDateTime;
     }
 
     public List<ExecutionLogEntryDTO> getEntries() {

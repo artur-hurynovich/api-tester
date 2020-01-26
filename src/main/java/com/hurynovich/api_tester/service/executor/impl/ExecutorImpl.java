@@ -4,10 +4,10 @@ import com.hurynovich.api_tester.builder.execution_log_entry_builder.ExecutionLo
 import com.hurynovich.api_tester.client.Client;
 import com.hurynovich.api_tester.client.exception.ClientException;
 import com.hurynovich.api_tester.model.dto.impl.ExecutionLogDTO;
+import com.hurynovich.api_tester.model.dto.impl.ExecutionLogEntryDTO;
 import com.hurynovich.api_tester.model.dto.impl.RequestDTO;
 import com.hurynovich.api_tester.model.dto.impl.ResponseDTO;
 import com.hurynovich.api_tester.model.enumeration.ExecutionStateType;
-import com.hurynovich.api_tester.model.dto.impl.ExecutionLogEntryDTO;
 import com.hurynovich.api_tester.model.execution.ExecutionResult;
 import com.hurynovich.api_tester.model.execution.ExecutionSignal;
 import com.hurynovich.api_tester.model.execution.ExecutionState;
@@ -21,7 +21,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
@@ -58,7 +58,7 @@ public class ExecutorImpl implements Executor {
                 getExecutionLog(executionSignal.getKey());
         if (executionLog == null) {
             executionLog = new ExecutionLogDTO();
-            executionLog.setDate(LocalDate.now(ZoneId.systemDefault()));
+            executionLog.setStartDateTime(LocalDateTime.now(ZoneId.systemDefault()));
             executionLog.setEntries(new ArrayList<>());
         }
 
@@ -90,6 +90,7 @@ public class ExecutorImpl implements Executor {
 
             final ExecutionResult executionResult = new ExecutionResult();
             executionResult.setExecutionState(executionState);
+            executionResult.setValidSignals(executionHelper.resolveValidSignalTypesOnExecution(executionState));
             executionResult.setExecutionLog(executionLog);
             // TODO send result via web-socket and save executionLog to DB
             // TODO handle ExecutionState- and ExecutionLog- caches
