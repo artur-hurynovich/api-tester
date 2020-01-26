@@ -148,7 +148,16 @@ public class RequestUtilsTest {
     }
 
     private void checkParseParameters(final String url, final List<RequestElementDTO> expectedParameters) {
-        Assertions.assertEquals(expectedParameters, RequestUtils.parseParameters(url));
+        final List<RequestElementDTO> actualParameters = RequestUtils.parseParameters(url);
+
+        Assertions.assertEquals(expectedParameters.size(), actualParameters.size());
+        for (int i = 0; i < expectedParameters.size(); i++) {
+            final RequestElementDTO expectedParameter = expectedParameters.get(i);
+            final RequestElementDTO actualParameter = actualParameters.get(i);
+
+            Assertions.assertEquals(expectedParameter.getName(), actualParameter.getName());
+            Assertions.assertEquals(expectedParameter.getValue(), actualParameter.getValue());
+        }
     }
 
 }
