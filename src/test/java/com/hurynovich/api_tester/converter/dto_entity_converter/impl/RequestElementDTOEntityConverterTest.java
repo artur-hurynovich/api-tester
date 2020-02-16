@@ -17,22 +17,20 @@ public class RequestElementDTOEntityConverterTest {
 
     @Test
     public void convertToEntityTest() {
-        final List<RequestElementDTO> requestElements = RequestTestHelper.generateRandomRequestElementDTOs(1);
+        final RequestElementDTO requestElementDTO = RequestTestHelper.
+                generateRandomRequestElementDTOs(1).iterator().next();
 
-        final RequestElementDTO requestElementDTO = requestElements.iterator().next();
-
-        final RequestElementEntity requestElementEntity = converter.convertToEntity(requestElementDTO);
+        final RequestElementEntity requestElementEntity = converter.convert(requestElementDTO);
 
         checkConversion(requestElementDTO, requestElementEntity);
     }
 
     @Test
     public void convertToDTOTest() {
-        final List<RequestElementEntity> requestElements = RequestTestHelper.generateRandomRequestElementEntities(1);
+        final RequestElementEntity requestElementEntity = RequestTestHelper.
+                generateRandomRequestElementEntities(1).iterator().next();
 
-        final RequestElementEntity requestElementEntity = requestElements.iterator().next();
-
-        final RequestElementDTO requestElementDTO = converter.convertToDTO(requestElementEntity);
+        final RequestElementDTO requestElementDTO = converter.convert(requestElementEntity);
 
         checkConversion(requestElementDTO, requestElementEntity);
     }

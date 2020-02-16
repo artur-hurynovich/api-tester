@@ -1,12 +1,13 @@
 package com.hurynovich.api_tester.builder.execution_log_entry_builder.impl;
 
 import com.hurynovich.api_tester.builder.execution_log_entry_builder.ExecutionLogEntryBuilder;
-import com.hurynovich.api_tester.converter.generic_request_element_converter.RequestElementConverter;
-import com.hurynovich.api_tester.model.dto.impl.RequestElementDTO;
+import com.hurynovich.api_tester.converter.request_element_converter.RequestElementConverter;
+import com.hurynovich.api_tester.model.dto.impl.ExecutionLogEntryDTO;
 import com.hurynovich.api_tester.model.dto.impl.RequestDTO;
+import com.hurynovich.api_tester.model.dto.impl.RequestElementDTO;
 import com.hurynovich.api_tester.model.dto.impl.ResponseDTO;
 import com.hurynovich.api_tester.model.enumeration.ExecutionLogEntryType;
-import com.hurynovich.api_tester.model.dto.impl.ExecutionLogEntryDTO;
+
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 

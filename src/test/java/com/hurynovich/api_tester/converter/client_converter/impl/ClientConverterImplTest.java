@@ -2,19 +2,19 @@ package com.hurynovich.api_tester.converter.client_converter.impl;
 
 import com.hurynovich.api_tester.converter.client_converter.ClientConverter;
 import com.hurynovich.api_tester.converter.exception.ConverterException;
-import com.hurynovich.api_tester.converter.generic_request_element_converter.RequestElementConverter;
-import com.hurynovich.api_tester.converter.generic_request_element_converter.impl.RequestElementConverterImpl;
-import com.hurynovich.api_tester.model.dto.impl.RequestElementDTO;
+import com.hurynovich.api_tester.converter.request_element_converter.RequestElementConverter;
+import com.hurynovich.api_tester.converter.request_element_converter.impl.RequestElementConverterImpl;
 import com.hurynovich.api_tester.model.dto.impl.RequestDTO;
+import com.hurynovich.api_tester.model.dto.impl.RequestElementDTO;
 import com.hurynovich.api_tester.model.dto.impl.ResponseDTO;
 import com.hurynovich.api_tester.test_helper.RequestTestHelper;
 import com.hurynovich.api_tester.utils.RequestUtils;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +25,6 @@ import java.util.List;
 public class ClientConverterImplTest {
 
     private static final int REQUEST_HEADERS_SIZE = 3;
-    private static final int REQUEST_PARAMETERS_SIZE = 3;
 
     private RequestElementConverter requestElementConverter = new RequestElementConverterImpl();
 
@@ -38,28 +37,15 @@ public class ClientConverterImplTest {
 
     @Test
     public void convertRequestDTOToRequestEntityTest() throws ConverterException {
-        final HttpMethod method = RequestTestHelper.generateRandomHttpMethod();
-        final List<RequestElementDTO> headers =
-                RequestTestHelper.generateRandomRequestElementDTOs(REQUEST_HEADERS_SIZE);
-        final String url = RequestTestHelper.generateRandomHttpUrl();
-        final List<RequestElementDTO> parameters =
-                RequestTestHelper.generateRandomRequestElementDTOs(REQUEST_PARAMETERS_SIZE);
-        final String body = RequestTestHelper.generateRandomBody();
+        final RequestDTO requestDTO = RequestTestHelper.generateRandomRequestDTOs(1).iterator().next();
 
-        final RequestDTO request = new RequestDTO();
-        request.setMethod(method);
-        request.setHeaders(headers);
-        request.setUrl(url);
-        request.setParameters(parameters);
-        request.setBody(body);
-
-        final RequestEntity<String> requestEntity = clientConverter.convert(request);
-        Assertions.assertEquals(method, requestEntity.getMethod());
-        Assertions.assertEquals(requestElementConverter.convertToHttpHeaders(headers),
+        final RequestEntity<String> requestEntity = clientConverter.convert(requestDTO);
+        Assertions.assertEquals(requestDTO.getMethod(), requestEntity.getMethod());
+        Assertions.assertEquals(requestElementConverter.convertToHttpHeaders(requestDTO.getHeaders()),
                 requestEntity.getHeaders());
-        checkUrl(url, requestEntity);
-        checkParameters(parameters, requestEntity);
-        Assertions.assertEquals(body, requestEntity.getBody());
+        checkUrl(requestDTO.getUrl(), requestEntity);
+        checkParameters(requestDTO.getParameters(), requestEntity);
+        Assertions.assertEquals(requestDTO.getBody(), requestEntity.getBody());
     }
 
     private void checkUrl(final String url, final RequestEntity<String> requestEntity) {
@@ -84,22 +70,10 @@ public class ClientConverterImplTest {
 
     @Test
     public void convertRequestDTOWithIncorrectUrlToRequestEntityTest() {
-        final HttpMethod method = RequestTestHelper.generateRandomHttpMethod();
-        final List<RequestElementDTO> headers =
-                RequestTestHelper.generateRandomRequestElementDTOs(REQUEST_HEADERS_SIZE);
-        final String nonValidUrl = "1 2 3";
-        final List<RequestElementDTO> parameters =
-                RequestTestHelper.generateRandomRequestElementDTOs(REQUEST_PARAMETERS_SIZE);
-        final String body = RequestTestHelper.generateRandomBody();
+        final RequestDTO requestDTO = RequestTestHelper.generateRandomRequestDTOs(1).iterator().next();
+        requestDTO.setUrl("1 2 3");
 
-        final RequestDTO request = new RequestDTO();
-        request.setMethod(method);
-        request.setHeaders(headers);
-        request.setUrl(nonValidUrl);
-        request.setParameters(parameters);
-        request.setBody(body);
-
-        Assertions.assertThrows(ConverterException.class, () -> clientConverter.convert(request));
+        Assertions.assertThrows(ConverterException.class, () -> clientConverter.convert(requestDTO));
     }
 
     @Test

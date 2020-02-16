@@ -1,38 +1,32 @@
 package com.hurynovich.api_tester.converter.dto_entity_converter.impl;
 
 import com.hurynovich.api_tester.converter.dto_entity_converter.DTOEntityConverter;
+import com.hurynovich.api_tester.converter.dto_entity_converter.GeneticDTOEntityConverter;
 import com.hurynovich.api_tester.model.dto.impl.RequestDTO;
 import com.hurynovich.api_tester.model.dto.impl.RequestElementDTO;
 import com.hurynovich.api_tester.model.entity.impl.RequestElementEntity;
 import com.hurynovich.api_tester.model.entity.impl.RequestEntity;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
-public class RequestDTOEntityConverter implements DTOEntityConverter<RequestDTO, RequestEntity> {
+public class RequestDTOEntityConverter extends GeneticDTOEntityConverter<RequestDTO, RequestEntity> {
 
     private static final String[] IGNORE_PROPERTIES = {"headers", "parameters"};
 
     private final DTOEntityConverter<RequestElementDTO, RequestElementEntity> requestElementConverter;
 
     public RequestDTOEntityConverter(final DTOEntityConverter<RequestElementDTO, RequestElementEntity> requestElementConverter) {
+        super(IGNORE_PROPERTIES);
+
         this.requestElementConverter = requestElementConverter;
     }
 
     @Override
-    public RequestEntity convertToEntity(final RequestDTO requestDTO) {
-        if (requestDTO != null) {
-            final RequestEntity requestEntity = new RequestEntity();
+    public RequestEntity convert(final RequestDTO requestDTO) {
+        final RequestEntity requestEntity = super.convert(requestDTO);
 
-            BeanUtils.copyProperties(requestDTO, requestEntity, IGNORE_PROPERTIES);
-
+        if (requestEntity != null) {
             requestEntity.setHeaders(requestElementConverter.convertAllToEntity(requestDTO.getHeaders()));
             requestEntity.setParameters(requestElementConverter.convertAllToEntity(requestDTO.getParameters()));
 
@@ -43,14 +37,12 @@ public class RequestDTOEntityConverter implements DTOEntityConverter<RequestDTO,
     }
 
     @Override
-    public RequestDTO convertToDTO(final RequestEntity requestEntity) {
-        if (requestEntity != null) {
-            final RequestDTO requestDTO = new RequestDTO();
+    public RequestDTO convert(final RequestEntity requestEntity) {
+        final RequestDTO requestDTO = super.convert(requestEntity);
 
-            BeanUtils.copyProperties(requestEntity, requestDTO, IGNORE_PROPERTIES);
-
+        if (requestDTO != null) {
             requestDTO.setHeaders(requestElementConverter.convertAllToDTO(requestEntity.getHeaders()));
-            requestEntity.setParameters(requestElementConverter.convertAllToEntity(requestDTO.getParameters()));
+            requestDTO.setParameters(requestElementConverter.convertAllToDTO(requestEntity.getParameters()));
 
             return requestDTO;
         } else {
@@ -59,21 +51,13 @@ public class RequestDTOEntityConverter implements DTOEntityConverter<RequestDTO,
     }
 
     @Override
-    public List<RequestEntity> convertAllToEntity(final Collection<RequestDTO> d) {
-        if (!CollectionUtils.isEmpty(d)) {
-            return d.stream().map(this::convertToEntity).collect(Collectors.toList());
-        } else {
-            return Collections.emptyList();
-        }
+    public Class<RequestDTO> getDTOClass() {
+        return RequestDTO.class;
     }
 
     @Override
-    public List<RequestDTO> convertAllToDTO(final Collection<RequestEntity> e) {
-        if (!CollectionUtils.isEmpty(e)) {
-            return e.stream().map(this::convertToDTO).collect(Collectors.toList());
-        } else {
-            return Collections.emptyList();
-        }
+    public Class<RequestEntity> getEntityClass() {
+        return RequestEntity.class;
     }
 
 }

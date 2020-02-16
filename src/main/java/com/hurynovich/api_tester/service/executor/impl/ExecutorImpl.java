@@ -2,7 +2,6 @@ package com.hurynovich.api_tester.service.executor.impl;
 
 import com.hurynovich.api_tester.builder.execution_log_entry_builder.ExecutionLogEntryBuilder;
 import com.hurynovich.api_tester.client.Client;
-import com.hurynovich.api_tester.client.exception.ClientException;
 import com.hurynovich.api_tester.model.dto.impl.ExecutionLogDTO;
 import com.hurynovich.api_tester.model.dto.impl.ExecutionLogEntryDTO;
 import com.hurynovich.api_tester.model.dto.impl.RequestDTO;
@@ -70,18 +69,11 @@ public class ExecutorImpl implements Executor {
                 final ExecutionLogEntryDTO requestLogEntry = executionLogEntryBuilder.build(request);
                 executionLog.getEntries().add(requestLogEntry);
 
-                try {
-                    final ResponseDTO response = client.sendRequest(request);
-                    final ExecutionLogEntryDTO responseLogEntry = executionLogEntryBuilder.build(response);
-                    executionLog.getEntries().add(responseLogEntry);
+                final ResponseDTO response = client.sendRequest(request);
+                final ExecutionLogEntryDTO responseLogEntry = executionLogEntryBuilder.build(response);
+                executionLog.getEntries().add(responseLogEntry);
 
-                    if (response.getStatus() != HttpStatus.OK) {
-                        executionState.setType(ExecutionStateType.ERROR);
-                    }
-                } catch (final ClientException e) {
-                    final ExecutionLogEntryDTO errorLogEntry = executionLogEntryBuilder.
-                            build("Failed to send request: " + e);
-                    executionLog.getEntries().add(errorLogEntry);
+                if (response.getStatus() != HttpStatus.OK) {
                     executionState.setType(ExecutionStateType.ERROR);
                 }
             } else {

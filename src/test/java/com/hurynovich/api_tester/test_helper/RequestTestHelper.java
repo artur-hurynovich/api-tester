@@ -1,8 +1,11 @@
 package com.hurynovich.api_tester.test_helper;
 
+import com.hurynovich.api_tester.model.dto.impl.RequestDTO;
 import com.hurynovich.api_tester.model.dto.impl.RequestElementDTO;
 import com.hurynovich.api_tester.model.entity.impl.RequestElementEntity;
+import com.hurynovich.api_tester.model.entity.impl.RequestEntity;
 import com.hurynovich.api_tester.model.enumeration.RequestElementType;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -23,6 +26,8 @@ public class RequestTestHelper {
     private static final int REQUEST_BODY_MAX_LENGTH = 100;
     private static final int REQUEST_HEADER_NAME_MAX_LENGTH = 10;
     private static final int REQUEST_HEADER_VALUE_MAX_LENGTH = 10;
+    private static final int REQUEST_HEADERS_SIZE = 3;
+    private static final int REQUEST_PARAMETERS_SIZE = 3;
 
     public static HttpMethod generateRandomHttpMethod() {
         return RandomValueGenerator.generateRandomEnumValue(HttpMethod.class);
@@ -78,6 +83,44 @@ public class RequestTestHelper {
             requestElement.setType(RandomValueGenerator.generateRandomEnumValue(RequestElementType.class));
 
             return requestElement;
+        }).collect(Collectors.toList());
+    }
+
+    public static List<RequestDTO> generateRandomRequestDTOs(final int size) {
+        return IntStream.range(1, size + 1).mapToObj(index -> {
+            final HttpMethod method = generateRandomHttpMethod();
+            final List<RequestElementDTO> headers = generateRandomRequestElementDTOs(REQUEST_HEADERS_SIZE);
+            final String url = generateRandomHttpUrl();
+            final List<RequestElementDTO> parameters = generateRandomRequestElementDTOs(REQUEST_PARAMETERS_SIZE);
+            final String body = generateRandomBody();
+
+            final RequestDTO request = new RequestDTO();
+            request.setMethod(method);
+            request.setHeaders(headers);
+            request.setUrl(url);
+            request.setParameters(parameters);
+            request.setBody(body);
+
+            return request;
+        }).collect(Collectors.toList());
+    }
+
+    public static List<RequestEntity> generateRandomRequestEntities(final int size) {
+        return IntStream.range(1, size + 1).mapToObj(index -> {
+            final HttpMethod method = generateRandomHttpMethod();
+            final List<RequestElementEntity> headers = generateRandomRequestElementEntities(REQUEST_HEADERS_SIZE);
+            final String url = generateRandomHttpUrl();
+            final List<RequestElementEntity> parameters = generateRandomRequestElementEntities(REQUEST_HEADERS_SIZE);
+            final String body = generateRandomBody();
+
+            final RequestEntity requestEntity = new RequestEntity();
+            requestEntity.setMethod(method);
+            requestEntity.setHeaders(headers);
+            requestEntity.setUrl(url);
+            requestEntity.setParameters(parameters);
+            requestEntity.setBody(body);
+
+            return requestEntity;
         }).collect(Collectors.toList());
     }
 

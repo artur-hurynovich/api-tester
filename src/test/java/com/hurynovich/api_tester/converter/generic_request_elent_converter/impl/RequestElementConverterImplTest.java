@@ -1,9 +1,10 @@
 package com.hurynovich.api_tester.converter.generic_request_elent_converter.impl;
 
-import com.hurynovich.api_tester.converter.generic_request_element_converter.RequestElementConverter;
-import com.hurynovich.api_tester.converter.generic_request_element_converter.impl.RequestElementConverterImpl;
+import com.hurynovich.api_tester.converter.request_element_converter.RequestElementConverter;
+import com.hurynovich.api_tester.converter.request_element_converter.impl.RequestElementConverterImpl;
 import com.hurynovich.api_tester.model.dto.impl.RequestElementDTO;
 import com.hurynovich.api_tester.test_helper.RequestTestHelper;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;

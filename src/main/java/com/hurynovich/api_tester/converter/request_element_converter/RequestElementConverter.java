@@ -1,6 +1,7 @@
-package com.hurynovich.api_tester.converter.generic_request_element_converter;
+package com.hurynovich.api_tester.converter.request_element_converter;
 
 import com.hurynovich.api_tester.model.dto.impl.RequestElementDTO;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.util.MultiValueMap;
 

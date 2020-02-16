@@ -1,8 +1,9 @@
-package com.hurynovich.api_tester.converter.generic_request_element_converter.impl;
+package com.hurynovich.api_tester.converter.request_element_converter.impl;
 
-import com.hurynovich.api_tester.converter.generic_request_element_converter.RequestElementConverter;
+import com.hurynovich.api_tester.converter.request_element_converter.RequestElementConverter;
 import com.hurynovich.api_tester.model.dto.impl.RequestElementDTO;
 import com.hurynovich.api_tester.model.enumeration.RequestElementType;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;

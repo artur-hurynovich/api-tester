@@ -1,6 +1,6 @@
 package com.hurynovich.api_tester.converter.exception;
 
-public class ConverterException extends Exception {
+public class ConverterException extends RuntimeException {
 
     public ConverterException() {
         super();

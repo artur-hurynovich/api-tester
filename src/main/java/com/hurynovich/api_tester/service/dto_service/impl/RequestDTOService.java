@@ -25,12 +25,12 @@ public class RequestDTOService implements DTOService<RequestDTO, Long> {
 
     @Override
     public RequestDTO create(final RequestDTO requestDTO) {
-        return requestConverter.convertToDTO(requestRepository.save(requestConverter.convertToEntity(requestDTO)));
+        return requestConverter.convert(requestRepository.save(requestConverter.convert(requestDTO)));
     }
 
     @Override
     public RequestDTO readById(final Long id) {
-        return requestConverter.convertToDTO(requestRepository.findById(id).orElse(null));
+        return requestConverter.convert(requestRepository.findById(id).orElse(null));
     }
 
     @Override
