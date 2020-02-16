@@ -20,13 +20,13 @@ public class RequestEntity extends AbstractEntity {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "request_id")
-    private List<RequestElementEntity> headers;
+    private List<NameValueElementEntity> headers;
 
     private String url;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "request_id")
-    private List<RequestElementEntity> parameters;
+    private List<NameValueElementEntity> parameters;
 
     private String body;
 
@@ -38,11 +38,11 @@ public class RequestEntity extends AbstractEntity {
         this.method = method;
     }
 
-    public List<RequestElementEntity> getHeaders() {
+    public List<NameValueElementEntity> getHeaders() {
         return headers;
     }
 
-    public void setHeaders(final List<RequestElementEntity> headers) {
+    public void setHeaders(final List<NameValueElementEntity> headers) {
         this.headers = headers;
     }
 
@@ -54,11 +54,11 @@ public class RequestEntity extends AbstractEntity {
         this.url = url;
     }
 
-    public List<RequestElementEntity> getParameters() {
+    public List<NameValueElementEntity> getParameters() {
         return parameters;
     }
 
-    public void setParameters(final List<RequestElementEntity> parameters) {
+    public void setParameters(final List<NameValueElementEntity> parameters) {
         this.parameters = parameters;
     }
 

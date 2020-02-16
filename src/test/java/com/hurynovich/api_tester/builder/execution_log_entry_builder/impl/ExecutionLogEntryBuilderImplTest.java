@@ -1,11 +1,9 @@
 package com.hurynovich.api_tester.builder.execution_log_entry_builder.impl;
 
 import com.hurynovich.api_tester.builder.execution_log_entry_builder.ExecutionLogEntryBuilder;
-import com.hurynovich.api_tester.converter.request_element_converter.RequestElementConverter;
-import com.hurynovich.api_tester.converter.request_element_converter.impl.RequestElementConverterImpl;
 import com.hurynovich.api_tester.model.dto.impl.ExecutionLogEntryDTO;
+import com.hurynovich.api_tester.model.dto.impl.NameValueElementDTO;
 import com.hurynovich.api_tester.model.dto.impl.RequestDTO;
-import com.hurynovich.api_tester.model.dto.impl.RequestElementDTO;
 import com.hurynovich.api_tester.model.dto.impl.ResponseDTO;
 import com.hurynovich.api_tester.test_helper.RandomValueGenerator;
 import com.hurynovich.api_tester.test_helper.RequestTestHelper;
@@ -14,7 +12,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 
@@ -33,19 +30,16 @@ public class ExecutionLogEntryBuilderImplTest {
     private static final int REQUEST_HEADERS_SIZE = 3;
     private static final int REQUEST_PARAMETERS_SIZE = 3;
 
-    private RequestElementConverter requestElementConverter = new RequestElementConverterImpl();
-
-    private ExecutionLogEntryBuilder executionLogEntryBuilder =
-            new ExecutionLogEntryBuilderImpl(requestElementConverter);
+    private ExecutionLogEntryBuilder executionLogEntryBuilder = new ExecutionLogEntryBuilderImpl();
 
     @Test
     public void buildOfRequestDTOTest() {
         final HttpMethod method = RequestTestHelper.generateRandomHttpMethod();
-        final List<RequestElementDTO> headers =
-                RequestTestHelper.generateRandomRequestElementDTOs(REQUEST_HEADERS_SIZE);
+        final List<NameValueElementDTO> headers =
+                RequestTestHelper.generateRandomNameValueElementDTOs(REQUEST_HEADERS_SIZE);
         final String url = RequestTestHelper.generateRandomHttpUrl();
-        final List<RequestElementDTO> parameters =
-                RequestTestHelper.generateRandomRequestElementDTOs(REQUEST_PARAMETERS_SIZE);
+        final List<NameValueElementDTO> parameters =
+                RequestTestHelper.generateRandomNameValueElementDTOs(REQUEST_PARAMETERS_SIZE);
         final String body = RequestTestHelper.generateRandomBody();
 
         final RequestDTO request = new RequestDTO();
@@ -76,7 +70,7 @@ public class ExecutionLogEntryBuilderImplTest {
     @Test
     public void buildOfResponseDTOTest() {
         final HttpStatus status = RequestTestHelper.generateRandomHttpStatus();
-        final HttpHeaders headers = RequestTestHelper.generateRandomHttpHeaders(REQUEST_HEADERS_SIZE);
+        final List<NameValueElementDTO> headers = RequestTestHelper.generateRandomNameValueElementDTOs(REQUEST_HEADERS_SIZE);
         final String body = RequestTestHelper.generateRandomBody();
 
         final ResponseDTO response = new ResponseDTO();
@@ -94,8 +88,7 @@ public class ExecutionLogEntryBuilderImplTest {
                 !logEntryDateTime.isAfter(currentDateTime));
 
         Assertions.assertEquals(status, executionLogEntry.getStatus());
-        Assertions.assertEquals(requestElementConverter.convertToRequestElements(headers),
-                executionLogEntry.getHeaders());
+        Assertions.assertEquals(headers, executionLogEntry.getHeaders());
         Assertions.assertEquals(body, executionLogEntry.getBody());
     }
 

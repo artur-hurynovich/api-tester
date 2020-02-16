@@ -2,7 +2,7 @@ package com.hurynovich.api_tester.converter.generic_request_elent_converter.impl
 
 import com.hurynovich.api_tester.converter.request_element_converter.RequestElementConverter;
 import com.hurynovich.api_tester.converter.request_element_converter.impl.RequestElementConverterImpl;
-import com.hurynovich.api_tester.model.dto.impl.RequestElementDTO;
+import com.hurynovich.api_tester.model.dto.impl.NameValueElementDTO;
 import com.hurynovich.api_tester.test_helper.RequestTestHelper;
 
 import org.junit.jupiter.api.Assertions;
@@ -18,7 +18,7 @@ public class RequestElementConverterImplTest {
 
     @Test
     public void convertToMultiValueMapTest() {
-        final List<RequestElementDTO> parameters = RequestTestHelper.generateRandomRequestElementDTOs(3);
+        final List<NameValueElementDTO> parameters = RequestTestHelper.generateRandomNameValueElementDTOs(3);
 
         final MultiValueMap<String, String> multiValueMap = requestElementConverter.convertToMultiValueMap(parameters);
 
@@ -27,7 +27,7 @@ public class RequestElementConverterImplTest {
 
     @Test
     public void convertToHttpHeadersTest() {
-        final List<RequestElementDTO> headers = RequestTestHelper.generateRandomRequestElementDTOs(3);
+        final List<NameValueElementDTO> headers = RequestTestHelper.generateRandomNameValueElementDTOs(3);
 
         final HttpHeaders httpHeaders = requestElementConverter.convertToHttpHeaders(headers);
 
@@ -38,12 +38,12 @@ public class RequestElementConverterImplTest {
     public void convertHttpHeadersToRequestElementsTest() {
         final HttpHeaders httpHeaders = RequestTestHelper.generateRandomHttpHeaders(3);
 
-        final List<RequestElementDTO> requestElements = requestElementConverter.convertToRequestElements(httpHeaders);
+        final List<NameValueElementDTO> requestElements = requestElementConverter.convertToRequestElements(httpHeaders);
 
         checkHttpHeaders(requestElements, httpHeaders);
     }
 
-    private void checkMultiValueMap(final List<RequestElementDTO> parameters,
+    private void checkMultiValueMap(final List<NameValueElementDTO> parameters,
                                     final MultiValueMap<String, String> multiValueMap) {
         Assertions.assertEquals(parameters.size(), multiValueMap.size());
 
@@ -59,7 +59,7 @@ public class RequestElementConverterImplTest {
         });
     }
 
-    private void checkHttpHeaders(final List<RequestElementDTO> requestElements,
+    private void checkHttpHeaders(final List<NameValueElementDTO> requestElements,
                                   final HttpHeaders httpHeaders) {
         Assertions.assertEquals(requestElements.size(), httpHeaders.size());
 

@@ -1,22 +1,22 @@
 package com.hurynovich.api_tester.converter.dto_entity_converter.impl;
 
 import com.hurynovich.api_tester.converter.dto_entity_converter.GeneticDTOEntityConverter;
-import com.hurynovich.api_tester.model.dto.impl.RequestElementDTO;
-import com.hurynovich.api_tester.model.entity.impl.RequestElementEntity;
+import com.hurynovich.api_tester.model.dto.impl.NameValueElementDTO;
+import com.hurynovich.api_tester.model.entity.impl.NameValueElementEntity;
 
 import org.springframework.stereotype.Service;
 
 @Service
-public class RequestElementDTOEntityConverter extends GeneticDTOEntityConverter<RequestElementDTO, RequestElementEntity> {
+public class RequestElementDTOEntityConverter extends GeneticDTOEntityConverter<NameValueElementDTO, NameValueElementEntity> {
 
     @Override
-    public Class<RequestElementDTO> getDTOClass() {
-        return RequestElementDTO.class;
+    public Class<NameValueElementDTO> getDTOClass() {
+        return NameValueElementDTO.class;
     }
 
     @Override
-    public Class<RequestElementEntity> getEntityClass() {
-        return RequestElementEntity.class;
+    public Class<NameValueElementEntity> getEntityClass() {
+        return NameValueElementEntity.class;
     }
 
 }

@@ -1,7 +1,7 @@
 package com.hurynovich.api_tester.model.entity.impl;
 
 import com.hurynovich.api_tester.model.entity.AbstractEntity;
-import com.hurynovich.api_tester.model.enumeration.RequestElementType;
+import com.hurynovich.api_tester.model.enumeration.NameValueElementType;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -9,8 +9,8 @@ import javax.persistence.Enumerated;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "apte_request_elements")
-public class RequestElementEntity extends AbstractEntity {
+@Table(name = "apte_name_value_elements")
+public class NameValueElementEntity extends AbstractEntity {
 
     private String name;
 
@@ -19,7 +19,7 @@ public class RequestElementEntity extends AbstractEntity {
     private String expression;
 
     @Enumerated(EnumType.STRING)
-    private RequestElementType type;
+    private NameValueElementType type;
 
     public String getName() {
         return name;
@@ -45,11 +45,11 @@ public class RequestElementEntity extends AbstractEntity {
         this.expression = expression;
     }
 
-    public RequestElementType getType() {
+    public NameValueElementType getType() {
         return type;
     }
 
-    public void setType(final RequestElementType type) {
+    public void setType(final NameValueElementType type) {
         this.type = type;
     }
 

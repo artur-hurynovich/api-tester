@@ -1,10 +1,10 @@
 package com.hurynovich.api_tester.model.dto.impl;
 
 import com.hurynovich.api_tester.model.dto.AbstractDTO;
-import com.hurynovich.api_tester.model.enumeration.RequestElementType;
+import com.hurynovich.api_tester.model.enumeration.NameValueElementType;
 import com.hurynovich.api_tester.utils.ObjectUtils;
 
-public class RequestElementDTO extends AbstractDTO {
+public class NameValueElementDTO extends AbstractDTO {
 
     private String name;
 
@@ -12,7 +12,7 @@ public class RequestElementDTO extends AbstractDTO {
 
     private String expression;
 
-    private RequestElementType type;
+    private NameValueElementType type;
 
     public String getName() {
         return name;
@@ -38,11 +38,11 @@ public class RequestElementDTO extends AbstractDTO {
         this.expression = expression;
     }
 
-    public RequestElementType getType() {
+    public NameValueElementType getType() {
         return type;
     }
 
-    public void setType(final RequestElementType type) {
+    public void setType(final NameValueElementType type) {
         this.type = type;
     }
 
@@ -56,7 +56,7 @@ public class RequestElementDTO extends AbstractDTO {
             return false;
         }
 
-        final RequestElementDTO that = (RequestElementDTO) o;
+        final NameValueElementDTO that = (NameValueElementDTO) o;
         return ObjectUtils.EqualsChecker.getInstance().
                 with(name, that.getName()).
                 with(value, that.getValue()).

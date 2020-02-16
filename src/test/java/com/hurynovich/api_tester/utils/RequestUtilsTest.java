@@ -1,8 +1,9 @@
 package com.hurynovich.api_tester.utils;
 
-import com.hurynovich.api_tester.model.dto.impl.RequestElementDTO;
+import com.hurynovich.api_tester.model.dto.impl.NameValueElementDTO;
 import com.hurynovich.api_tester.test_helper.RandomValueGenerator;
 import com.hurynovich.api_tester.test_helper.RequestTestHelper;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -38,15 +39,15 @@ public class RequestUtilsTest {
 
     @Test
     public void appendParametersTest() {
-        final List<RequestElementDTO> requestParameters = RequestTestHelper.generateRandomRequestElementDTOs(3);
+        final List<NameValueElementDTO> requestParameters = RequestTestHelper.generateRandomNameValueElementDTOs(3);
 
-        final RequestElementDTO firstRequestParameter = requestParameters.get(0);
+        final NameValueElementDTO firstRequestParameter = requestParameters.get(0);
         final String firstParameter = buildUrlParameter(firstRequestParameter);
 
-        final RequestElementDTO secondRequestParameter = requestParameters.get(1);
+        final NameValueElementDTO secondRequestParameter = requestParameters.get(1);
         final String secondParameter = buildUrlParameter(secondRequestParameter);
 
-        final RequestElementDTO thirdRequestParameter = requestParameters.get(2);
+        final NameValueElementDTO thirdRequestParameter = requestParameters.get(2);
         final String thirdParameter = buildUrlParameter(thirdRequestParameter);
 
         checkAppendParameters(URL_NO_PARAMETERS, URL_NO_PARAMETERS, Collections.emptyList());
@@ -101,12 +102,12 @@ public class RequestUtilsTest {
 
     @Test
     public void parseParametersTest() {
-        final List<RequestElementDTO> requestParameters = RequestTestHelper.generateRandomRequestElementDTOs(2);
+        final List<NameValueElementDTO> requestParameters = RequestTestHelper.generateRandomNameValueElementDTOs(2);
 
-        final RequestElementDTO firstRequestParameter = requestParameters.get(0);
+        final NameValueElementDTO firstRequestParameter = requestParameters.get(0);
         final String firstParameter = buildUrlParameter(firstRequestParameter);
 
-        final RequestElementDTO secondRequestParameter = requestParameters.get(1);
+        final NameValueElementDTO secondRequestParameter = requestParameters.get(1);
         final String secondParameter = buildUrlParameter(secondRequestParameter);
 
         checkParseParameters(URL_NO_PARAMETERS, Collections.emptyList());
@@ -134,7 +135,7 @@ public class RequestUtilsTest {
                 Arrays.asList(firstRequestParameter, secondRequestParameter));
     }
 
-    private String buildUrlParameter(final RequestElementDTO requestParameter) {
+    private String buildUrlParameter(final NameValueElementDTO requestParameter) {
         String value = requestParameter.getValue();
         if (value == null) {
             value = "";
@@ -143,17 +144,17 @@ public class RequestUtilsTest {
         return requestParameter.getName() + PARAMETER_NAME_VALUE_SEPARATOR + value;
     }
 
-    private void checkAppendParameters(final String initialUrl, final String expectedUrl, final List<RequestElementDTO> parameters) {
+    private void checkAppendParameters(final String initialUrl, final String expectedUrl, final List<NameValueElementDTO> parameters) {
         Assertions.assertEquals(expectedUrl, RequestUtils.appendParameters(initialUrl, parameters));
     }
 
-    private void checkParseParameters(final String url, final List<RequestElementDTO> expectedParameters) {
-        final List<RequestElementDTO> actualParameters = RequestUtils.parseParameters(url);
+    private void checkParseParameters(final String url, final List<NameValueElementDTO> expectedParameters) {
+        final List<NameValueElementDTO> actualParameters = RequestUtils.parseParameters(url);
 
         Assertions.assertEquals(expectedParameters.size(), actualParameters.size());
         for (int i = 0; i < expectedParameters.size(); i++) {
-            final RequestElementDTO expectedParameter = expectedParameters.get(i);
-            final RequestElementDTO actualParameter = actualParameters.get(i);
+            final NameValueElementDTO expectedParameter = expectedParameters.get(i);
+            final NameValueElementDTO actualParameter = actualParameters.get(i);
 
             Assertions.assertEquals(expectedParameter.getName(), actualParameter.getName());
             Assertions.assertEquals(expectedParameter.getValue(), actualParameter.getValue());

@@ -27,7 +27,7 @@ public class ClientConverterImpl implements ClientConverter<String> {
     }
 
     @Override
-    public RequestEntity<String> convert(final @NonNull RequestDTO request) throws ConverterException {
+    public RequestEntity<String> convert(final @NonNull RequestDTO request) {
         try {
             final MultiValueMap<String, String> uriVariables =
                     requestElementConverter.convertToMultiValueMap(request.getParameters());
@@ -49,7 +49,7 @@ public class ClientConverterImpl implements ClientConverter<String> {
         final ResponseDTO response = new ResponseDTO();
 
         response.setStatus(responseEntity.getStatusCode());
-        response.setHeaders(responseEntity.getHeaders());
+        response.setHeaders(requestElementConverter.convertToRequestElements(responseEntity.getHeaders()));
         response.setBody(responseEntity.getBody());
 
         return response;

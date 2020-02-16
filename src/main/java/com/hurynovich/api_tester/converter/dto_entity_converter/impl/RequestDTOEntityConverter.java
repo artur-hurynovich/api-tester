@@ -2,9 +2,9 @@ package com.hurynovich.api_tester.converter.dto_entity_converter.impl;
 
 import com.hurynovich.api_tester.converter.dto_entity_converter.DTOEntityConverter;
 import com.hurynovich.api_tester.converter.dto_entity_converter.GeneticDTOEntityConverter;
+import com.hurynovich.api_tester.model.dto.impl.NameValueElementDTO;
 import com.hurynovich.api_tester.model.dto.impl.RequestDTO;
-import com.hurynovich.api_tester.model.dto.impl.RequestElementDTO;
-import com.hurynovich.api_tester.model.entity.impl.RequestElementEntity;
+import com.hurynovich.api_tester.model.entity.impl.NameValueElementEntity;
 import com.hurynovich.api_tester.model.entity.impl.RequestEntity;
 
 import org.springframework.stereotype.Service;
@@ -14,9 +14,9 @@ public class RequestDTOEntityConverter extends GeneticDTOEntityConverter<Request
 
     private static final String[] IGNORE_PROPERTIES = {"headers", "parameters"};
 
-    private final DTOEntityConverter<RequestElementDTO, RequestElementEntity> requestElementConverter;
+    private final DTOEntityConverter<NameValueElementDTO, NameValueElementEntity> requestElementConverter;
 
-    public RequestDTOEntityConverter(final DTOEntityConverter<RequestElementDTO, RequestElementEntity> requestElementConverter) {
+    public RequestDTOEntityConverter(final DTOEntityConverter<NameValueElementDTO, NameValueElementEntity> requestElementConverter) {
         super(IGNORE_PROPERTIES);
 
         this.requestElementConverter = requestElementConverter;

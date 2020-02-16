@@ -2,52 +2,47 @@ package com.hurynovich.api_tester.converter.dto_entity_converter.impl;
 
 import com.hurynovich.api_tester.converter.dto_entity_converter.DTOEntityConverter;
 import com.hurynovich.api_tester.model.dto.impl.NameValueElementDTO;
-import com.hurynovich.api_tester.model.dto.impl.RequestDTO;
 import com.hurynovich.api_tester.model.entity.impl.NameValueElementEntity;
-import com.hurynovich.api_tester.model.entity.impl.RequestEntity;
 import com.hurynovich.api_tester.test_helper.DTOEntityConverterTestHelper;
 import com.hurynovich.api_tester.test_helper.RequestTestHelper;
 
 import org.junit.jupiter.api.Test;
 
-public class RequestDTOEntityConverterTest {
+public class NameValueElementDTOEntityConverterTest {
 
-    private final DTOEntityConverter<NameValueElementDTO, NameValueElementEntity> elementConverter =
+    private final DTOEntityConverter<NameValueElementDTO, NameValueElementEntity> converter =
             new RequestElementDTOEntityConverter();
-
-    private final DTOEntityConverter<RequestDTO, RequestEntity> converter =
-            new RequestDTOEntityConverter(elementConverter);
 
     @Test
     public void convertToEntityTest() {
         DTOEntityConverterTestHelper.processConvertToEntityTest(
-                () -> RequestTestHelper.generateRandomRequestDTOs(1),
+                () -> RequestTestHelper.generateRandomNameValueElementDTOs(1),
                 converter,
-                RequestTestHelper::checkRequestConversion);
+                RequestTestHelper::checkNameValueElementConversion);
     }
 
     @Test
     public void convertToDTOTest() {
         DTOEntityConverterTestHelper.processConvertToDTOTest(
-                () -> RequestTestHelper.generateRandomRequestEntities(1),
+                () -> RequestTestHelper.generateRandomNameValueElementEntities(1),
                 converter,
-                RequestTestHelper::checkRequestConversion);
+                RequestTestHelper::checkNameValueElementConversion);
     }
 
     @Test
     public void convertAllToEntityTest() {
         DTOEntityConverterTestHelper.processConvertAllToEntityTest(
-                () -> RequestTestHelper.generateRandomRequestDTOs(5),
+                () -> RequestTestHelper.generateRandomNameValueElementDTOs(5),
                 converter,
-                RequestTestHelper::checkRequestConversion);
+                RequestTestHelper::checkNameValueElementConversion);
     }
 
     @Test
     public void convertAllToDTOTest() {
         DTOEntityConverterTestHelper.processConvertAllToDTOTest(
-                () -> RequestTestHelper.generateRandomRequestEntities(5),
+                () -> RequestTestHelper.generateRandomNameValueElementEntities(5),
                 converter,
-                RequestTestHelper::checkRequestConversion);
+                RequestTestHelper::checkNameValueElementConversion);
     }
 
 }
