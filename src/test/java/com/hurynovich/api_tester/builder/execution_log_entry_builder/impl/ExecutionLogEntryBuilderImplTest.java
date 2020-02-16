@@ -61,6 +61,7 @@ public class ExecutionLogEntryBuilderImplTest {
         Assertions.assertEquals(method, executionLogEntry.getMethod());
 
         Assertions.assertEquals(headers, executionLogEntry.getHeaders());
+        Assertions.assertEquals(parameters, executionLogEntry.getParameters());
         Assertions.assertEquals(url, executionLogEntry.getUrl());
         Assertions.assertEquals(body, executionLogEntry.getBody());
 

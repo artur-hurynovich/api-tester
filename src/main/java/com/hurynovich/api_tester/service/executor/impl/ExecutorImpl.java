@@ -2,7 +2,7 @@ package com.hurynovich.api_tester.service.executor.impl;
 
 import com.hurynovich.api_tester.builder.execution_log_entry_builder.ExecutionLogEntryBuilder;
 import com.hurynovich.api_tester.client.Client;
-import com.hurynovich.api_tester.model.dto.impl.ExecutionLogDTO;
+import com.hurynovich.api_tester.model.document.ExecutionLogDocument;
 import com.hurynovich.api_tester.model.dto.impl.ExecutionLogEntryDTO;
 import com.hurynovich.api_tester.model.dto.impl.RequestDTO;
 import com.hurynovich.api_tester.model.dto.impl.ResponseDTO;
@@ -53,11 +53,10 @@ public class ExecutorImpl implements Executor {
         final ExecutionState executionState = executionHelper.updateExecutionStateCache(executionSignal);
 
         final List<RequestDTO> requests = executionState.getRequests();
-        ExecutionLogDTO executionLog = executionHelper.
-                getExecutionLog(executionSignal.getKey());
+        ExecutionLogDocument executionLog = executionHelper.getExecutionLog(executionSignal.getKey());
         if (executionLog == null) {
-            executionLog = new ExecutionLogDTO();
-            executionLog.setStartDateTime(LocalDateTime.now(ZoneId.systemDefault()));
+            executionLog = new ExecutionLogDocument();
+            executionLog.setDateTime(LocalDateTime.now(ZoneId.systemDefault()));
             executionLog.setEntries(new ArrayList<>());
         }
 

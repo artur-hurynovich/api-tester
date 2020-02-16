@@ -2,6 +2,7 @@ package com.hurynovich.api_tester.model.dto.impl;
 
 import com.hurynovich.api_tester.model.dto.AbstractDTO;
 import com.hurynovich.api_tester.model.enumeration.ExecutionLogEntryType;
+
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 
@@ -17,6 +18,8 @@ public class ExecutionLogEntryDTO extends AbstractDTO {
     private HttpMethod method;
 
     private List<NameValueElementDTO> headers;
+
+    private List<NameValueElementDTO> parameters;
 
     private String url;
 
@@ -56,6 +59,14 @@ public class ExecutionLogEntryDTO extends AbstractDTO {
 
     public void setHeaders(final List<NameValueElementDTO> headers) {
         this.headers = headers;
+    }
+
+    public List<NameValueElementDTO> getParameters() {
+        return parameters;
+    }
+
+    public void setParameters(final List<NameValueElementDTO> parameters) {
+        this.parameters = parameters;
     }
 
     public String getUrl() {

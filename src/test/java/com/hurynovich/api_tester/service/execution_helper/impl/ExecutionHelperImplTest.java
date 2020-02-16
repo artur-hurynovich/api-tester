@@ -2,7 +2,7 @@ package com.hurynovich.api_tester.service.execution_helper.impl;
 
 import com.hurynovich.api_tester.cache.Cache;
 import com.hurynovich.api_tester.cache.cache_key.impl.GenericExecutionCacheKey;
-import com.hurynovich.api_tester.model.dto.impl.ExecutionLogDTO;
+import com.hurynovich.api_tester.model.document.ExecutionLogDocument;
 import com.hurynovich.api_tester.model.dto.impl.RequestChainDTO;
 import com.hurynovich.api_tester.model.enumeration.ExecutionSignalType;
 import com.hurynovich.api_tester.model.enumeration.ExecutionStateType;
@@ -12,8 +12,8 @@ import com.hurynovich.api_tester.service.dto_service.DTOService;
 import com.hurynovich.api_tester.service.execution_helper.ExecutionHelper;
 import com.hurynovich.api_tester.service.execution_transition_container.ExecutionTransitionContainer;
 import com.hurynovich.api_tester.service.execution_transition_container.impl.ExecutionTransitionContainerImpl;
-
 import com.hurynovich.api_tester.test_helper.ExecutionTestHelper;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -59,7 +59,7 @@ public class ExecutionHelperImplTest {
     private Cache<GenericExecutionCacheKey, ExecutionState> executionStateCache;
 
     @Mock
-    private Cache<GenericExecutionCacheKey, ExecutionLogDTO> executionLogCache;
+    private Cache<GenericExecutionCacheKey, ExecutionLogDocument> executionLogCache;
 
     @Mock
     private DTOService<RequestChainDTO, Long> requestChainService;

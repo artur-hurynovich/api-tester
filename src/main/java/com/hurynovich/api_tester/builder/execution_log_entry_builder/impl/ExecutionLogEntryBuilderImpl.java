@@ -27,6 +27,10 @@ public class ExecutionLogEntryBuilderImpl implements ExecutionLogEntryBuilder {
 
         final List<NameValueElementDTO> headers = request.getHeaders();
         executionLogEntry.setHeaders(headers);
+
+        final List<NameValueElementDTO> parameters = request.getParameters();
+        executionLogEntry.setParameters(parameters);
+
         executionLogEntry.setUrl(request.getUrl());
         executionLogEntry.setBody(request.getBody());
 
@@ -39,8 +43,9 @@ public class ExecutionLogEntryBuilderImpl implements ExecutionLogEntryBuilder {
 
         executionLogEntry.setType(ExecutionLogEntryType.RESPONSE);
         executionLogEntry.setDateTime(LocalDateTime.now(ZoneId.systemDefault()));
-        executionLogEntry.setStatus(response.getStatus());
+
         executionLogEntry.setHeaders(response.getHeaders());
+        executionLogEntry.setStatus(response.getStatus());
         executionLogEntry.setBody(response.getBody());
 
         return executionLogEntry;
@@ -52,6 +57,7 @@ public class ExecutionLogEntryBuilderImpl implements ExecutionLogEntryBuilder {
 
         executionLogEntry.setType(ExecutionLogEntryType.ERROR);
         executionLogEntry.setDateTime(LocalDateTime.now(ZoneId.systemDefault()));
+
         executionLogEntry.setErrorMessage(errorMessage);
 
         return executionLogEntry;

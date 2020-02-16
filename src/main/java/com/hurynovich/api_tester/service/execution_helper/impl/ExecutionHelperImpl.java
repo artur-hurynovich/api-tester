@@ -2,7 +2,7 @@ package com.hurynovich.api_tester.service.execution_helper.impl;
 
 import com.hurynovich.api_tester.cache.Cache;
 import com.hurynovich.api_tester.cache.cache_key.impl.GenericExecutionCacheKey;
-import com.hurynovich.api_tester.model.dto.impl.ExecutionLogDTO;
+import com.hurynovich.api_tester.model.document.ExecutionLogDocument;
 import com.hurynovich.api_tester.model.dto.impl.RequestChainDTO;
 import com.hurynovich.api_tester.model.enumeration.ExecutionSignalType;
 import com.hurynovich.api_tester.model.enumeration.ExecutionStateType;
@@ -11,6 +11,7 @@ import com.hurynovich.api_tester.model.execution.ExecutionState;
 import com.hurynovich.api_tester.service.dto_service.DTOService;
 import com.hurynovich.api_tester.service.execution_helper.ExecutionHelper;
 import com.hurynovich.api_tester.service.execution_transition_container.ExecutionTransitionContainer;
+
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
@@ -27,13 +28,13 @@ public class ExecutionHelperImpl implements ExecutionHelper {
     private final ExecutionTransitionContainer executionTransitionContainer;
 
     private final Cache<GenericExecutionCacheKey, ExecutionState> executionStateCache;
-    private final Cache<GenericExecutionCacheKey, ExecutionLogDTO> executionLogCache;
+    private final Cache<GenericExecutionCacheKey, ExecutionLogDocument> executionLogCache;
 
     private final DTOService<RequestChainDTO, Long> requestChainService;
 
     public ExecutionHelperImpl(final @NonNull ExecutionTransitionContainer executionTransitionContainer,
                                final @NonNull Cache<GenericExecutionCacheKey, ExecutionState> executionStateCache,
-                               final @NonNull Cache<GenericExecutionCacheKey, ExecutionLogDTO> executionLogCache,
+                               final @NonNull Cache<GenericExecutionCacheKey, ExecutionLogDocument> executionLogCache,
                                final @NonNull DTOService<RequestChainDTO, Long> requestChainService) {
         this.executionTransitionContainer = executionTransitionContainer;
         this.executionStateCache = executionStateCache;
@@ -65,7 +66,7 @@ public class ExecutionHelperImpl implements ExecutionHelper {
     }
 
     @Override
-    public ExecutionLogDTO getExecutionLog(final GenericExecutionCacheKey key) {
+    public ExecutionLogDocument getExecutionLog(final GenericExecutionCacheKey key) {
         return executionLogCache.get(key);
     }
 
