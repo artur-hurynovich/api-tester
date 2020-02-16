@@ -7,7 +7,7 @@ import com.hurynovich.api_tester.model.entity.impl.NameValueElementEntity;
 import org.springframework.stereotype.Service;
 
 @Service
-public class RequestElementDTOEntityConverter extends GeneticDTOEntityConverter<NameValueElementDTO, NameValueElementEntity> {
+public class NameValueElementDTOEntityConverter extends GeneticDTOEntityConverter<NameValueElementDTO, NameValueElementEntity> {
 
     @Override
     public Class<NameValueElementDTO> getDTOClass() {

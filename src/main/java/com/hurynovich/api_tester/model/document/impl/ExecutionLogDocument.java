@@ -1,6 +1,7 @@
-package com.hurynovich.api_tester.model.document;
+package com.hurynovich.api_tester.model.document.impl;
 
-import com.hurynovich.api_tester.model.dto.impl.ExecutionLogEntryDTO;
+import com.hurynovich.api_tester.model.document.MongoDBDocument;
+import com.hurynovich.api_tester.model.dto.ExecutionLogEntryDTO;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -10,7 +11,7 @@ import java.util.List;
 import javax.persistence.Id;
 
 @Document(collection = "apte_execution_logs")
-public class ExecutionLogDocument {
+public class ExecutionLogDocument implements MongoDBDocument {
 
     @Id
     private String id;

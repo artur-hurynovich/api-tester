@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 public class NameValueElementDTOEntityConverterTest {
 
     private final DTOEntityConverter<NameValueElementDTO, NameValueElementEntity> converter =
-            new RequestElementDTOEntityConverter();
+            new NameValueElementDTOEntityConverter();
 
     @Test
     public void convertToEntityTest() {

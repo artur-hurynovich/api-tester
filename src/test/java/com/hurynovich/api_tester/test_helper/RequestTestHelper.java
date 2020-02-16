@@ -7,7 +7,6 @@ import com.hurynovich.api_tester.model.dto.impl.ResponseDTO;
 import com.hurynovich.api_tester.model.entity.impl.NameValueElementEntity;
 import com.hurynovich.api_tester.model.entity.impl.RequestChainEntity;
 import com.hurynovich.api_tester.model.entity.impl.RequestEntity;
-import com.hurynovich.api_tester.model.entity.impl.ResponseEntity;
 import com.hurynovich.api_tester.model.enumeration.NameValueElementType;
 
 import org.junit.jupiter.api.Assertions;
@@ -165,21 +164,6 @@ public class RequestTestHelper {
         }).collect(Collectors.toList());
     }
 
-    public static List<ResponseEntity> generateRandomResponseEntities(final int size) {
-        return IntStream.range(1, size + 1).mapToObj(index -> {
-            final HttpStatus status = generateRandomHttpStatus();
-            final List<NameValueElementEntity> headers = generateRandomNameValueElementEntities(HEADERS_SIZE);
-            final String body = generateRandomBody();
-
-            final ResponseEntity responseEntity = new ResponseEntity();
-            responseEntity.setStatus(status);
-            responseEntity.setHeaders(headers);
-            responseEntity.setBody(body);
-
-            return responseEntity;
-        }).collect(Collectors.toList());
-    }
-
     public static HttpStatus generateRandomHttpStatus() {
         return RandomValueGenerator.generateRandomEnumValue(HttpStatus.class);
     }
@@ -220,19 +204,6 @@ public class RequestTestHelper {
         Assertions.assertEquals(dtoParameters.size(), entityParameters.size());
         for (int i = 0; i < dtoParameters.size(); i++) {
             checkNameValueElementConversion(dtoParameters.get(i), entityParameters.get(i));
-        }
-
-        Assertions.assertEquals(dto.getBody(), entity.getBody());
-    }
-
-    public static void checkResponseConversion(final ResponseDTO dto, final ResponseEntity entity) {
-        Assertions.assertEquals(dto.getStatus(), entity.getStatus());
-
-        final List<NameValueElementDTO> dtoHeaders = dto.getHeaders();
-        final List<NameValueElementEntity> entityHeaders = entity.getHeaders();
-        Assertions.assertEquals(dtoHeaders.size(), entityHeaders.size());
-        for (int i = 0; i < dtoHeaders.size(); i++) {
-            checkNameValueElementConversion(dtoHeaders.get(i), entityHeaders.get(i));
         }
 
         Assertions.assertEquals(dto.getBody(), entity.getBody());

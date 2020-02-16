@@ -1,4 +1,4 @@
-package com.hurynovich.api_tester.repository;
+package com.hurynovich.api_tester.repository.jpa;
 
 import com.hurynovich.api_tester.model.entity.impl.RequestEntity;
 

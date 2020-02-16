@@ -1,6 +1,6 @@
-package com.hurynovich.api_tester.model.dto.impl;
+package com.hurynovich.api_tester.model.dto;
 
-import com.hurynovich.api_tester.model.dto.AbstractDTO;
+import com.hurynovich.api_tester.model.dto.impl.NameValueElementDTO;
 import com.hurynovich.api_tester.model.enumeration.ExecutionLogEntryType;
 
 import org.springframework.http.HttpMethod;
@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class ExecutionLogEntryDTO extends AbstractDTO {
+public class ExecutionLogEntryDTO {
 
     private ExecutionLogEntryType type;
 

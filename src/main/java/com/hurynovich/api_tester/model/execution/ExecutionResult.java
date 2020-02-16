@@ -1,6 +1,6 @@
 package com.hurynovich.api_tester.model.execution;
 
-import com.hurynovich.api_tester.model.document.ExecutionLogDocument;
+import com.hurynovich.api_tester.model.document.impl.ExecutionLogDocument;
 import com.hurynovich.api_tester.model.enumeration.ExecutionSignalType;
 
 import java.util.List;

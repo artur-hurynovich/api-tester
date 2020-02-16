@@ -7,6 +7,7 @@ import com.hurynovich.api_tester.model.dto.impl.RequestDTO;
 import com.hurynovich.api_tester.model.entity.impl.RequestChainEntity;
 import com.hurynovich.api_tester.model.entity.impl.RequestEntity;
 
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,7 +19,8 @@ public class RequestChainDTOEntityConverter extends GeneticDTOEntityConverter<Re
 
     private final DTOEntityConverter<RequestDTO, RequestEntity> requestConverter;
 
-    public RequestChainDTOEntityConverter(final DTOEntityConverter<RequestDTO, RequestEntity> requestConverter) {
+    public RequestChainDTOEntityConverter(
+            final @NonNull DTOEntityConverter<RequestDTO, RequestEntity> requestConverter) {
         super(IGNORE_PROPERTIES);
 
         this.requestConverter = requestConverter;

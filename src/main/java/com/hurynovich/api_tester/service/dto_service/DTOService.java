@@ -14,7 +14,7 @@ public interface DTOService<D extends AbstractDTO, I> {
 
     D update(D d);
 
-    void deleteById(I i);
+    void deleteById(I id);
 
     boolean existsById(I id);
 

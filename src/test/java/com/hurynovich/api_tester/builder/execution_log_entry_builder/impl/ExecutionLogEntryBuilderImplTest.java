@@ -1,7 +1,7 @@
 package com.hurynovich.api_tester.builder.execution_log_entry_builder.impl;
 
 import com.hurynovich.api_tester.builder.execution_log_entry_builder.ExecutionLogEntryBuilder;
-import com.hurynovich.api_tester.model.dto.impl.ExecutionLogEntryDTO;
+import com.hurynovich.api_tester.model.dto.ExecutionLogEntryDTO;
 import com.hurynovich.api_tester.model.dto.impl.NameValueElementDTO;
 import com.hurynovich.api_tester.model.dto.impl.RequestDTO;
 import com.hurynovich.api_tester.model.dto.impl.ResponseDTO;

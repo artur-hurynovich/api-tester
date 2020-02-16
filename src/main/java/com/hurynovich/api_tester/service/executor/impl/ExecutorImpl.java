@@ -2,8 +2,8 @@ package com.hurynovich.api_tester.service.executor.impl;
 
 import com.hurynovich.api_tester.builder.execution_log_entry_builder.ExecutionLogEntryBuilder;
 import com.hurynovich.api_tester.client.Client;
-import com.hurynovich.api_tester.model.document.ExecutionLogDocument;
-import com.hurynovich.api_tester.model.dto.impl.ExecutionLogEntryDTO;
+import com.hurynovich.api_tester.model.document.impl.ExecutionLogDocument;
+import com.hurynovich.api_tester.model.dto.ExecutionLogEntryDTO;
 import com.hurynovich.api_tester.model.dto.impl.RequestDTO;
 import com.hurynovich.api_tester.model.dto.impl.ResponseDTO;
 import com.hurynovich.api_tester.model.enumeration.ExecutionStateType;
