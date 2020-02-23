@@ -223,11 +223,68 @@ public class RequestTestHelper {
         Assertions.assertEquals(dto.getBody(), entity.getBody());
     }
 
-    public static void checkNameValueElementConversion(final NameValueElementDTO dto, final NameValueElementEntity entity) {
+    public static void checkNameValueElementConversion(final NameValueElementDTO dto,
+                                                       final NameValueElementEntity entity) {
         Assertions.assertEquals(dto.getName(), entity.getName());
         Assertions.assertEquals(dto.getValue(), entity.getValue());
         Assertions.assertEquals(dto.getExpression(), entity.getExpression());
         Assertions.assertEquals(dto.getType(), entity.getType());
+    }
+
+    public static void checkRequestChain(final RequestChainDTO expected, final RequestChainDTO actual) {
+        Assertions.assertEquals(expected.getId(), actual.getId());
+
+        final List<RequestDTO> expectedRequests = expected.getRequests();
+        final List<RequestDTO> actualRequests = actual.getRequests();
+
+        Assertions.assertEquals(expectedRequests.size(), actualRequests.size());
+
+        for (int i = 0; i < expectedRequests.size(); i++) {
+            final RequestDTO expectedRequest = expectedRequests.get(i);
+            final RequestDTO actualRequest = actualRequests.get(i);
+
+            checkRequest(expectedRequest, actualRequest);
+        }
+    }
+
+    public static void checkRequest(final RequestDTO expectedRequest, final RequestDTO actualRequest) {
+        Assertions.assertEquals(expectedRequest.getId(), actualRequest.getId());
+
+        final List<NameValueElementDTO> expectedHeaders = expectedRequest.getHeaders();
+        final List<NameValueElementDTO> actualHeaders = actualRequest.getHeaders();
+
+        Assertions.assertEquals(expectedHeaders.size(), actualHeaders.size());
+
+        for (int i = 0; i < expectedHeaders.size(); i++) {
+            final NameValueElementDTO expectedHeader = expectedHeaders.get(i);
+            final NameValueElementDTO actualHeader = actualHeaders.get(i);
+
+            checkNameValueElement(expectedHeader, actualHeader);
+        }
+
+        Assertions.assertEquals(expectedRequest.getUrl(), actualRequest.getUrl());
+
+        final List<NameValueElementDTO> expectedParameters = expectedRequest.getParameters();
+        final List<NameValueElementDTO> actualParameters = actualRequest.getParameters();
+
+        Assertions.assertEquals(expectedParameters.size(), actualParameters.size());
+
+        for (int i = 0; i < expectedHeaders.size(); i++) {
+            final NameValueElementDTO expectedParameter = expectedParameters.get(i);
+            final NameValueElementDTO actualParameter = actualParameters.get(i);
+
+            checkNameValueElement(expectedParameter, actualParameter);
+        }
+
+        Assertions.assertEquals(expectedRequest.getBody(), actualRequest.getBody());
+    }
+
+    public static void checkNameValueElement(final NameValueElementDTO expectedNameValueElement,
+                                       final NameValueElementDTO actualNameValueElement) {
+        Assertions.assertEquals(expectedNameValueElement.getName(), actualNameValueElement.getName());
+        Assertions.assertEquals(expectedNameValueElement.getValue(), actualNameValueElement.getValue());
+        Assertions.assertEquals(expectedNameValueElement.getExpression(), actualNameValueElement.getExpression());
+        Assertions.assertEquals(expectedNameValueElement.getType(), actualNameValueElement.getType());
     }
 
 }

@@ -21,17 +21,13 @@ public class DTOEntityConverterTestHelper<D extends AbstractDTO, E extends Abstr
         this.checkConsumer = checkConsumer;
     }
 
-    public void processConvertToEntityTest(final List<D> dtos) {
-        final D dto = dtos.iterator().next();
-
+    public void processConvertToEntityTest(final D dto) {
         final E entity = converter.convert(dto);
 
         checkConsumer.accept(dto, entity);
     }
 
-    public void processConvertToDTOTest(final List<E> entities) {
-        final E entity = entities.iterator().next();
-
+    public void processConvertToDTOTest(final E entity) {
         final D dto = converter.convert(entity);
 
         checkConsumer.accept(dto, entity);

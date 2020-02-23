@@ -7,57 +7,46 @@ import com.hurynovich.api_tester.model.dto.impl.RequestDTO;
 import com.hurynovich.api_tester.model.entity.impl.NameValueElementEntity;
 import com.hurynovich.api_tester.model.entity.impl.RequestChainEntity;
 import com.hurynovich.api_tester.model.entity.impl.RequestEntity;
-import com.hurynovich.api_tester.test_helper.DTOEntityConverterTestHelper;
 import com.hurynovich.api_tester.test_helper.RequestTestHelper;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-import java.util.function.BiConsumer;
+public class RequestChainDTOEntityConverterTest
+        extends GenericDTOEntityConverterTest<RequestChainDTO, RequestChainEntity> {
 
-public class RequestChainDTOEntityConverterTest {
+    public RequestChainDTOEntityConverterTest() {
+        super(() -> RequestTestHelper.generateRandomRequestChainDTOs(DEFAULT_DTO_COUNT),
+                () -> RequestTestHelper.generateRandomRequestChainEntities(DEFAULT_ENTITY_COUNT),
+                () -> {
+                    final DTOEntityConverter<NameValueElementDTO, NameValueElementEntity> elementConverter =
+                            new NameValueElementDTOEntityConverter();
 
-    private final DTOEntityConverter<NameValueElementDTO, NameValueElementEntity> elementConverter =
-            new NameValueElementDTOEntityConverter();
+                    final DTOEntityConverter<RequestDTO, RequestEntity> requestConverter =
+                            new RequestDTOEntityConverter(elementConverter);
 
-    private final DTOEntityConverter<RequestDTO, RequestEntity> requestConverter =
-            new RequestDTOEntityConverter(elementConverter);
-
-    private final DTOEntityConverter<RequestChainDTO, RequestChainEntity> converter =
-            new RequestChainDTOEntityConverter(requestConverter);
-
-    private final BiConsumer<RequestChainDTO, RequestChainEntity> checkConsumer =
-            RequestTestHelper::checkRequestChainConversion;
-
-    private final DTOEntityConverterTestHelper<RequestChainDTO, RequestChainEntity> helper =
-            new DTOEntityConverterTestHelper<>(converter, checkConsumer);
+                    return new RequestChainDTOEntityConverter(requestConverter);
+                },
+                RequestTestHelper::checkRequestChainConversion);
+    }
 
     @Test
     public void convertToEntityTest() {
-        final List<RequestChainDTO> requestChains = RequestTestHelper.generateRandomRequestChainDTOs(1);
-
-        helper.processConvertToEntityTest(requestChains);
+        super.convertToEntityTest();
     }
 
     @Test
     public void convertToDTOTest() {
-        final List<RequestChainEntity> requestChains = RequestTestHelper.generateRandomRequestChainEntities(1);
-
-        helper.processConvertToDTOTest(requestChains);
+        super.convertToDTOTest();
     }
 
     @Test
     public void convertAllToEntityTest() {
-        final List<RequestChainDTO> requestChains = RequestTestHelper.generateRandomRequestChainDTOs(1);
-
-        helper.processConvertAllToEntityTest(requestChains);
+        super.convertAllToEntityTest();
     }
 
     @Test
     public void convertAllToDTOTest() {
-        final List<RequestChainEntity> requestChains = RequestTestHelper.generateRandomRequestChainEntities(5);
-
-        helper.processConvertAllToDTOTest(requestChains);
+        super.convertAllToDTOTest();
     }
 
 }

@@ -5,54 +5,43 @@ import com.hurynovich.api_tester.model.dto.impl.NameValueElementDTO;
 import com.hurynovich.api_tester.model.dto.impl.RequestDTO;
 import com.hurynovich.api_tester.model.entity.impl.NameValueElementEntity;
 import com.hurynovich.api_tester.model.entity.impl.RequestEntity;
-import com.hurynovich.api_tester.test_helper.DTOEntityConverterTestHelper;
 import com.hurynovich.api_tester.test_helper.RequestTestHelper;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-import java.util.function.BiConsumer;
+public class RequestDTOEntityConverterTest
+        extends GenericDTOEntityConverterTest<RequestDTO, RequestEntity> {
 
-public class RequestDTOEntityConverterTest {
+    public RequestDTOEntityConverterTest() {
+        super(() -> RequestTestHelper.generateRandomRequestDTOs(DEFAULT_DTO_COUNT),
+                () -> RequestTestHelper.generateRandomRequestEntities(DEFAULT_ENTITY_COUNT),
+                () -> {
+                    final DTOEntityConverter<NameValueElementDTO, NameValueElementEntity> elementConverter =
+                            new NameValueElementDTOEntityConverter();
 
-    private final DTOEntityConverter<NameValueElementDTO, NameValueElementEntity> elementConverter =
-            new NameValueElementDTOEntityConverter();
-
-    private final DTOEntityConverter<RequestDTO, RequestEntity> converter =
-            new RequestDTOEntityConverter(elementConverter);
-
-    private final BiConsumer<RequestDTO, RequestEntity> checkConsumer =
-            RequestTestHelper::checkRequestConversion;
-
-    private final DTOEntityConverterTestHelper<RequestDTO, RequestEntity> helper =
-            new DTOEntityConverterTestHelper<>(converter, checkConsumer);
+                    return new RequestDTOEntityConverter(elementConverter);
+                },
+                RequestTestHelper::checkRequestConversion);
+    }
 
     @Test
     public void convertToEntityTest() {
-        final List<RequestDTO> requests = RequestTestHelper.generateRandomRequestDTOs(1);
-
-        helper.processConvertToEntityTest(requests);
+        super.convertToEntityTest();
     }
 
     @Test
     public void convertToDTOTest() {
-        final List<RequestEntity> requests = RequestTestHelper.generateRandomRequestEntities(1);
-
-        helper.processConvertToDTOTest(requests);
+        super.convertToDTOTest();
     }
 
     @Test
     public void convertAllToEntityTest() {
-        final List<RequestDTO> requests = RequestTestHelper.generateRandomRequestDTOs(5);
-
-        helper.processConvertAllToEntityTest(requests);
+        super.convertAllToEntityTest();
     }
 
     @Test
     public void convertAllToDTOTest() {
-        final List<RequestEntity> requests = RequestTestHelper.generateRandomRequestEntities(5);
-
-        helper.processConvertAllToDTOTest(requests);
+        super.convertAllToDTOTest();
     }
 
 }
