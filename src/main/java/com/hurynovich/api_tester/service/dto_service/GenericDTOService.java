@@ -46,7 +46,11 @@ public abstract class GenericDTOService <D extends AbstractDTO, E extends Abstra
 
     @Override
     public void deleteById(final I id) {
-        repository.deleteById(id);
+        if (existsById(id)) {
+            repository.deleteById(id);
+        } else {
+            throw new EntityNotFoundException();
+        }
     }
 
     @Override

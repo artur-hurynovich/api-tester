@@ -52,7 +52,7 @@ public abstract class GeneticDTOEntityConverter<D extends AbstractDTO, E extends
             if (e != null) {
                 final D d = getDTOClass().getDeclaredConstructor().newInstance();
 
-                BeanUtils.copyProperties(d, e, ignoreProperties);
+                BeanUtils.copyProperties(e, d, ignoreProperties);
 
                 return d;
             } else {

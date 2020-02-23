@@ -55,6 +55,8 @@ public class RequestTestHelper {
         return IntStream.range(1, size + 1).mapToObj(index -> {
             final NameValueElementDTO requestElement = new NameValueElementDTO();
 
+            requestElement.setId((long) RandomValueGenerator.generateRandomPositiveInt());
+
             requestElement.setName(RandomValueGenerator.generateRandomStringLettersOnly(
                     NAME_VALUE_ELEMENT_NAME_MAX_LENGTH));
 
@@ -73,6 +75,8 @@ public class RequestTestHelper {
     public static List<NameValueElementEntity> generateRandomNameValueElementEntities(final int size) {
         return IntStream.range(1, size + 1).mapToObj(index -> {
             final NameValueElementEntity requestElement = new NameValueElementEntity();
+
+            requestElement.setId((long) RandomValueGenerator.generateRandomPositiveInt());
 
             requestElement.setName(RandomValueGenerator.generateRandomStringLettersOnly(
                     NAME_VALUE_ELEMENT_NAME_MAX_LENGTH));
@@ -98,6 +102,8 @@ public class RequestTestHelper {
             final String body = generateRandomBody();
 
             final RequestDTO request = new RequestDTO();
+
+            request.setId((long) RandomValueGenerator.generateRandomPositiveInt());
             request.setMethod(method);
             request.setHeaders(headers);
             request.setUrl(url);
@@ -116,14 +122,16 @@ public class RequestTestHelper {
             final List<NameValueElementEntity> parameters = generateRandomNameValueElementEntities(HEADERS_SIZE);
             final String body = generateRandomBody();
 
-            final RequestEntity requestEntity = new RequestEntity();
-            requestEntity.setMethod(method);
-            requestEntity.setHeaders(headers);
-            requestEntity.setUrl(url);
-            requestEntity.setParameters(parameters);
-            requestEntity.setBody(body);
+            final RequestEntity request = new RequestEntity();
 
-            return requestEntity;
+            request.setId((long) RandomValueGenerator.generateRandomPositiveInt());
+            request.setMethod(method);
+            request.setHeaders(headers);
+            request.setUrl(url);
+            request.setParameters(parameters);
+            request.setBody(body);
+
+            return request;
         }).collect(Collectors.toList());
     }
 
@@ -131,10 +139,12 @@ public class RequestTestHelper {
         return IntStream.range(1, size + 1).mapToObj(index -> {
             final List<RequestDTO> requestDTOs = generateRandomRequestDTOs(REQUESTS_IN_CHAIN_SIZE);
 
-            final RequestChainDTO requestChainDTO = new RequestChainDTO();
-            requestChainDTO.setRequests(requestDTOs);
+            final RequestChainDTO requestChain = new RequestChainDTO();
 
-            return requestChainDTO;
+            requestChain.setId((long) RandomValueGenerator.generateRandomPositiveInt());
+            requestChain.setRequests(requestDTOs);
+
+            return requestChain;
         }).collect(Collectors.toList());
     }
 
@@ -142,10 +152,12 @@ public class RequestTestHelper {
         return IntStream.range(1, size + 1).mapToObj(index -> {
             final List<RequestEntity> requestEntities = generateRandomRequestEntities(REQUESTS_IN_CHAIN_SIZE);
 
-            final RequestChainEntity requestChainEntity = new RequestChainEntity();
-            requestChainEntity.setRequests(requestEntities);
+            final RequestChainEntity requestChain = new RequestChainEntity();
 
-            return requestChainEntity;
+            requestChain.setId((long) RandomValueGenerator.generateRandomPositiveInt());
+            requestChain.setRequests(requestEntities);
+
+            return requestChain;
         }).collect(Collectors.toList());
     }
 
@@ -155,12 +167,14 @@ public class RequestTestHelper {
             final List<NameValueElementDTO> headers = generateRandomNameValueElementDTOs(HEADERS_SIZE);
             final String body = generateRandomBody();
 
-            final ResponseDTO responseDTO = new ResponseDTO();
-            responseDTO.setStatus(status);
-            responseDTO.setHeaders(headers);
-            responseDTO.setBody(body);
+            final ResponseDTO response = new ResponseDTO();
 
-            return responseDTO;
+            response.setId((long) RandomValueGenerator.generateRandomPositiveInt());
+            response.setStatus(status);
+            response.setHeaders(headers);
+            response.setBody(body);
+
+            return response;
         }).collect(Collectors.toList());
     }
 
