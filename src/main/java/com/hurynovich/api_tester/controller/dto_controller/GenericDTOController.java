@@ -18,24 +18,24 @@ import java.util.List;
 
 public class GenericDTOController<D extends AbstractDTO, I> {
 
-    private final Validator<D> requestValidator;
+    private final Validator<D> validator;
 
-    private final DTOService<D, I> requestService;
+    private final DTOService<D, I> service;
 
-    public GenericDTOController(final Validator<D> requestValidator, final DTOService<D, I> requestService) {
-        this.requestValidator = requestValidator;
-        this.requestService = requestService;
+    public GenericDTOController(final Validator<D> validator, final DTOService<D, I> service) {
+        this.validator = validator;
+        this.service = service;
     }
 
     @PostMapping("/create")
     public ResponseEntity<GenericControllerResponse<D>> create(final @NonNull @RequestBody D d) {
-        final ValidationResult validationResult = requestValidator.validate(d);
+        final ValidationResult validationResult = validator.validate(d);
 
         final GenericControllerResponse<D> response = new GenericControllerResponse<>();
         response.setValidationResult(validationResult);
 
         if (validationResult.getType() == ValidationResultType.VALID) {
-            response.setPayload(requestService.create(d));
+            response.setPayload(service.create(d));
 
             return ResponseEntity.ok(response);
         } else {
@@ -48,7 +48,7 @@ public class GenericDTOController<D extends AbstractDTO, I> {
         final GenericControllerResponse<D> response = new GenericControllerResponse<>();
         response.setValidationResult(ValidationResult.createValidResult());
 
-        response.setPayload(requestService.readById(id));
+        response.setPayload(service.readById(id));
 
         return ResponseEntity.ok(response);
     }
@@ -58,14 +58,25 @@ public class GenericDTOController<D extends AbstractDTO, I> {
         final GenericControllerResponse<List<D>> response = new GenericControllerResponse<>();
         response.setValidationResult(ValidationResult.createValidResult());
 
-        response.setPayload(requestService.readAll());
+        response.setPayload(service.readAll());
 
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/update")
     public ResponseEntity<GenericControllerResponse<D>> update(final @NonNull @RequestBody D d) {
-        return create(d);
+        final ValidationResult validationResult = validator.validate(d);
+
+        final GenericControllerResponse<D> response = new GenericControllerResponse<>();
+        response.setValidationResult(validationResult);
+
+        if (validationResult.getType() == ValidationResultType.VALID) {
+            response.setPayload(service.update(d));
+
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.badRequest().body(response);
+        }
     }
 
     @PostMapping("/deleteById")
@@ -73,7 +84,7 @@ public class GenericDTOController<D extends AbstractDTO, I> {
         final GenericControllerResponse<D> response = new GenericControllerResponse<>();
         response.setValidationResult(ValidationResult.createValidResult());
 
-        requestService.deleteById(id);
+        service.deleteById(id);
 
         return ResponseEntity.ok(response);
     }

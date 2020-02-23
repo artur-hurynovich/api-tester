@@ -1,5 +1,6 @@
-package com.hurynovich.api_tester.controller.dto_controller;
+package com.hurynovich.api_tester.controller.dto_controller.impl;
 
+import com.hurynovich.api_tester.controller.dto_controller.GenericDTOController;
 import com.hurynovich.api_tester.controller.exception.ControllerException;
 import com.hurynovich.api_tester.model.controller_response.impl.GenericControllerResponse;
 import com.hurynovich.api_tester.model.dto.impl.RequestDTO;

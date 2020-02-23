@@ -15,13 +15,13 @@ public class RequestDTOEntityConverter extends GeneticDTOEntityConverter<Request
 
     private static final String[] IGNORE_PROPERTIES = {"headers", "parameters"};
 
-    private final DTOEntityConverter<NameValueElementDTO, NameValueElementEntity> requestElementConverter;
+    private final DTOEntityConverter<NameValueElementDTO, NameValueElementEntity> nameValueElementConverter;
 
     public RequestDTOEntityConverter(
-            final @NonNull DTOEntityConverter<NameValueElementDTO, NameValueElementEntity> requestElementConverter) {
+            final @NonNull DTOEntityConverter<NameValueElementDTO, NameValueElementEntity> nameValueElementConverter) {
         super(IGNORE_PROPERTIES);
 
-        this.requestElementConverter = requestElementConverter;
+        this.nameValueElementConverter = nameValueElementConverter;
     }
 
     @Override
@@ -29,8 +29,8 @@ public class RequestDTOEntityConverter extends GeneticDTOEntityConverter<Request
         final RequestEntity requestEntity = super.convert(requestDTO);
 
         if (requestEntity != null) {
-            requestEntity.setHeaders(requestElementConverter.convertAllToEntity(requestDTO.getHeaders()));
-            requestEntity.setParameters(requestElementConverter.convertAllToEntity(requestDTO.getParameters()));
+            requestEntity.setHeaders(nameValueElementConverter.convertAllToEntity(requestDTO.getHeaders()));
+            requestEntity.setParameters(nameValueElementConverter.convertAllToEntity(requestDTO.getParameters()));
 
             return requestEntity;
         } else {
@@ -43,8 +43,8 @@ public class RequestDTOEntityConverter extends GeneticDTOEntityConverter<Request
         final RequestDTO requestDTO = super.convert(requestEntity);
 
         if (requestDTO != null) {
-            requestDTO.setHeaders(requestElementConverter.convertAllToDTO(requestEntity.getHeaders()));
-            requestDTO.setParameters(requestElementConverter.convertAllToDTO(requestEntity.getParameters()));
+            requestDTO.setHeaders(nameValueElementConverter.convertAllToDTO(requestEntity.getHeaders()));
+            requestDTO.setParameters(nameValueElementConverter.convertAllToDTO(requestEntity.getParameters()));
 
             return requestDTO;
         } else {

@@ -43,16 +43,16 @@ import static com.hurynovich.api_tester.test_helper.ExecutionTestHelper.buildExe
 @ExtendWith(MockitoExtension.class)
 public class ExecutionHelperImplTest {
 
-    private static final ExecutionState PENDING_RUNNING_EXECUTION_STATE = buildExecutionState(PENDING_RUNNING);
-    private static final ExecutionState RUNNING_EXECUTION_STATE = buildExecutionState(RUNNING);
-    private static final ExecutionState PENDING_PAUSED_EXECUTION_STATE = buildExecutionState(PENDING_PAUSED);
-    private static final ExecutionState PAUSED_EXECUTION_STATE = buildExecutionState(PAUSED);
-    private static final ExecutionState PENDING_STOPPED_EXECUTION_STATE = buildExecutionState(PENDING_STOPPED);
-    private static final ExecutionState STOPPED_EXECUTION_STATE = buildExecutionState(STOPPED);
-    private static final ExecutionState FINISHED_EXECUTION_STATE = buildExecutionState(FINISHED);
-    private static final ExecutionState ERROR_EXECUTION_STATE = buildExecutionState(ERROR);
+    private final ExecutionState PENDING_RUNNING_EXECUTION_STATE = buildExecutionState(PENDING_RUNNING);
+    private final ExecutionState RUNNING_EXECUTION_STATE = buildExecutionState(RUNNING);
+    private final ExecutionState PENDING_PAUSED_EXECUTION_STATE = buildExecutionState(PENDING_PAUSED);
+    private final ExecutionState PAUSED_EXECUTION_STATE = buildExecutionState(PAUSED);
+    private final ExecutionState PENDING_STOPPED_EXECUTION_STATE = buildExecutionState(PENDING_STOPPED);
+    private final ExecutionState STOPPED_EXECUTION_STATE = buildExecutionState(STOPPED);
+    private final ExecutionState FINISHED_EXECUTION_STATE = buildExecutionState(FINISHED);
+    private final ExecutionState ERROR_EXECUTION_STATE = buildExecutionState(ERROR);
 
-    private static final ExecutionTransitionContainer EXECUTION_TRANSITION_CONTAINER =
+    private final ExecutionTransitionContainer EXECUTION_TRANSITION_CONTAINER =
             new ExecutionTransitionContainerImpl();
 
     @Mock
