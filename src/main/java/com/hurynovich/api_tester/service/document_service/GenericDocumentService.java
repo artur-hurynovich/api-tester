@@ -1,13 +1,13 @@
 package com.hurynovich.api_tester.service.document_service;
 
-import com.hurynovich.api_tester.model.document.MongoDBDocument;
+import com.hurynovich.api_tester.model.document.AbstractDocument;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.lang.NonNull;
 
 import javax.persistence.EntityNotFoundException;
 
-public class GenericDocumentService<D extends MongoDBDocument, I> implements DocumentService<D, I> {
+public class GenericDocumentService<D extends AbstractDocument, I> implements DocumentService<D, I> {
 
     private final MongoRepository<D, I> repository;
 
@@ -32,7 +32,11 @@ public class GenericDocumentService<D extends MongoDBDocument, I> implements Doc
 
     @Override
     public void deleteById(final I id) {
-        repository.deleteById(id);
+        if (repository.existsById(id)) {
+            repository.deleteById(id);
+        } else {
+            throw new EntityNotFoundException();
+        }
     }
 
 }

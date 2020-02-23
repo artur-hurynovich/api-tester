@@ -1,6 +1,6 @@
 package com.hurynovich.api_tester.model.document.impl;
 
-import com.hurynovich.api_tester.model.document.MongoDBDocument;
+import com.hurynovich.api_tester.model.document.AbstractDocument;
 import com.hurynovich.api_tester.model.dto.ExecutionLogEntryDTO;
 
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -8,13 +8,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import javax.persistence.Id;
-
 @Document(collection = "apte_execution_logs")
-public class ExecutionLogDocument implements MongoDBDocument {
-
-    @Id
-    private String id;
+public class ExecutionLogDocument extends AbstractDocument {
 
     private LocalDateTime dateTime;
 
@@ -23,14 +18,6 @@ public class ExecutionLogDocument implements MongoDBDocument {
     private Long requestChainId;
 
     private List<ExecutionLogEntryDTO> entries;
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(final String id) {
-        this.id = id;
-    }
 
     public LocalDateTime getDateTime() {
         return dateTime;

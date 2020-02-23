@@ -36,7 +36,7 @@ public class DTOServiceTestHelper<D extends AbstractDTO, E extends AbstractEntit
     }
 
     public void processCreateTest(final D dto) {
-        repository.deleteAll();
+        clearRepository();
 
         final D storedDto = service.create(dto);
 
@@ -44,7 +44,7 @@ public class DTOServiceTestHelper<D extends AbstractDTO, E extends AbstractEntit
     }
 
     public void processReadByIdSuccessTest(final D dto) {
-        repository.deleteAll();
+        clearRepository();
 
         initRepository(Collections.singletonList(dto));
 
@@ -52,12 +52,16 @@ public class DTOServiceTestHelper<D extends AbstractDTO, E extends AbstractEntit
     }
 
     public void processReadByIdFailureTest() {
+        clearRepository();
+
         final long id = RandomValueGenerator.generateRandomPositiveInt();
 
         Assertions.assertThrows(EntityNotFoundException.class, () -> service.readById(id));
     }
 
     public void processReadAllTest(final List<D> dtos) {
+        clearRepository();
+
         initRepository(dtos);
 
         final List<D> storedDtos = service.readAll();
@@ -73,6 +77,8 @@ public class DTOServiceTestHelper<D extends AbstractDTO, E extends AbstractEntit
     }
 
     public void processUpdateTest(final D dto, final Function<D, D> updateFunction) {
+        clearRepository();
+
         initRepository(Collections.singletonList(dto));
 
         final D updatedDto = updateFunction.apply(dto);
@@ -85,6 +91,8 @@ public class DTOServiceTestHelper<D extends AbstractDTO, E extends AbstractEntit
     }
 
     public void processDeleteByIdSuccessTest(final D dto) {
+        clearRepository();
+
         initRepository(Collections.singletonList(dto));
 
         service.deleteById(dto.getId());
@@ -93,21 +101,31 @@ public class DTOServiceTestHelper<D extends AbstractDTO, E extends AbstractEntit
     }
 
     public void processDeleteByIdFailureTest() {
+        clearRepository();
+
         final long id = RandomValueGenerator.generateRandomPositiveInt();
 
         Assertions.assertThrows(EntityNotFoundException.class, () -> service.deleteById(id));
     }
 
     public void processExistsByIdSuccessTest(final D dto) {
+        clearRepository();
+
         initRepository(Collections.singletonList(dto));
 
         Assertions.assertTrue(service.existsById(dto.getId()));
     }
 
     public void processExistsByIdFailureTest() {
+        clearRepository();
+
         final long id = RandomValueGenerator.generateRandomPositiveInt();
 
         Assertions.assertFalse(service.existsById(id));
+    }
+
+    private void clearRepository() {
+        repository.deleteAll();
     }
 
     private void initRepository(final List<D> dtos) {

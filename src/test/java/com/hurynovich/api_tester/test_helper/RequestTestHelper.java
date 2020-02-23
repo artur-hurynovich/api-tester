@@ -1,5 +1,7 @@
 package com.hurynovich.api_tester.test_helper;
 
+import com.hurynovich.api_tester.model.document.impl.ExecutionLogDocument;
+import com.hurynovich.api_tester.model.dto.ExecutionLogEntryDTO;
 import com.hurynovich.api_tester.model.dto.impl.NameValueElementDTO;
 import com.hurynovich.api_tester.model.dto.impl.RequestChainDTO;
 import com.hurynovich.api_tester.model.dto.impl.RequestDTO;
@@ -7,6 +9,7 @@ import com.hurynovich.api_tester.model.dto.impl.ResponseDTO;
 import com.hurynovich.api_tester.model.entity.impl.NameValueElementEntity;
 import com.hurynovich.api_tester.model.entity.impl.RequestChainEntity;
 import com.hurynovich.api_tester.model.entity.impl.RequestEntity;
+import com.hurynovich.api_tester.model.enumeration.ExecutionLogEntryType;
 import com.hurynovich.api_tester.model.enumeration.NameValueElementType;
 
 import org.junit.jupiter.api.Assertions;
@@ -14,6 +17,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -31,6 +35,7 @@ public class RequestTestHelper {
     private static final int HEADERS_SIZE = 3;
     private static final int PARAMETERS_SIZE = 3;
     private static final int REQUESTS_IN_CHAIN_SIZE = 5;
+    private static final int EXECUTION_LOG_ENTRIES_SIZE = 5;
 
     public static HttpMethod generateRandomHttpMethod() {
         return RandomValueGenerator.generateRandomEnumValue(HttpMethod.class);
@@ -178,6 +183,37 @@ public class RequestTestHelper {
         }).collect(Collectors.toList());
     }
 
+    public static List<ExecutionLogDocument> generateRandomExecutionLogDocuments(final int size) {
+        return IntStream.range(1, size + 1).mapToObj(index -> {
+            final ExecutionLogDocument executionLog = new ExecutionLogDocument();
+
+            executionLog.setDateTime(LocalDateTime.now());
+            executionLog.setUserId((long) RandomValueGenerator.generateRandomPositiveInt());
+            executionLog.setRequestChainId((long) RandomValueGenerator.generateRandomPositiveInt());
+            executionLog.setEntries(generateRandomExecutionLogEntries(EXECUTION_LOG_ENTRIES_SIZE));
+
+            return executionLog;
+        }).collect(Collectors.toList());
+    }
+
+    public static List<ExecutionLogEntryDTO> generateRandomExecutionLogEntries(final int size) {
+        return IntStream.range(1, size + 1).mapToObj(index -> {
+            final ExecutionLogEntryDTO executionLogEntry = new ExecutionLogEntryDTO();
+
+            executionLogEntry.setType(RandomValueGenerator.generateRandomEnumValue(ExecutionLogEntryType.class));
+            executionLogEntry.setDateTime(LocalDateTime.now());
+            executionLogEntry.setMethod(generateRandomHttpMethod());
+            executionLogEntry.setHeaders(generateRandomNameValueElementDTOs(HEADERS_SIZE));
+            executionLogEntry.setParameters(generateRandomNameValueElementDTOs(PARAMETERS_SIZE));
+            executionLogEntry.setUrl(generateRandomHttpUrl());
+            executionLogEntry.setStatus(generateRandomHttpStatus());
+            executionLogEntry.setBody(generateRandomBody());
+            executionLogEntry.setErrorMessage(generateRandomBody());
+
+            return executionLogEntry;
+        }).collect(Collectors.toList());
+    }
+
     public static HttpStatus generateRandomHttpStatus() {
         return RandomValueGenerator.generateRandomEnumValue(HttpStatus.class);
     }
@@ -280,11 +316,66 @@ public class RequestTestHelper {
     }
 
     public static void checkNameValueElement(final NameValueElementDTO expectedNameValueElement,
-                                       final NameValueElementDTO actualNameValueElement) {
+                                             final NameValueElementDTO actualNameValueElement) {
         Assertions.assertEquals(expectedNameValueElement.getName(), actualNameValueElement.getName());
         Assertions.assertEquals(expectedNameValueElement.getValue(), actualNameValueElement.getValue());
         Assertions.assertEquals(expectedNameValueElement.getExpression(), actualNameValueElement.getExpression());
         Assertions.assertEquals(expectedNameValueElement.getType(), actualNameValueElement.getType());
+    }
+
+    public static void checkExecutionLog(final ExecutionLogDocument expectedExecutionLog,
+                                         final ExecutionLogDocument actualExecutionLog) {
+        Assertions.assertEquals(expectedExecutionLog.getDateTime(), actualExecutionLog.getDateTime());
+        Assertions.assertEquals(expectedExecutionLog.getUserId(), actualExecutionLog.getUserId());
+        Assertions.assertEquals(expectedExecutionLog.getRequestChainId(), actualExecutionLog.getRequestChainId());
+
+        final List<ExecutionLogEntryDTO> expectedExecutionLogEntries = expectedExecutionLog.getEntries();
+        final List<ExecutionLogEntryDTO> actualExecutionLogEntries = actualExecutionLog.getEntries();
+
+        Assertions.assertEquals(expectedExecutionLogEntries.size(), actualExecutionLogEntries.size());
+
+        for (int i = 0; i < expectedExecutionLogEntries.size(); i++) {
+            final ExecutionLogEntryDTO expectedExecutionLogEntry = expectedExecutionLogEntries.get(i);
+            final ExecutionLogEntryDTO actualExecutionLogEntry = actualExecutionLogEntries.get(i);
+
+            checkExecutionLogEntry(expectedExecutionLogEntry, actualExecutionLogEntry);
+        }
+    }
+
+    public static void checkExecutionLogEntry(final ExecutionLogEntryDTO expectedExecutionLogEntry,
+                                              final ExecutionLogEntryDTO actualExecutionLogEntry) {
+        Assertions.assertEquals(expectedExecutionLogEntry.getType(), actualExecutionLogEntry.getType());
+        Assertions.assertEquals(expectedExecutionLogEntry.getDateTime(), actualExecutionLogEntry.getDateTime());
+        Assertions.assertEquals(expectedExecutionLogEntry.getMethod(), actualExecutionLogEntry.getMethod());
+
+        final List<NameValueElementDTO> expectedExecutionLogEntryHeaders = expectedExecutionLogEntry.getHeaders();
+        final List<NameValueElementDTO> actualExecutionLogEntryHeaders = actualExecutionLogEntry.getHeaders();
+
+        Assertions.assertEquals(expectedExecutionLogEntryHeaders.size(), actualExecutionLogEntryHeaders.size());
+
+        for (int i = 0; i < expectedExecutionLogEntryHeaders.size(); i++) {
+            final NameValueElementDTO expectedExecutionLogEntryHeader = expectedExecutionLogEntryHeaders.get(i);
+            final NameValueElementDTO actualExecutionLogEntryHeader = actualExecutionLogEntryHeaders.get(i);
+
+            checkNameValueElement(expectedExecutionLogEntryHeader, actualExecutionLogEntryHeader);
+        }
+
+        final List<NameValueElementDTO> expectedExecutionLogEntryParameters = expectedExecutionLogEntry.getParameters();
+        final List<NameValueElementDTO> actualExecutionLogEntryParameters = actualExecutionLogEntry.getParameters();
+
+        Assertions.assertEquals(expectedExecutionLogEntryParameters.size(), actualExecutionLogEntryParameters.size());
+
+        for (int i = 0; i < expectedExecutionLogEntryParameters.size(); i++) {
+            final NameValueElementDTO expectedExecutionLogEntryParameter = expectedExecutionLogEntryParameters.get(i);
+            final NameValueElementDTO actualExecutionLogEntryParameter = actualExecutionLogEntryParameters.get(i);
+
+            checkNameValueElement(expectedExecutionLogEntryParameter, actualExecutionLogEntryParameter);
+        }
+
+        Assertions.assertEquals(expectedExecutionLogEntry.getUrl(), actualExecutionLogEntry.getUrl());
+        Assertions.assertEquals(expectedExecutionLogEntry.getStatus(), actualExecutionLogEntry.getStatus());
+        Assertions.assertEquals(expectedExecutionLogEntry.getBody(), actualExecutionLogEntry.getBody());
+        Assertions.assertEquals(expectedExecutionLogEntry.getErrorMessage(), actualExecutionLogEntry.getErrorMessage());
     }
 
 }

@@ -1,8 +1,6 @@
 package com.hurynovich.api_tester.service.document_service;
 
-import com.hurynovich.api_tester.model.document.MongoDBDocument;
-
-public interface DocumentService<D extends MongoDBDocument, I> {
+public interface DocumentService<D, I> {
 
     D create(D d);
 
