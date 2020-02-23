@@ -1,7 +1,6 @@
-package com.hurynovich.api_tester.converter.generic_request_elent_converter.impl;
+package com.hurynovich.api_tester.converter.request_element_converter.impl;
 
 import com.hurynovich.api_tester.converter.request_element_converter.RequestElementConverter;
-import com.hurynovich.api_tester.converter.request_element_converter.impl.RequestElementConverterImpl;
 import com.hurynovich.api_tester.model.dto.impl.NameValueElementDTO;
 import com.hurynovich.api_tester.test_helper.RequestTestHelper;
 

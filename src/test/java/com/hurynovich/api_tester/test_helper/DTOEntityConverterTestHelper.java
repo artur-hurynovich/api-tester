@@ -8,38 +8,36 @@ import org.junit.jupiter.api.Assertions;
 
 import java.util.List;
 import java.util.function.BiConsumer;
-import java.util.function.Supplier;
 
-public class DTOEntityConverterTestHelper {
+public class DTOEntityConverterTestHelper<D extends AbstractDTO, E extends AbstractEntity> {
 
-    public static <D extends AbstractDTO, E extends AbstractEntity> void processConvertToEntityTest(
-            final Supplier<List<D>> createDTOsSupplier,
-            final DTOEntityConverter<D, E> converter,
-            final BiConsumer<D, E> checkConsumer) {
-        final D dto = createDTOsSupplier.get().iterator().next();
+    private final DTOEntityConverter<D, E> converter;
+
+    private final BiConsumer<D, E> checkConsumer;
+
+    public DTOEntityConverterTestHelper(final DTOEntityConverter<D, E> converter,
+                                        final BiConsumer<D, E> checkConsumer) {
+        this.converter = converter;
+        this.checkConsumer = checkConsumer;
+    }
+
+    public void processConvertToEntityTest(final List<D> dtos) {
+        final D dto = dtos.iterator().next();
 
         final E entity = converter.convert(dto);
 
         checkConsumer.accept(dto, entity);
     }
 
-    public static <D extends AbstractDTO, E extends AbstractEntity> void processConvertToDTOTest(
-            final Supplier<List<E>> createEntitiesSupplier,
-            final DTOEntityConverter<D, E> converter,
-            final BiConsumer<D, E> checkConsumer) {
-        final E entity = createEntitiesSupplier.get().iterator().next();
+    public void processConvertToDTOTest(final List<E> entities) {
+        final E entity = entities.iterator().next();
 
         final D dto = converter.convert(entity);
 
         checkConsumer.accept(dto, entity);
     }
 
-    public static <D extends AbstractDTO, E extends AbstractEntity> void processConvertAllToEntityTest(
-            final Supplier<List<D>> createDTOsSupplier,
-            final DTOEntityConverter<D, E> converter,
-            final BiConsumer<D, E> checkConsumer) {
-        final List<D> dtos = createDTOsSupplier.get();
-
+    public void processConvertAllToEntityTest(final List<D> dtos) {
         final List<E> entities = converter.convertAllToEntity(dtos);
 
         final int expectedSize = dtos.size();
@@ -51,12 +49,7 @@ public class DTOEntityConverterTestHelper {
         }
     }
 
-    public static <D extends AbstractDTO, E extends AbstractEntity> void processConvertAllToDTOTest(
-            final Supplier<List<E>> createEntitiesSupplier,
-            final DTOEntityConverter<D, E> converter,
-            final BiConsumer<D, E> checkConsumer) {
-        final List<E> entities = createEntitiesSupplier.get();
-
+    public void processConvertAllToDTOTest(final List<E> entities) {
         final List<D> dtos = converter.convertAllToDTO(entities);
 
         final int expectedSize = entities.size();
