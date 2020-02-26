@@ -46,6 +46,12 @@ public abstract class GenericDocumentServiceTest<D extends AbstractDocument> {
         helper.processReadByIdFailureTest();
     }
 
+    public void readAllTest() {
+        final List<D> documents = documentsSupplier.get();
+
+        helper.processReadAllTest(documents);
+    }
+
     public void updateTest(final Function<D, D> updateFunction) {
         final D document = documentsSupplier.get().iterator().next();
 

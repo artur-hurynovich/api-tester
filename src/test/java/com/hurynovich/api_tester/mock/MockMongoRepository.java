@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +42,7 @@ public class MockMongoRepository<D extends AbstractDocument> implements MongoRep
 
     @Override
     public List<D> findAll() {
-        throw new UnsupportedOperationException();
+        return new ArrayList<>(storage.values());
     }
 
     @Override

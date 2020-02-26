@@ -36,6 +36,7 @@ public class RequestTestHelper {
     private static final int PARAMETERS_SIZE = 3;
     private static final int REQUESTS_IN_CHAIN_SIZE = 5;
     private static final int EXECUTION_LOG_ENTRIES_SIZE = 5;
+    private static final int DOCUMENT_ID_LENGTH = 10;
 
     public static HttpMethod generateRandomHttpMethod() {
         return RandomValueGenerator.generateRandomEnumValue(HttpMethod.class);
@@ -187,6 +188,7 @@ public class RequestTestHelper {
         return IntStream.range(1, size + 1).mapToObj(index -> {
             final ExecutionLogDocument executionLog = new ExecutionLogDocument();
 
+            executionLog.setId(RandomValueGenerator.generateRandomStringLettersOnly(DOCUMENT_ID_LENGTH));
             executionLog.setDateTime(LocalDateTime.now());
             executionLog.setUserId((long) RandomValueGenerator.generateRandomPositiveInt());
             executionLog.setRequestChainId((long) RandomValueGenerator.generateRandomPositiveInt());

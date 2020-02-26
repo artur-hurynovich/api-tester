@@ -6,6 +6,7 @@ import com.hurynovich.api_tester.service.document_service.DocumentService;
 import org.junit.jupiter.api.Assertions;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
+import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
@@ -41,6 +42,23 @@ public class DocumentServiceTestHelper<D extends AbstractDocument> {
         repository.save(document);
 
         service.readById(document.getId());
+    }
+
+    public void processReadAllTest(final List<D> documents) {
+        repository.deleteAll();
+
+        documents.forEach(repository::save);
+
+        final List<D> storedDocuments = service.readAll();
+
+        Assertions.assertEquals(documents.size(), storedDocuments.size());
+
+        for (int i = 0; i < documents.size(); i++) {
+            final D document = documents.get(i);
+            final D storedDocument = storedDocuments.get(i);
+
+            checkConsumer.accept(document, storedDocument);
+        }
     }
 
     public void processReadByIdFailureTest() {

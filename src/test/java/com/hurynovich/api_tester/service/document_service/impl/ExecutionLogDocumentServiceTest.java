@@ -31,6 +31,11 @@ public class ExecutionLogDocumentServiceTest extends GenericDocumentServiceTest<
     }
 
     @Test
+    public void readAllTest() {
+        super.readAllTest();
+    }
+
+    @Test
     public void updateTest() {
         super.updateTest((executionLog) -> {
             executionLog.getEntries().clear();

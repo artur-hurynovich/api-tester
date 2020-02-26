@@ -5,6 +5,8 @@ import com.hurynovich.api_tester.model.document.AbstractDocument;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.lang.NonNull;
 
+import java.util.List;
+
 import javax.persistence.EntityNotFoundException;
 
 public class GenericDocumentService<D extends AbstractDocument, I> implements DocumentService<D, I> {
@@ -23,6 +25,11 @@ public class GenericDocumentService<D extends AbstractDocument, I> implements Do
     @Override
     public D readById(final I id) {
         return repository.findById(id).orElseThrow(EntityNotFoundException::new);
+    }
+
+    @Override
+    public List<D> readAll() {
+        return repository.findAll();
     }
 
     @Override
