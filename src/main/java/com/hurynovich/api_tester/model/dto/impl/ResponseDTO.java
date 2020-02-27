@@ -2,14 +2,15 @@ package com.hurynovich.api_tester.model.dto.impl;
 
 import com.hurynovich.api_tester.model.dto.AbstractDTO;
 
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+
+import java.util.List;
 
 public class ResponseDTO extends AbstractDTO {
 
     private HttpStatus status;
 
-    private HttpHeaders headers;
+    private List<NameValueElementDTO> headers;
 
     private String body;
 
@@ -21,11 +22,11 @@ public class ResponseDTO extends AbstractDTO {
         this.status = status;
     }
 
-    public HttpHeaders getHeaders() {
+    public List<NameValueElementDTO> getHeaders() {
         return headers;
     }
 
-    public void setHeaders(final HttpHeaders headers) {
+    public void setHeaders(final List<NameValueElementDTO> headers) {
         this.headers = headers;
     }
 

@@ -1,6 +1,7 @@
 package com.hurynovich.api_tester.model.dto.impl;
 
 import com.hurynovich.api_tester.model.dto.AbstractDTO;
+
 import org.springframework.http.HttpMethod;
 
 import java.util.List;
@@ -9,11 +10,11 @@ public class RequestDTO extends AbstractDTO {
 
     private HttpMethod method;
 
-    private List<GenericRequestElementDTO> headers;
+    private List<NameValueElementDTO> headers;
 
     private String url;
 
-    private List<GenericRequestElementDTO> parameters;
+    private List<NameValueElementDTO> parameters;
 
     private String body;
 
@@ -25,11 +26,11 @@ public class RequestDTO extends AbstractDTO {
         this.method = method;
     }
 
-    public List<GenericRequestElementDTO> getHeaders() {
+    public List<NameValueElementDTO> getHeaders() {
         return headers;
     }
 
-    public void setHeaders(final List<GenericRequestElementDTO> headers) {
+    public void setHeaders(final List<NameValueElementDTO> headers) {
         this.headers = headers;
     }
 
@@ -41,11 +42,11 @@ public class RequestDTO extends AbstractDTO {
         this.url = url;
     }
 
-    public List<GenericRequestElementDTO> getParameters() {
+    public List<NameValueElementDTO> getParameters() {
         return parameters;
     }
 
-    public void setParameters(final List<GenericRequestElementDTO> parameters) {
+    public void setParameters(final List<NameValueElementDTO> parameters) {
         this.parameters = parameters;
     }
 

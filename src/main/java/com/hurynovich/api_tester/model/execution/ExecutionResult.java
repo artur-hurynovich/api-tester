@@ -1,6 +1,6 @@
 package com.hurynovich.api_tester.model.execution;
 
-import com.hurynovich.api_tester.model.dto.impl.ExecutionLogDTO;
+import com.hurynovich.api_tester.model.document.impl.ExecutionLogDocument;
 import com.hurynovich.api_tester.model.enumeration.ExecutionSignalType;
 
 import java.util.List;
@@ -11,7 +11,7 @@ public class ExecutionResult {
 
     private List<ExecutionSignalType> validSignals;
 
-    private ExecutionLogDTO executionLog;
+    private ExecutionLogDocument executionLog;
 
     public ExecutionState getExecutionState() {
         return executionState;
@@ -29,11 +29,11 @@ public class ExecutionResult {
         this.validSignals = validSignals;
     }
 
-    public ExecutionLogDTO getExecutionLog() {
+    public ExecutionLogDocument getExecutionLog() {
         return executionLog;
     }
 
-    public void setExecutionLog(final ExecutionLogDTO executionLog) {
+    public void setExecutionLog(final ExecutionLogDocument executionLog) {
         this.executionLog = executionLog;
     }
 

@@ -10,6 +10,14 @@ public class ValidationResult {
 
     private List<String> descriptions;
 
+    public static ValidationResult createValidResult() {
+        final ValidationResult validationResult = new ValidationResult();
+
+        validationResult.setType(ValidationResultType.VALID);
+
+        return validationResult;
+    }
+
     public ValidationResultType getType() {
         return type;
     }

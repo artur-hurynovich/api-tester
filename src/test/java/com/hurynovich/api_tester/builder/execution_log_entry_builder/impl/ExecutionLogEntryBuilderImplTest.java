@@ -1,19 +1,17 @@
 package com.hurynovich.api_tester.builder.execution_log_entry_builder.impl;
 
 import com.hurynovich.api_tester.builder.execution_log_entry_builder.ExecutionLogEntryBuilder;
-import com.hurynovich.api_tester.converter.generic_request_element_converter.GenericRequestElementConverter;
-import com.hurynovich.api_tester.converter.generic_request_element_converter.impl.GenericRequestElementConverterImpl;
-import com.hurynovich.api_tester.model.dto.impl.GenericRequestElementDTO;
+import com.hurynovich.api_tester.model.dto.ExecutionLogEntryDTO;
+import com.hurynovich.api_tester.model.dto.impl.NameValueElementDTO;
 import com.hurynovich.api_tester.model.dto.impl.RequestDTO;
 import com.hurynovich.api_tester.model.dto.impl.ResponseDTO;
-import com.hurynovich.api_tester.model.dto.impl.ExecutionLogEntryDTO;
 import com.hurynovich.api_tester.test_helper.RandomValueGenerator;
 import com.hurynovich.api_tester.test_helper.RequestTestHelper;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 
@@ -29,31 +27,17 @@ import static com.hurynovich.api_tester.model.enumeration.ExecutionLogEntryType.
 @ExtendWith(MockitoExtension.class)
 public class ExecutionLogEntryBuilderImplTest {
 
-    private static final int REQUEST_HEADERS_SIZE = 3;
-    private static final int REQUEST_PARAMETERS_SIZE = 3;
-
-    private GenericRequestElementConverter genericRequestElementConverter =
-            new GenericRequestElementConverterImpl();
-
-    private ExecutionLogEntryBuilder executionLogEntryBuilder =
-            new ExecutionLogEntryBuilderImpl(genericRequestElementConverter);
+    private ExecutionLogEntryBuilder executionLogEntryBuilder = new ExecutionLogEntryBuilderImpl();
 
     @Test
     public void buildOfRequestDTOTest() {
-        final HttpMethod method = RequestTestHelper.generateRandomHttpMethod();
-        final List<GenericRequestElementDTO> headers =
-                RequestTestHelper.generateRandomGenericRequestElements(REQUEST_HEADERS_SIZE);
-        final String url = RequestTestHelper.generateRandomHttpUrl();
-        final List<GenericRequestElementDTO> parameters =
-                RequestTestHelper.generateRandomGenericRequestElements(REQUEST_PARAMETERS_SIZE);
-        final String body = RequestTestHelper.generateRandomBody();
+        final RequestDTO request = RequestTestHelper.generateRandomRequestDTOs(1).iterator().next();
 
-        final RequestDTO request = new RequestDTO();
-        request.setMethod(method);
-        request.setHeaders(headers);
-        request.setUrl(url);
-        request.setParameters(parameters);
-        request.setBody(body);
+        final HttpMethod method = request.getMethod();
+        final List<NameValueElementDTO> headers = request.getHeaders();
+        final String url = request.getUrl();
+        final List<NameValueElementDTO> parameters = request.getParameters();
+        final String body = request.getBody();
 
         final ExecutionLogEntryDTO executionLogEntry = executionLogEntryBuilder.build(request);
 
@@ -67,6 +51,7 @@ public class ExecutionLogEntryBuilderImplTest {
         Assertions.assertEquals(method, executionLogEntry.getMethod());
 
         Assertions.assertEquals(headers, executionLogEntry.getHeaders());
+        Assertions.assertEquals(parameters, executionLogEntry.getParameters());
         Assertions.assertEquals(url, executionLogEntry.getUrl());
         Assertions.assertEquals(body, executionLogEntry.getBody());
 
@@ -75,14 +60,11 @@ public class ExecutionLogEntryBuilderImplTest {
 
     @Test
     public void buildOfResponseDTOTest() {
-        final HttpStatus status = RequestTestHelper.generateRandomHttpStatus();
-        final HttpHeaders headers = RequestTestHelper.generateRandomHttpHeaders(REQUEST_HEADERS_SIZE);
-        final String body = RequestTestHelper.generateRandomBody();
+        final ResponseDTO response = RequestTestHelper.generateRandomResponseDTOs(1).iterator().next();
 
-        final ResponseDTO response = new ResponseDTO();
-        response.setStatus(status);
-        response.setHeaders(headers);
-        response.setBody(body);
+        final HttpStatus status = response.getStatus();
+        final List<NameValueElementDTO> headers = response.getHeaders();
+        final String body = response.getBody();
 
         final ExecutionLogEntryDTO executionLogEntry = executionLogEntryBuilder.build(response);
 
@@ -94,8 +76,7 @@ public class ExecutionLogEntryBuilderImplTest {
                 !logEntryDateTime.isAfter(currentDateTime));
 
         Assertions.assertEquals(status, executionLogEntry.getStatus());
-        Assertions.assertEquals(genericRequestElementConverter.convertToRequestElements(headers),
-                executionLogEntry.getHeaders());
+        Assertions.assertEquals(headers, executionLogEntry.getHeaders());
         Assertions.assertEquals(body, executionLogEntry.getBody());
     }
 
