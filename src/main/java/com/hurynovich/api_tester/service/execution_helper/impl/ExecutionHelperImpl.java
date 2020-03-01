@@ -4,14 +4,14 @@ import com.hurynovich.api_tester.cache.Cache;
 import com.hurynovich.api_tester.cache.cache_key.impl.GenericExecutionCacheKey;
 import com.hurynovich.api_tester.model.document.impl.ExecutionLogDocument;
 import com.hurynovich.api_tester.model.dto.impl.RequestChainDTO;
-import com.hurynovich.api_tester.model.enumeration.ExecutionSignalType;
-import com.hurynovich.api_tester.model.enumeration.ExecutionStateType;
 import com.hurynovich.api_tester.model.execution.ExecutionSignal;
 import com.hurynovich.api_tester.model.execution.ExecutionState;
 import com.hurynovich.api_tester.service.dto_service.DTOService;
 import com.hurynovich.api_tester.service.execution_helper.ExecutionHelper;
-import com.hurynovich.api_tester.service.execution_transition_container.ExecutionTransitionContainer;
-
+import com.hurynovich.api_tester.state_transition.signal.SignalName;
+import com.hurynovich.api_tester.state_transition.state.State;
+import com.hurynovich.api_tester.state_transition.state.StateName;
+import com.hurynovich.api_tester.state_transition.state_manager.StateManager;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
@@ -19,24 +19,21 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.List;
 
-import static com.hurynovich.api_tester.model.enumeration.ExecutionSignalType.RUN;
-import static com.hurynovich.api_tester.model.enumeration.ExecutionStateType.PENDING_RUNNING;
-
 @Service
 public class ExecutionHelperImpl implements ExecutionHelper {
 
-    private final ExecutionTransitionContainer executionTransitionContainer;
+    private final StateManager stateManager;
 
     private final Cache<GenericExecutionCacheKey, ExecutionState> executionStateCache;
     private final Cache<GenericExecutionCacheKey, ExecutionLogDocument> executionLogCache;
 
     private final DTOService<RequestChainDTO, Long> requestChainService;
 
-    public ExecutionHelperImpl(final @NonNull ExecutionTransitionContainer executionTransitionContainer,
+    public ExecutionHelperImpl(final @NonNull StateManager stateManager,
                                final @NonNull Cache<GenericExecutionCacheKey, ExecutionState> executionStateCache,
                                final @NonNull Cache<GenericExecutionCacheKey, ExecutionLogDocument> executionLogCache,
                                final @NonNull DTOService<RequestChainDTO, Long> requestChainService) {
-        this.executionTransitionContainer = executionTransitionContainer;
+        this.stateManager = stateManager;
         this.executionStateCache = executionStateCache;
         this.executionLogCache = executionLogCache;
         this.requestChainService = requestChainService;
@@ -60,7 +57,7 @@ public class ExecutionHelperImpl implements ExecutionHelper {
             executionState.setRequests(requestChain.getRequests());
         }
 
-        executionState.setType(resolveTransitionToExecutionStateType(executionSignal));
+        stateManager.processTransition(executionState, executionSignal);
 
         return executionStateCache.put(genericExecutionCacheKey, executionState);
     }
@@ -71,57 +68,29 @@ public class ExecutionHelperImpl implements ExecutionHelper {
     }
 
     @Override
-    public ExecutionStateType resolveTransitionToExecutionStateType(final @NonNull ExecutionSignal executionSignal) {
-        final ExecutionState currentExecutionState = executionStateCache.get(executionSignal.getKey());
-
-        final ExecutionStateType executionStateType;
-
-        if (currentExecutionState != null) {
-            final ExecutionStateType currentExecutionStateType = currentExecutionState.getType();
-            final ExecutionSignalType executionSignalType = executionSignal.getType();
-            final List<ExecutionStateType> transitionsToState =
-                    executionTransitionContainer.getTransitionsToState(currentExecutionStateType, executionSignalType);
-
-            if (transitionsToState.size() != 1) {
-                executionStateType = ExecutionStateType.errorStateType();
-            } else {
-                executionStateType = transitionsToState.get(0);
-            }
-        } else {
-            if (ExecutionSignalType.initialSignalType() == executionSignal.getType()) {
-                executionStateType = PENDING_RUNNING;
-            } else {
-                executionStateType = ExecutionStateType.errorStateType();
-            }
-        }
-
-        return executionStateType;
-    }
-
-    @Override
-    public List<ExecutionSignalType> resolveValidSignalTypesOnInit(final @Nullable ExecutionState executionState) {
+    public List<String> resolveValidSignalNamesOnInit(final @Nullable ExecutionState executionState) {
         if (executionState == null) {
-            return Collections.singletonList(RUN);
+            return Collections.singletonList(SignalName.RUN);
         } else {
-            final ExecutionStateType currentExecutionStateType = executionState.getType();
+            final State state = executionState.getState();
 
-            if (currentExecutionStateType.isPendingState()) {
+            if (StateName.isPendingStateName(state.getName())) {
                 return Collections.emptyList();
             } else {
-                return executionTransitionContainer.getValidSignalTypesForState(currentExecutionStateType);
+                return state.getValidSignalNames();
             }
         }
     }
 
     @Override
-    public List<ExecutionSignalType> resolveValidSignalTypesOnExecution(final @Nullable ExecutionState executionState) {
+    public List<String> resolveValidSignalNamesOnExecution(final @Nullable ExecutionState executionState) {
         if (executionState == null) {
             return Collections.emptyList();
         } else {
-            final ExecutionStateType currentExecutionStateType = executionState.getType();
+            final State state = executionState.getState();
 
-            if (currentExecutionStateType.isPendingState()) {
-                return executionTransitionContainer.getValidSignalTypesForState(currentExecutionStateType);
+            if (StateName.isPendingStateName(state.getName())) {
+                return state.getValidSignalNames();
             } else {
                 return Collections.emptyList();
             }

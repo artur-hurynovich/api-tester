@@ -3,13 +3,11 @@ package com.hurynovich.api_tester.service.dto_service;
 import com.hurynovich.api_tester.converter.dto_entity_converter.DTOEntityConverter;
 import com.hurynovich.api_tester.model.dto.AbstractDTO;
 import com.hurynovich.api_tester.model.entity.AbstractEntity;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.lang.NonNull;
 
-import java.util.List;
-
 import javax.persistence.EntityNotFoundException;
+import java.util.List;
 
 public abstract class GenericDTOService <D extends AbstractDTO, E extends AbstractEntity, I>
         implements DTOService<D, I> {

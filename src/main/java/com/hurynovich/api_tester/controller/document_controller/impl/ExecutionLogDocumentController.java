@@ -4,7 +4,6 @@ import com.hurynovich.api_tester.controller.document_controller.GenericDocumentC
 import com.hurynovich.api_tester.model.document.impl.ExecutionLogDocument;
 import com.hurynovich.api_tester.service.document_service.DocumentService;
 import com.hurynovich.api_tester.validator.Validator;
-
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

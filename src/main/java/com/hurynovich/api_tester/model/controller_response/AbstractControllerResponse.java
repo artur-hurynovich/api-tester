@@ -1,7 +1,6 @@
 package com.hurynovich.api_tester.model.controller_response;
 
 import com.hurynovich.api_tester.model.validation.ValidationResult;
-
 import org.springframework.lang.NonNull;
 
 public abstract class AbstractControllerResponse {

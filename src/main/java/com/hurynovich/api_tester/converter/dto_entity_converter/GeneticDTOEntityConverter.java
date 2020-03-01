@@ -3,7 +3,6 @@ package com.hurynovich.api_tester.converter.dto_entity_converter;
 import com.hurynovich.api_tester.converter.exception.ConverterException;
 import com.hurynovich.api_tester.model.dto.AbstractDTO;
 import com.hurynovich.api_tester.model.entity.AbstractEntity;
-
 import org.springframework.beans.BeanUtils;
 import org.springframework.lang.NonNull;
 import org.springframework.util.CollectionUtils;

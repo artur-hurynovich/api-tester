@@ -2,7 +2,6 @@ package com.hurynovich.api_tester.model.dto;
 
 import com.hurynovich.api_tester.model.dto.impl.NameValueElementDTO;
 import com.hurynovich.api_tester.model.enumeration.ExecutionLogEntryType;
-
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 

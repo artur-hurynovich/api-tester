@@ -2,7 +2,6 @@ package com.hurynovich.api_tester.utils;
 
 import com.hurynovich.api_tester.model.dto.impl.NameValueElementDTO;
 import com.hurynovich.api_tester.model.enumeration.NameValueElementType;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.lang.NonNull;
 

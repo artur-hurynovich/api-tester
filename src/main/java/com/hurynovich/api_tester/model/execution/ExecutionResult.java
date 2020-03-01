@@ -1,32 +1,31 @@
 package com.hurynovich.api_tester.model.execution;
 
 import com.hurynovich.api_tester.model.document.impl.ExecutionLogDocument;
-import com.hurynovich.api_tester.model.enumeration.ExecutionSignalType;
 
 import java.util.List;
 
 public class ExecutionResult {
 
-    private ExecutionState executionState;
+    private String stateName;
 
-    private List<ExecutionSignalType> validSignals;
+    private List<String> validSignalNames;
 
     private ExecutionLogDocument executionLog;
 
-    public ExecutionState getExecutionState() {
-        return executionState;
+    public String getStateName() {
+        return stateName;
     }
 
-    public void setExecutionState(final ExecutionState executionState) {
-        this.executionState = executionState;
+    public void setStateName(final String stateName) {
+        this.stateName = stateName;
     }
 
-    public List<ExecutionSignalType> getValidSignals() {
-        return validSignals;
+    public List<String> getValidSignalNames() {
+        return validSignalNames;
     }
 
-    public void setValidSignals(List<ExecutionSignalType> validSignals) {
-        this.validSignals = validSignals;
+    public void setValidSignalNames(final List<String> validSignalNames) {
+        this.validSignalNames = validSignalNames;
     }
 
     public ExecutionLogDocument getExecutionLog() {

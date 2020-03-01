@@ -6,14 +6,14 @@ import com.hurynovich.api_tester.model.document.impl.ExecutionLogDocument;
 import com.hurynovich.api_tester.model.dto.ExecutionLogEntryDTO;
 import com.hurynovich.api_tester.model.dto.impl.RequestDTO;
 import com.hurynovich.api_tester.model.dto.impl.ResponseDTO;
-import com.hurynovich.api_tester.model.enumeration.ExecutionStateType;
 import com.hurynovich.api_tester.model.execution.ExecutionResult;
 import com.hurynovich.api_tester.model.execution.ExecutionSignal;
 import com.hurynovich.api_tester.model.execution.ExecutionState;
 import com.hurynovich.api_tester.service.execution_helper.ExecutionHelper;
 import com.hurynovich.api_tester.service.executor.Executor;
+import com.hurynovich.api_tester.state_transition.state.StateName;
+import com.hurynovich.api_tester.state_transition.state_manager.StateManager;
 import com.hurynovich.api_tester.validator.Validator;
-
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
@@ -34,15 +34,19 @@ public class ExecutorImpl implements Executor {
 
     private final Client client;
 
+    private final StateManager stateManager;
+
     private final ExecutionLogEntryBuilder executionLogEntryBuilder;
 
     public ExecutorImpl(final @NonNull @Qualifier("executorExecutionSignalValidator") Validator<ExecutionSignal> signalValidator,
                         final @NonNull ExecutionHelper executionHelper,
                         final @NonNull Client client,
+                        final @NonNull StateManager stateManager,
                         final @NonNull ExecutionLogEntryBuilder executionLogEntryBuilder) {
         this.signalValidator = signalValidator;
         this.executionHelper = executionHelper;
         this.client = client;
+        this.stateManager = stateManager;
         this.executionLogEntryBuilder = executionLogEntryBuilder;
     }
 
@@ -60,7 +64,7 @@ public class ExecutorImpl implements Executor {
             executionLog.setEntries(new ArrayList<>());
         }
 
-        while (executionState.getType() == ExecutionStateType.RUNNING) {
+        while (executionState.getState().getName().equals(StateName.RUNNING)) {
             if (!CollectionUtils.isEmpty(requests)) {
 
                 final RequestDTO request = requests.get(0);
@@ -73,15 +77,16 @@ public class ExecutorImpl implements Executor {
                 executionLog.getEntries().add(responseLogEntry);
 
                 if (response.getStatus() != HttpStatus.OK) {
-                    executionState.setType(ExecutionStateType.ERROR);
+                    stateManager.processTransition(executionState, StateName.ERROR);
                 }
             } else {
-                executionState.setType(ExecutionStateType.FINISHED);
+                stateManager.processTransition(executionState, StateName.FINISHED);
             }
 
             final ExecutionResult executionResult = new ExecutionResult();
-            executionResult.setExecutionState(executionState);
-            executionResult.setValidSignals(executionHelper.resolveValidSignalTypesOnExecution(executionState));
+
+            executionResult.setStateName(executionState.getState().getName());
+            executionResult.setValidSignalNames(executionHelper.resolveValidSignalNamesOnExecution(executionState));
             executionResult.setExecutionLog(executionLog);
             // TODO send result via web-socket and save executionLog to DB
             // TODO handle ExecutionState- and ExecutionLog- caches

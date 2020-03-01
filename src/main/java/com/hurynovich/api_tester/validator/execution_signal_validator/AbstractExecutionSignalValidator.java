@@ -1,14 +1,15 @@
 package com.hurynovich.api_tester.validator.execution_signal_validator;
 
 import com.hurynovich.api_tester.cache.cache_key.impl.GenericExecutionCacheKey;
-import com.hurynovich.api_tester.model.enumeration.ExecutionSignalType;
 import com.hurynovich.api_tester.model.enumeration.ValidationResultType;
 import com.hurynovich.api_tester.model.execution.ExecutionSignal;
 import com.hurynovich.api_tester.model.validation.ValidationResult;
+import com.hurynovich.api_tester.state_transition.signal.Signal;
 import com.hurynovich.api_tester.validator.Validator;
 import org.springframework.lang.NonNull;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public abstract class AbstractExecutionSignalValidator implements Validator<ExecutionSignal> {
 
@@ -19,21 +20,21 @@ public abstract class AbstractExecutionSignalValidator implements Validator<Exec
     }
 
     @Override
-    public ValidationResult validate(final @NonNull ExecutionSignal signal) {
+    public ValidationResult validate(final @NonNull ExecutionSignal executionSignal) {
         final ValidationResult validationResult = new ValidationResult();
         validationResult.setType(ValidationResultType.VALID);
         validationResult.setDescriptions(new ArrayList<>());
 
-        validateExecutionStateCacheKey(signal, validationResult);
+        validateExecutionStateCacheKey(executionSignal, validationResult);
 
-        validateExecutionSignalType(signal, validationResult);
+        validateSignal(executionSignal, validationResult);
 
         return validationResult;
     }
 
-    private void validateExecutionStateCacheKey(final @NonNull ExecutionSignal signal,
+    private void validateExecutionStateCacheKey(final @NonNull ExecutionSignal executionSignal,
                                                 final @NonNull ValidationResult validationResult) {
-        final GenericExecutionCacheKey key = signal.getKey();
+        final GenericExecutionCacheKey key = executionSignal.getKey();
 
         if (key == null) {
             validationResult.setType(ValidationResultType.NON_VALID);
@@ -49,19 +50,37 @@ public abstract class AbstractExecutionSignalValidator implements Validator<Exec
         }
     }
 
-    private void validateExecutionSignalType(final @NonNull ExecutionSignal signal,
-                                             final @NonNull ValidationResult validationResult) {
-        final ExecutionSignalType type = signal.getType();
+    private void validateSignal(final @NonNull ExecutionSignal executionSignal,
+                                final @NonNull ValidationResult validationResult) {
+        final Signal signal = executionSignal.getSignal();
 
-        if (type == null) {
+        if (signal == null) {
             validationResult.setType(ValidationResultType.NON_VALID);
-            validationResult.getDescriptions().add("'type' can't be null");
+            validationResult.getDescriptions().add("'signal' can't be null");
         } else {
-            processNotNullSignalTypeValidation(signal, validationResult);
+            processNotNullSignalValidation(executionSignal, validationResult);
         }
     }
 
-    protected abstract void processNotNullSignalTypeValidation(final @NonNull ExecutionSignal signal,
-                                                               final @NonNull ValidationResult validationResult);
+    private void processNotNullSignalValidation(final @NonNull ExecutionSignal executionSignal,
+                                                final @NonNull ValidationResult validationResult) {
+        final Signal signal = executionSignal.getSignal();
+
+        final String signalName = signal.getName();
+
+        if (signalName == null || signalName.isEmpty()) {
+            validationResult.setType(ValidationResultType.NON_VALID);
+            validationResult.getDescriptions().add("'signalName' can't be null or empty");
+        } else {
+            final List<String> validSignalNames = getValidSignalNames(executionSignal);
+
+            if (!validSignalNames.contains(signalName)) {
+                validationResult.setType(ValidationResultType.NON_VALID);
+                validationResult.getDescriptions().add("'" + signalName + "' is not a valid signal name");
+            }
+        }
+    }
+
+    protected abstract List<String> getValidSignalNames(@NonNull final ExecutionSignal executionSignal);
 
 }

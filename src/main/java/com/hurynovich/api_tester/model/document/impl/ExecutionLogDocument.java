@@ -2,7 +2,6 @@ package com.hurynovich.api_tester.model.document.impl;
 
 import com.hurynovich.api_tester.model.document.AbstractDocument;
 import com.hurynovich.api_tester.model.dto.ExecutionLogEntryDTO;
-
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
