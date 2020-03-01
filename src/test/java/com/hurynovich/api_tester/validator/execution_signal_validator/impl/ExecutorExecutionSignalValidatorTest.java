@@ -5,10 +5,7 @@ import com.hurynovich.api_tester.model.execution.ExecutionSignal;
 import com.hurynovich.api_tester.model.execution.ExecutionState;
 import com.hurynovich.api_tester.model.validation.ValidationResult;
 import com.hurynovich.api_tester.service.execution_helper.ExecutionHelper;
-import com.hurynovich.api_tester.service.execution_transition_container.ExecutionTransitionContainer;
-import com.hurynovich.api_tester.service.execution_transition_container.impl.ExecutionTransitionContainerImpl;
 import com.hurynovich.api_tester.test_helper.ExecutionTestHelper;
-import com.hurynovich.api_tester.test_helper.RandomValueGenerator;
 import com.hurynovich.api_tester.test_helper.ValidatorTestHelper;
 import com.hurynovich.api_tester.validator.Validator;
 import org.junit.jupiter.api.Assertions;
@@ -19,17 +16,14 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Collections;
 import java.util.List;
-import java.util.stream.Stream;
 
 import static com.hurynovich.api_tester.model.enumeration.ValidationResultType.NON_VALID;
 import static com.hurynovich.api_tester.model.enumeration.ValidationResultType.VALID;
 
 @ExtendWith(MockitoExtension.class)
 public class ExecutorExecutionSignalValidatorTest {
-
-    private static final ExecutionTransitionContainer EXECUTION_TRANSITION_CONTAINER =
-            new ExecutionTransitionContainerImpl();
 
     @Mock
     private Validator<GenericExecutionCacheKey> keyValidator;
@@ -49,17 +43,16 @@ public class ExecutorExecutionSignalValidatorTest {
 
     @Test
     public void validSignalTest() {
-        final ExecutionSignalType executionSignalType =
-                RandomValueGenerator.generateRandomEnumValue(ExecutionSignalType.class);
-        final ExecutionSignal signal = ExecutionTestHelper.buildExecutionSignal(executionSignalType);
+        final String randomSignalName = ExecutionTestHelper.getRandomSignalName();
+
+        final ExecutionSignal signal = ExecutionTestHelper.buildExecutionSignal(randomSignalName);
 
         final ValidationResult keyValidationResult = ValidatorTestHelper.buildValidValidationResult();
         Mockito.when(keyValidator.validate(signal.getKey())).thenReturn(keyValidationResult);
 
         Mockito.when(executionHelper.getExecutionState(signal.getKey())).thenReturn(executionState);
         Mockito.when(executionHelper.resolveValidSignalNamesOnExecution(executionState)).
-                thenReturn(EXECUTION_TRANSITION_CONTAINER.
-                        getValidSignalTypesForState(getStateTypeByValidSignalType(executionSignalType)));
+                thenReturn(Collections.singletonList(randomSignalName));
 
         final ValidationResult validationResult = signalValidator.validate(signal);
         Assertions.assertEquals(VALID, validationResult.getType());
@@ -70,41 +63,24 @@ public class ExecutorExecutionSignalValidatorTest {
 
     @Test
     public void nonValidSignalTest() {
-        final ExecutionSignalType executionSignalType =
-                RandomValueGenerator.generateRandomEnumValue(ExecutionSignalType.class);
-        final ExecutionSignal signal = ExecutionTestHelper.buildExecutionSignal(executionSignalType);
+        final String randomSignalName = ExecutionTestHelper.getRandomSignalName();
+
+        final ExecutionSignal signal = ExecutionTestHelper.buildExecutionSignal(randomSignalName);
 
         final ValidationResult keyValidationResult = ValidatorTestHelper.buildValidValidationResult();
         Mockito.when(keyValidator.validate(signal.getKey())).thenReturn(keyValidationResult);
 
         Mockito.when(executionHelper.getExecutionState(signal.getKey())).thenReturn(executionState);
         Mockito.when(executionHelper.resolveValidSignalNamesOnExecution(executionState)).
-                thenReturn(EXECUTION_TRANSITION_CONTAINER.
-                        getValidSignalTypesForState(getStateTypeByNonValidSignalType(executionSignalType)));
+                thenReturn(Collections.emptyList());
 
         final ValidationResult validationResult = signalValidator.validate(signal);
         Assertions.assertEquals(NON_VALID, validationResult.getType());
 
         final List<String> descriptions = validationResult.getDescriptions();
         Assertions.assertEquals(1, descriptions.size());
-        Assertions.assertEquals("Signal '" + signal.getType() + "' is not valid for state '" + executionState + "'",
+        Assertions.assertEquals("'" + randomSignalName + "' is not a valid signal name",
                 descriptions.get(0));
-    }
-
-    private ExecutionStateType getStateTypeByValidSignalType(final ExecutionSignalType signalType) {
-        return Stream.of(ExecutionStateType.values()).
-                filter(executionStateType ->
-                        EXECUTION_TRANSITION_CONTAINER.getValidSignalTypesForState(executionStateType).
-                                contains(signalType)).
-                findAny().orElse(null);
-    }
-
-    private ExecutionStateType getStateTypeByNonValidSignalType(final ExecutionSignalType signalType) {
-        return Stream.of(ExecutionStateType.values()).
-                filter(executionStateType ->
-                        !EXECUTION_TRANSITION_CONTAINER.getValidSignalTypesForState(executionStateType).
-                                contains(signalType)).
-                findAny().orElse(null);
     }
 
 }

@@ -38,7 +38,7 @@ public class StateImpl implements State {
         if (getValidSignalNames().contains(signalName)) {
             return fetchStateNameBySignalName(signalName);
         } else {
-            throw new StateException("'" + signalName + "' - is not a valid signal for state '" + getName());
+            throw new StateException("'" + signalName + "' - is not a valid signal for state '" + getName() + "'");
         }
     }
 
