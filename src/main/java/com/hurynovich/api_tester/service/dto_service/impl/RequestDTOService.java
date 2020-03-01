@@ -4,7 +4,6 @@ import com.hurynovich.api_tester.converter.dto_entity_converter.DTOEntityConvert
 import com.hurynovich.api_tester.model.dto.impl.RequestDTO;
 import com.hurynovich.api_tester.model.entity.impl.RequestEntity;
 import com.hurynovich.api_tester.service.dto_service.GenericDTOService;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;

@@ -2,7 +2,6 @@ package com.hurynovich.api_tester.controller;
 
 import com.hurynovich.api_tester.cache.cache_key.impl.GenericExecutionCacheKey;
 import com.hurynovich.api_tester.model.controller_response.impl.ExecutionControllerResponse;
-import com.hurynovich.api_tester.model.enumeration.ExecutionSignalType;
 import com.hurynovich.api_tester.model.enumeration.ValidationResultType;
 import com.hurynovich.api_tester.model.execution.ExecutionSignal;
 import com.hurynovich.api_tester.model.execution.ExecutionState;
@@ -44,11 +43,11 @@ public class ExecutionController {
 
         if (validationResult.getType() == ValidationResultType.VALID) {
             final ExecutionState executionState = executionHelper.updateExecutionStateCache(executionSignal);
-            response.setState(executionState.getType());
 
-            final List<ExecutionSignalType> validSignalTypes =
-                    executionHelper.resolveValidSignalTypesOnInit(executionState);
-            response.setValidSignals(validSignalTypes);
+            response.setStateName(executionState.getState().getName());
+
+            final List<String> validSignalNames = executionHelper.resolveValidSignalNamesOnInit(executionState);
+            response.setValidSignalNames(validSignalNames);
 
             // TODO send signal to Kafka
 
@@ -58,8 +57,8 @@ public class ExecutionController {
         }
     }
 
-    @GetMapping("/validSignals")
-    public ResponseEntity<ExecutionControllerResponse> getValidSignalTypes(final @NonNull @RequestBody GenericExecutionCacheKey key) {
+    @GetMapping("/state")
+    public ResponseEntity<ExecutionControllerResponse> getState(final @NonNull @RequestBody GenericExecutionCacheKey key) {
         final ValidationResult validationResult = executionStateCacheKeyValidator.validate(key);
 
         final ExecutionControllerResponse response = new ExecutionControllerResponse();
@@ -67,11 +66,11 @@ public class ExecutionController {
 
         if (validationResult.getType() == ValidationResultType.VALID) {
             final ExecutionState executionState = executionHelper.getExecutionState(key);
-            response.setState(executionState.getType());
 
-            final List<ExecutionSignalType> validSignalTypes =
-                    executionHelper.resolveValidSignalTypesOnInit(executionState);
-            response.setValidSignals(validSignalTypes);
+            response.setStateName(executionState.getState().getName());
+
+            final List<String> validSignalNames = executionHelper.resolveValidSignalNamesOnInit(executionState);
+            response.setValidSignalNames(validSignalNames);
 
             return ResponseEntity.ok(response);
         } else {

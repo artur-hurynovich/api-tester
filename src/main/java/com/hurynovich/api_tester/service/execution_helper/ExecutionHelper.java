@@ -2,8 +2,6 @@ package com.hurynovich.api_tester.service.execution_helper;
 
 import com.hurynovich.api_tester.cache.cache_key.impl.GenericExecutionCacheKey;
 import com.hurynovich.api_tester.model.document.impl.ExecutionLogDocument;
-import com.hurynovich.api_tester.model.enumeration.ExecutionSignalType;
-import com.hurynovich.api_tester.model.enumeration.ExecutionStateType;
 import com.hurynovich.api_tester.model.execution.ExecutionSignal;
 import com.hurynovich.api_tester.model.execution.ExecutionState;
 
@@ -17,10 +15,8 @@ public interface ExecutionHelper {
 
     ExecutionLogDocument getExecutionLog(GenericExecutionCacheKey key);
 
-    ExecutionStateType resolveTransitionToExecutionStateType(ExecutionSignal executionSignal);
+    List<String> resolveValidSignalNamesOnInit(ExecutionState executionState);
 
-    List<ExecutionSignalType> resolveValidSignalTypesOnInit(ExecutionState executionState);
-
-    List<ExecutionSignalType> resolveValidSignalTypesOnExecution(ExecutionState executionState);
+    List<String> resolveValidSignalNamesOnExecution(ExecutionState executionState);
 
 }

@@ -1,7 +1,6 @@
 package com.hurynovich.api_tester.validator.execution_signal_validator;
 
 import com.hurynovich.api_tester.cache.cache_key.impl.GenericExecutionCacheKey;
-import com.hurynovich.api_tester.model.enumeration.ExecutionSignalType;
 import com.hurynovich.api_tester.model.enumeration.ValidationResultType;
 import com.hurynovich.api_tester.model.execution.ExecutionSignal;
 import com.hurynovich.api_tester.model.validation.ValidationResult;
@@ -32,7 +31,7 @@ public class AbstractExecutionSignalValidatorTest {
         signalValidator =
                 new AbstractExecutionSignalValidator(keyValidator) {
                     @Override
-                    protected void processNotNullSignalTypeValidation(ExecutionSignal signal, ValidationResult validationResult) {
+                    protected void processNotNullSignalValidation(ExecutionSignal signal, ValidationResult validationResult) {
 
                     }
                 };

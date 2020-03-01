@@ -6,7 +6,6 @@ import com.hurynovich.api_tester.model.dto.impl.NameValueElementDTO;
 import com.hurynovich.api_tester.model.dto.impl.RequestDTO;
 import com.hurynovich.api_tester.model.dto.impl.ResponseDTO;
 import com.hurynovich.api_tester.model.enumeration.ExecutionLogEntryType;
-
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 

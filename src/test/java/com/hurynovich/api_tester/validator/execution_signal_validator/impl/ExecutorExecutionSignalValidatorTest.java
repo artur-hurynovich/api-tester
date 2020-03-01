@@ -1,8 +1,6 @@
 package com.hurynovich.api_tester.validator.execution_signal_validator.impl;
 
 import com.hurynovich.api_tester.cache.cache_key.impl.GenericExecutionCacheKey;
-import com.hurynovich.api_tester.model.enumeration.ExecutionSignalType;
-import com.hurynovich.api_tester.model.enumeration.ExecutionStateType;
 import com.hurynovich.api_tester.model.execution.ExecutionSignal;
 import com.hurynovich.api_tester.model.execution.ExecutionState;
 import com.hurynovich.api_tester.model.validation.ValidationResult;
@@ -59,7 +57,7 @@ public class ExecutorExecutionSignalValidatorTest {
         Mockito.when(keyValidator.validate(signal.getKey())).thenReturn(keyValidationResult);
 
         Mockito.when(executionHelper.getExecutionState(signal.getKey())).thenReturn(executionState);
-        Mockito.when(executionHelper.resolveValidSignalTypesOnExecution(executionState)).
+        Mockito.when(executionHelper.resolveValidSignalNamesOnExecution(executionState)).
                 thenReturn(EXECUTION_TRANSITION_CONTAINER.
                         getValidSignalTypesForState(getStateTypeByValidSignalType(executionSignalType)));
 
@@ -80,7 +78,7 @@ public class ExecutorExecutionSignalValidatorTest {
         Mockito.when(keyValidator.validate(signal.getKey())).thenReturn(keyValidationResult);
 
         Mockito.when(executionHelper.getExecutionState(signal.getKey())).thenReturn(executionState);
-        Mockito.when(executionHelper.resolveValidSignalTypesOnExecution(executionState)).
+        Mockito.when(executionHelper.resolveValidSignalNamesOnExecution(executionState)).
                 thenReturn(EXECUTION_TRANSITION_CONTAINER.
                         getValidSignalTypesForState(getStateTypeByNonValidSignalType(executionSignalType)));
 

@@ -1,13 +1,11 @@
 package com.hurynovich.api_tester.service.document_service;
 
 import com.hurynovich.api_tester.model.document.AbstractDocument;
-
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.lang.NonNull;
 
-import java.util.List;
-
 import javax.persistence.EntityNotFoundException;
+import java.util.List;
 
 public class GenericDocumentService<D extends AbstractDocument, I> implements DocumentService<D, I> {
 

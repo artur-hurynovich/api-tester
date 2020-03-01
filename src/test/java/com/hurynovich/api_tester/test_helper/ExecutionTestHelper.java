@@ -1,8 +1,6 @@
 package com.hurynovich.api_tester.test_helper;
 
 import com.hurynovich.api_tester.cache.cache_key.impl.GenericExecutionCacheKey;
-import com.hurynovich.api_tester.model.enumeration.ExecutionSignalType;
-import com.hurynovich.api_tester.model.enumeration.ExecutionStateType;
 import com.hurynovich.api_tester.model.execution.ExecutionSignal;
 import com.hurynovich.api_tester.model.execution.ExecutionState;
 

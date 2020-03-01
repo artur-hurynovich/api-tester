@@ -4,8 +4,6 @@ import com.hurynovich.api_tester.cache.Cache;
 import com.hurynovich.api_tester.cache.cache_key.impl.GenericExecutionCacheKey;
 import com.hurynovich.api_tester.model.document.impl.ExecutionLogDocument;
 import com.hurynovich.api_tester.model.dto.impl.RequestChainDTO;
-import com.hurynovich.api_tester.model.enumeration.ExecutionSignalType;
-import com.hurynovich.api_tester.model.enumeration.ExecutionStateType;
 import com.hurynovich.api_tester.model.execution.ExecutionSignal;
 import com.hurynovich.api_tester.model.execution.ExecutionState;
 import com.hurynovich.api_tester.service.dto_service.DTOService;
@@ -118,18 +116,18 @@ public class ExecutionHelperImplTest {
     @Test
     public void resolveValidSignalTypesOnInitTest() {
         List<ExecutionSignalType> executionSignalTypes =
-                executionHelper.resolveValidSignalTypesOnInit(null);
+                executionHelper.resolveValidSignalNamesOnInit(null);
         Assertions.assertEquals(1, executionSignalTypes.size());
         Assertions.assertTrue(executionSignalTypes.contains(RUN));
 
         final ExecutionStateType randomPendingStateType = getRandomPendingStateType();
         executionSignalTypes = executionHelper.
-                resolveValidSignalTypesOnInit(ExecutionTestHelper.buildExecutionState(randomPendingStateType));
+                resolveValidSignalNamesOnInit(ExecutionTestHelper.buildExecutionState(randomPendingStateType));
         Assertions.assertTrue(executionSignalTypes.isEmpty());
 
         final ExecutionStateType randomNotPendingStateType = getRandomNotPendingStateType();
         executionSignalTypes = executionHelper.
-                resolveValidSignalTypesOnInit(ExecutionTestHelper.buildExecutionState(randomNotPendingStateType));
+                resolveValidSignalNamesOnInit(ExecutionTestHelper.buildExecutionState(randomNotPendingStateType));
         Assertions.assertEquals(EXECUTION_TRANSITION_CONTAINER.getValidSignalTypesForState(randomNotPendingStateType),
                 executionSignalTypes);
     }
@@ -137,18 +135,18 @@ public class ExecutionHelperImplTest {
     @Test
     public void resolveValidSignalTypesOnExecutionTest() {
         List<ExecutionSignalType> executionSignalTypes =
-                executionHelper.resolveValidSignalTypesOnExecution(null);
+                executionHelper.resolveValidSignalNamesOnExecution(null);
         Assertions.assertTrue(executionSignalTypes.isEmpty());
 
         final ExecutionStateType randomPendingStateType = getRandomPendingStateType();
         executionSignalTypes = executionHelper.
-                resolveValidSignalTypesOnExecution(ExecutionTestHelper.buildExecutionState(randomPendingStateType));
+                resolveValidSignalNamesOnExecution(ExecutionTestHelper.buildExecutionState(randomPendingStateType));
         Assertions.assertEquals(EXECUTION_TRANSITION_CONTAINER.getValidSignalTypesForState(randomPendingStateType),
                 executionSignalTypes);
 
         final ExecutionStateType randomNotPendingStateType = getRandomNotPendingStateType();
         executionSignalTypes = executionHelper.
-                resolveValidSignalTypesOnExecution(ExecutionTestHelper.buildExecutionState(randomNotPendingStateType));
+                resolveValidSignalNamesOnExecution(ExecutionTestHelper.buildExecutionState(randomNotPendingStateType));
         Assertions.assertTrue(executionSignalTypes.isEmpty());
     }
 

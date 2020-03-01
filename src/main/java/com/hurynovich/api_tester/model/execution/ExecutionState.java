@@ -1,15 +1,26 @@
 package com.hurynovich.api_tester.model.execution;
 
 import com.hurynovich.api_tester.model.dto.impl.RequestDTO;
-import com.hurynovich.api_tester.model.enumeration.ExecutionStateType;
+import com.hurynovich.api_tester.state_transition.has_state.HasState;
+import com.hurynovich.api_tester.state_transition.state.State;
 
 import java.util.List;
 
-public class ExecutionState {
+public class ExecutionState implements HasState {
+
+    private State state;
 
     private List<RequestDTO> requests;
 
-    private ExecutionStateType type;
+    @Override
+    public State getState() {
+        return state;
+    }
+
+    @Override
+    public void setState(final State state) {
+        this.state = state;
+    }
 
     public List<RequestDTO> getRequests() {
         return requests;
@@ -17,14 +28,6 @@ public class ExecutionState {
 
     public void setRequests(final List<RequestDTO> requests) {
         this.requests = requests;
-    }
-
-    public ExecutionStateType getType() {
-        return type;
-    }
-
-    public void setType(final ExecutionStateType type) {
-        this.type = type;
     }
 
 }

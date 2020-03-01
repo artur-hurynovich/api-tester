@@ -1,20 +1,22 @@
 package com.hurynovich.api_tester.model.execution;
 
 import com.hurynovich.api_tester.cache.cache_key.impl.GenericExecutionCacheKey;
-import com.hurynovich.api_tester.model.enumeration.ExecutionSignalType;
+import com.hurynovich.api_tester.state_transition.has_signal.HasSignal;
+import com.hurynovich.api_tester.state_transition.signal.Signal;
 
-public class ExecutionSignal {
+public class ExecutionSignal implements HasSignal {
 
-    private ExecutionSignalType type;
+    private Signal signal;
 
     private GenericExecutionCacheKey key;
 
-    public ExecutionSignalType getType() {
-        return type;
+    @Override
+    public Signal getSignal() {
+        return signal;
     }
 
-    public void setType(final ExecutionSignalType type) {
-        this.type = type;
+    public void setSignal(final Signal signal) {
+        this.signal = signal;
     }
 
     public GenericExecutionCacheKey getKey() {

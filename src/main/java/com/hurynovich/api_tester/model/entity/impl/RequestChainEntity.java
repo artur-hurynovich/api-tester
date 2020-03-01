@@ -2,13 +2,8 @@ package com.hurynovich.api_tester.model.entity.impl;
 
 import com.hurynovich.api_tester.model.entity.AbstractEntity;
 
+import javax.persistence.*;
 import java.util.List;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
 
 @Entity
 @Table(name = "apte_request_chains")

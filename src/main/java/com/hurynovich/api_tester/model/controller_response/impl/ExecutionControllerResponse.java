@@ -1,31 +1,29 @@
 package com.hurynovich.api_tester.model.controller_response.impl;
 
 import com.hurynovich.api_tester.model.controller_response.AbstractControllerResponse;
-import com.hurynovich.api_tester.model.enumeration.ExecutionSignalType;
-import com.hurynovich.api_tester.model.enumeration.ExecutionStateType;
 
 import java.util.List;
 
 public class ExecutionControllerResponse extends AbstractControllerResponse {
 
-    private ExecutionStateType state;
+    private String stateName;
 
-    private List<ExecutionSignalType> validSignals;
+    private List<String> validSignalNames;
 
-    public ExecutionStateType getState() {
-        return state;
+    public String getStateName() {
+        return stateName;
     }
 
-    public void setState(ExecutionStateType state) {
-        this.state = state;
+    public void setStateName(final String stateName) {
+        this.stateName = stateName;
     }
 
-    public List<ExecutionSignalType> getValidSignals() {
-        return validSignals;
+    public List<String> getValidSignalNames() {
+        return validSignalNames;
     }
 
-    public void setValidSignals(List<ExecutionSignalType> validSignals) {
-        this.validSignals = validSignals;
+    public void setValidSignalNames(final List<String> validSignalNames) {
+        this.validSignalNames = validSignalNames;
     }
 
 }

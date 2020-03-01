@@ -6,7 +6,6 @@ import com.hurynovich.api_tester.model.enumeration.ValidationResultType;
 import com.hurynovich.api_tester.model.validation.ValidationResult;
 import com.hurynovich.api_tester.service.dto_service.DTOService;
 import com.hurynovich.api_tester.validator.Validator;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.GetMapping;

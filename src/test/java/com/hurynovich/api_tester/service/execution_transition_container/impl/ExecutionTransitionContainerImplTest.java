@@ -1,7 +1,5 @@
 package com.hurynovich.api_tester.service.execution_transition_container.impl;
 
-import com.hurynovich.api_tester.model.enumeration.ExecutionSignalType;
-import com.hurynovich.api_tester.model.enumeration.ExecutionStateType;
 import com.hurynovich.api_tester.service.execution_transition_container.ExecutionTransitionContainer;
 
 import org.junit.jupiter.api.Assertions;
