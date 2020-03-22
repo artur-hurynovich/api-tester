@@ -1,4 +1,4 @@
-package com.hurynovich.api_tester.validator.execution_signal_validator;
+package com.hurynovich.api_tester.validator.impl.execution_signal_validator;
 
 import com.hurynovich.api_tester.cache.cache_key.impl.ExecutionStateCacheKey;
 import com.hurynovich.api_tester.model.enumeration.ValidationResultType;
@@ -7,6 +7,7 @@ import com.hurynovich.api_tester.model.validation.ValidationResult;
 import com.hurynovich.api_tester.state_transition.signal.Signal;
 import com.hurynovich.api_tester.validator.Validator;
 import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,14 +21,19 @@ public abstract class AbstractExecutionSignalValidator implements Validator<Exec
     }
 
     @Override
-    public ValidationResult validate(final @NonNull ExecutionSignal executionSignal) {
+    public ValidationResult validate(final @Nullable ExecutionSignal executionSignal) {
         final ValidationResult validationResult = new ValidationResult();
         validationResult.setType(ValidationResultType.VALID);
         validationResult.setDescriptions(new ArrayList<>());
 
-        validateExecutionStateCacheKey(executionSignal, validationResult);
+        if (executionSignal == null) {
+            validationResult.setType(ValidationResultType.NON_VALID);
+            validationResult.getDescriptions().add("'executionSignal' can't be null");
+        } else {
+            validateExecutionStateCacheKey(executionSignal, validationResult);
 
-        validateSignal(executionSignal, validationResult);
+            validateSignal(executionSignal, validationResult);
+        }
 
         return validationResult;
     }
@@ -38,7 +44,7 @@ public abstract class AbstractExecutionSignalValidator implements Validator<Exec
 
         if (executionStateCacheKey == null) {
             validationResult.setType(ValidationResultType.NON_VALID);
-            validationResult.getDescriptions().add("'executionStateCacheKey' can't be null");
+            validationResult.getDescriptions().add("'executionSignal.executionStateCacheKey' can't be null");
         } else {
             final ValidationResult keyValidationResult = keyValidator.validate(executionStateCacheKey);
 
@@ -56,7 +62,7 @@ public abstract class AbstractExecutionSignalValidator implements Validator<Exec
 
         if (signal == null) {
             validationResult.setType(ValidationResultType.NON_VALID);
-            validationResult.getDescriptions().add("'signal' can't be null");
+            validationResult.getDescriptions().add("'executionSignal.signal' can't be null");
         } else {
             processNotNullSignalValidation(executionSignal, validationResult);
         }
@@ -70,13 +76,13 @@ public abstract class AbstractExecutionSignalValidator implements Validator<Exec
 
         if (signalName == null || signalName.isEmpty()) {
             validationResult.setType(ValidationResultType.NON_VALID);
-            validationResult.getDescriptions().add("'signalName' can't be null or empty");
+            validationResult.getDescriptions().add("'executionSignal.signal.signalName' can't be null or empty");
         } else {
             final List<String> validSignalNames = getValidSignalNames(executionSignal);
 
             if (!validSignalNames.contains(signalName)) {
                 validationResult.setType(ValidationResultType.NON_VALID);
-                validationResult.getDescriptions().add("'" + signalName + "' is not a valid signal name");
+                validationResult.getDescriptions().add("'" + signalName + "' is not a valid 'executionSignal.signal.signalName");
             }
         }
     }

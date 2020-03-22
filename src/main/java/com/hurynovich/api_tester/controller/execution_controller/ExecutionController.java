@@ -22,18 +22,18 @@ import java.util.List;
 @RestController
 public class ExecutionController {
 
-    private final Validator<RequestContainerDTO> requestContainerDocumentValidator;
+    private final Validator<RequestContainerDTO> requestContainerValidator;
 
     private final Validator<ExecutionSignal> executionSignalValidator;
     private final Validator<ExecutionStateCacheKey> executionStateCacheKeyValidator;
 
     private final ExecutionHelper executionHelper;
 
-    public ExecutionController(final @NonNull Validator<RequestContainerDTO> requestContainerDocumentValidator,
+    public ExecutionController(final @NonNull Validator<RequestContainerDTO> requestContainerValidator,
                                final @NonNull @Qualifier("controllerExecutionSignalValidator") Validator<ExecutionSignal> executionSignalValidator,
                                final @NonNull Validator<ExecutionStateCacheKey> executionStateCacheKeyValidator,
                                final @NonNull ExecutionHelper executionHelper) {
-        this.requestContainerDocumentValidator = requestContainerDocumentValidator;
+        this.requestContainerValidator = requestContainerValidator;
         this.executionSignalValidator = executionSignalValidator;
         this.executionStateCacheKeyValidator = executionStateCacheKeyValidator;
         this.executionHelper = executionHelper;
@@ -62,7 +62,7 @@ public class ExecutionController {
 
     @PostMapping("/initExecution")
     public ResponseEntity<ExecutionControllerResponse> postInitExecution(final @NonNull @RequestBody RequestContainerDTO requestContainer) {
-        final ValidationResult validationResult = requestContainerDocumentValidator.validate(requestContainer);
+        final ValidationResult validationResult = requestContainerValidator.validate(requestContainer);
 
         final ExecutionControllerResponse response = new ExecutionControllerResponse();
         response.setValidationResult(validationResult);

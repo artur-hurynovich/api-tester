@@ -1,4 +1,4 @@
-package com.hurynovich.api_tester.validator.execution_signal_validator.impl;
+package com.hurynovich.api_tester.validator.impl.execution_signal_validator.impl;
 
 import com.hurynovich.api_tester.cache.cache_key.impl.ExecutionStateCacheKey;
 import com.hurynovich.api_tester.model.execution.ExecutionSignal;

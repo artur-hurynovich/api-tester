@@ -11,8 +11,6 @@ public class ExecutionLogDTO extends AbstractDTO<String> {
 
     private Long userId;
 
-    private String requestContainerId;
-
     private List<ExecutionLogEntryDTO> entries;
 
     public LocalDateTime getDateTime() {
@@ -31,14 +29,6 @@ public class ExecutionLogDTO extends AbstractDTO<String> {
         this.userId = userId;
     }
 
-    public String getRequestContainerId() {
-        return requestContainerId;
-    }
-
-    public void setRequestContainerId(final String requestContainerId) {
-        this.requestContainerId = requestContainerId;
-    }
-
     public List<ExecutionLogEntryDTO> getEntries() {
         return entries;
     }
@@ -46,4 +36,5 @@ public class ExecutionLogDTO extends AbstractDTO<String> {
     public void setEntries(final List<ExecutionLogEntryDTO> entries) {
         this.entries = entries;
     }
+
 }

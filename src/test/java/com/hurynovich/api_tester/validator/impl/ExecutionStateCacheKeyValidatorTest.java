@@ -1,4 +1,4 @@
-package com.hurynovich.api_tester.validator.execution_state_cache_key_validator.impl;
+package com.hurynovich.api_tester.validator.impl;
 
 import com.hurynovich.api_tester.cache.cache_key.impl.ExecutionStateCacheKey;
 import com.hurynovich.api_tester.model.enumeration.ValidationResultType;
@@ -6,7 +6,6 @@ import com.hurynovich.api_tester.model.validation.ValidationResult;
 import com.hurynovich.api_tester.test_helper.ExecutionTestHelper;
 import com.hurynovich.api_tester.test_helper.RandomValueGenerator;
 import com.hurynovich.api_tester.validator.Validator;
-import com.hurynovich.api_tester.validator.execution_state_cache_key_validator.ExecutionStateCacheKeyValidator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
