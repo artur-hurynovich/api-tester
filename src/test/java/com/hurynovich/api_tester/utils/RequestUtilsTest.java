@@ -3,7 +3,6 @@ package com.hurynovich.api_tester.utils;
 import com.hurynovich.api_tester.model.dto.impl.NameValueElementDTO;
 import com.hurynovich.api_tester.test_helper.RandomValueGenerator;
 import com.hurynovich.api_tester.test_helper.RequestTestHelper;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -11,9 +10,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static com.hurynovich.api_tester.utils.RequestUtils.PARAMETERS_PREFIX;
-import static com.hurynovich.api_tester.utils.RequestUtils.PARAMETERS_SEPARATOR;
-import static com.hurynovich.api_tester.utils.RequestUtils.PARAMETER_NAME_VALUE_SEPARATOR;
+import static com.hurynovich.api_tester.utils.RequestUtils.*;
 
 public class RequestUtilsTest {
 

@@ -1,6 +1,6 @@
 package com.hurynovich.api_tester.model.execution;
 
-import com.hurynovich.api_tester.model.document.impl.ExecutionLogDocument;
+import com.hurynovich.api_tester.model.dto.impl.ExecutionLogDTO;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ public class ExecutionResult {
 
     private List<String> validSignalNames;
 
-    private ExecutionLogDocument executionLog;
+    private ExecutionLogDTO executionLog;
 
     public String getStateName() {
         return stateName;
@@ -28,11 +28,11 @@ public class ExecutionResult {
         this.validSignalNames = validSignalNames;
     }
 
-    public ExecutionLogDocument getExecutionLog() {
+    public ExecutionLogDTO getExecutionLog() {
         return executionLog;
     }
 
-    public void setExecutionLog(final ExecutionLogDocument executionLog) {
+    public void setExecutionLog(final ExecutionLogDTO executionLog) {
         this.executionLog = executionLog;
     }
 

@@ -1,8 +1,10 @@
 package com.hurynovich.api_tester.validator.execution_signal_validator.impl;
 
-import com.hurynovich.api_tester.cache.cache_key.impl.GenericExecutionCacheKey;
+import com.hurynovich.api_tester.cache.cache_key.impl.ExecutionStateCacheKey;
+import com.hurynovich.api_tester.model.enumeration.ValidationResultType;
 import com.hurynovich.api_tester.model.execution.ExecutionSignal;
 import com.hurynovich.api_tester.model.execution.ExecutionState;
+import com.hurynovich.api_tester.model.validation.ValidationResult;
 import com.hurynovich.api_tester.service.execution_helper.ExecutionHelper;
 import com.hurynovich.api_tester.state_transition.signal.SignalName;
 import com.hurynovich.api_tester.validator.Validator;
@@ -18,7 +20,7 @@ public class ControllerExecutionSignalValidator extends AbstractExecutionSignalV
 
     private final ExecutionHelper executionHelper;
 
-    public ControllerExecutionSignalValidator(final @NonNull Validator<GenericExecutionCacheKey> keyValidator,
+    public ControllerExecutionSignalValidator(final @NonNull Validator<ExecutionStateCacheKey> keyValidator,
                                               final @NonNull ExecutionHelper executionHelper) {
         super(keyValidator);
 
@@ -26,10 +28,26 @@ public class ControllerExecutionSignalValidator extends AbstractExecutionSignalV
     }
 
     @Override
-    protected List<String> getValidSignalNames(final ExecutionSignal executionSignal) {
-        final GenericExecutionCacheKey executionSignalKey = executionSignal.getKey();
+    public ValidationResult validate(final @NonNull ExecutionSignal executionSignal) {
+        final ValidationResult validationResult = super.validate(executionSignal);
 
-        final ExecutionState executionState = executionHelper.getExecutionState(executionSignalKey);
+        final ExecutionStateCacheKey executionStateCacheKey = executionSignal.getExecutionStateCacheKey();
+
+        final ExecutionState executionState = executionHelper.getExecutionState(executionStateCacheKey);
+
+        if (executionState == null) {
+            validationResult.setType(ValidationResultType.NON_VALID);
+            validationResult.getDescriptions().add("Execution was not initialized");
+        }
+
+        return validationResult;
+    }
+
+    @Override
+    protected List<String> getValidSignalNames(final ExecutionSignal executionSignal) {
+        final ExecutionStateCacheKey executionStateCacheKey = executionSignal.getExecutionStateCacheKey();
+
+        final ExecutionState executionState = executionHelper.getExecutionState(executionStateCacheKey);
 
         if (executionState != null) {
             return executionHelper.resolveValidSignalNamesOnInit(executionState);

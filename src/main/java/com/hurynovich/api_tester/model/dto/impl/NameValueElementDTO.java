@@ -4,7 +4,7 @@ import com.hurynovich.api_tester.model.dto.AbstractDTO;
 import com.hurynovich.api_tester.model.enumeration.NameValueElementType;
 import com.hurynovich.api_tester.utils.ObjectUtils;
 
-public class NameValueElementDTO extends AbstractDTO {
+public class NameValueElementDTO extends AbstractDTO<String> {
 
     private String name;
 

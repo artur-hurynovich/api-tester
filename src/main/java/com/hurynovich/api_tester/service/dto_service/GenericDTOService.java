@@ -1,23 +1,24 @@
 package com.hurynovich.api_tester.service.dto_service;
 
-import com.hurynovich.api_tester.converter.dto_entity_converter.DTOEntityConverter;
+import com.hurynovich.api_tester.converter.dto_converter.DTOConverter;
 import com.hurynovich.api_tester.model.dto.AbstractDTO;
-import com.hurynovich.api_tester.model.entity.AbstractEntity;
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.hurynovich.api_tester.model.persistence.Identified;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.lang.NonNull;
 
 import javax.persistence.EntityNotFoundException;
+import java.io.Serializable;
 import java.util.List;
 
-public abstract class GenericDTOService <D extends AbstractDTO, E extends AbstractEntity, I>
+public abstract class GenericDTOService<D extends AbstractDTO<I>, C extends Identified<I>, I extends Serializable>
         implements DTOService<D, I> {
 
-    private final JpaRepository<E, I> repository;
+    private final CrudRepository<C, I> repository;
 
-    private final DTOEntityConverter<D, E> converter;
+    private final DTOConverter<D, C, I> converter;
 
-    public GenericDTOService(final @NonNull JpaRepository<E, I> repository,
-                             final @NonNull DTOEntityConverter<D, E> converter) {
+    public GenericDTOService(final @NonNull CrudRepository<C, I> repository,
+                             final @NonNull DTOConverter<D, C, I> converter) {
         this.repository = repository;
         this.converter = converter;
     }

@@ -2,13 +2,14 @@ package com.hurynovich.api_tester.service.executor.impl;
 
 import com.hurynovich.api_tester.builder.execution_log_entry_builder.ExecutionLogEntryBuilder;
 import com.hurynovich.api_tester.client.Client;
-import com.hurynovich.api_tester.model.document.impl.ExecutionLogDocument;
-import com.hurynovich.api_tester.model.dto.ExecutionLogEntryDTO;
+import com.hurynovich.api_tester.model.dto.impl.ExecutionLogDTO;
+import com.hurynovich.api_tester.model.dto.impl.ExecutionLogEntryDTO;
 import com.hurynovich.api_tester.model.dto.impl.RequestDTO;
 import com.hurynovich.api_tester.model.dto.impl.ResponseDTO;
 import com.hurynovich.api_tester.model.execution.ExecutionResult;
 import com.hurynovich.api_tester.model.execution.ExecutionSignal;
 import com.hurynovich.api_tester.model.execution.ExecutionState;
+import com.hurynovich.api_tester.model.persistence.document.impl.ExecutionLogDocument;
 import com.hurynovich.api_tester.service.execution_helper.ExecutionHelper;
 import com.hurynovich.api_tester.service.executor.Executor;
 import com.hurynovich.api_tester.state_transition.state.StateName;
@@ -57,9 +58,9 @@ public class ExecutorImpl implements Executor {
         final ExecutionState executionState = executionHelper.updateExecutionStateCache(executionSignal);
 
         final List<RequestDTO> requests = executionState.getRequests();
-        ExecutionLogDocument executionLog = executionHelper.getExecutionLog(executionSignal.getKey());
+        ExecutionLogDTO executionLog = executionHelper.getExecutionLog(executionSignal.getExecutionStateCacheKey());
         if (executionLog == null) {
-            executionLog = new ExecutionLogDocument();
+            executionLog = new ExecutionLogDTO();
             executionLog.setDateTime(LocalDateTime.now(ZoneId.systemDefault()));
             executionLog.setEntries(new ArrayList<>());
         }

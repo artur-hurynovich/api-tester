@@ -27,6 +27,10 @@ public class APITesterConfiguration {
         final Set<State> availableStates = new HashSet<>();
 
         availableStates.add(
+                new StateImpl(StateName.INIT, Collections.singleton(
+                        new StateTransitionDescriptorImpl(SignalName.RUN, StateName.PENDING_RUNNING))));
+
+        availableStates.add(
                 new StateImpl(StateName.PENDING_RUNNING, Arrays.asList(
                         new StateTransitionDescriptorImpl(SignalName.RUN, StateName.RUNNING),
                         new StateTransitionDescriptorImpl(SignalName.RESUME, StateName.RUNNING))));

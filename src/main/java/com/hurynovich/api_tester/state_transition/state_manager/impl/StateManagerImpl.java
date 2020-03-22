@@ -5,6 +5,7 @@ import com.hurynovich.api_tester.state_transition.has_signal.HasSignal;
 import com.hurynovich.api_tester.state_transition.has_state.HasState;
 import com.hurynovich.api_tester.state_transition.signal.Signal;
 import com.hurynovich.api_tester.state_transition.state.State;
+import com.hurynovich.api_tester.state_transition.state.StateName;
 import com.hurynovich.api_tester.state_transition.state_manager.StateManager;
 import org.springframework.lang.NonNull;
 
@@ -16,8 +17,20 @@ public class StateManagerImpl implements StateManager {
 
     private final Set<State> availableStates;
 
+    private final State initState;
+
     public StateManagerImpl(final @NonNull Set<State> availableStates) {
         this.availableStates = availableStates;
+
+        initState = availableStates.stream().
+                filter(state -> state.getName().equals(StateName.INIT)).
+                findFirst().
+                orElseThrow(() -> new StateManagerException("No init state found"));
+    }
+
+    @Override
+    public State getInitState() {
+        return initState;
     }
 
     @Override

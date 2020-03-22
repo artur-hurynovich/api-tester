@@ -1,12 +1,11 @@
 package com.hurynovich.api_tester.service.execution_helper.impl;
 
 import com.hurynovich.api_tester.cache.Cache;
-import com.hurynovich.api_tester.cache.cache_key.impl.GenericExecutionCacheKey;
-import com.hurynovich.api_tester.model.document.impl.ExecutionLogDocument;
-import com.hurynovich.api_tester.model.dto.impl.RequestChainDTO;
+import com.hurynovich.api_tester.cache.cache_key.impl.ExecutionStateCacheKey;
+import com.hurynovich.api_tester.model.dto.impl.ExecutionLogDTO;
+import com.hurynovich.api_tester.model.dto.impl.RequestContainerDTO;
 import com.hurynovich.api_tester.model.execution.ExecutionSignal;
 import com.hurynovich.api_tester.model.execution.ExecutionState;
-import com.hurynovich.api_tester.service.dto_service.DTOService;
 import com.hurynovich.api_tester.service.execution_helper.ExecutionHelper;
 import com.hurynovich.api_tester.state_transition.signal.SignalName;
 import com.hurynovich.api_tester.state_transition.state.State;
@@ -18,52 +17,56 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class ExecutionHelperImpl implements ExecutionHelper {
 
     private final StateManager stateManager;
 
-    private final Cache<GenericExecutionCacheKey, ExecutionState> executionStateCache;
-    private final Cache<GenericExecutionCacheKey, ExecutionLogDocument> executionLogCache;
-
-    private final DTOService<RequestChainDTO, Long> requestChainService;
+    private final Cache<ExecutionStateCacheKey, ExecutionState> executionStateCache;
+    private final Cache<ExecutionStateCacheKey, ExecutionLogDTO> executionLogCache;
 
     public ExecutionHelperImpl(final @NonNull StateManager stateManager,
-                               final @NonNull Cache<GenericExecutionCacheKey, ExecutionState> executionStateCache,
-                               final @NonNull Cache<GenericExecutionCacheKey, ExecutionLogDocument> executionLogCache,
-                               final @NonNull DTOService<RequestChainDTO, Long> requestChainService) {
+                               final @NonNull Cache<ExecutionStateCacheKey, ExecutionState> executionStateCache,
+                               final @NonNull Cache<ExecutionStateCacheKey, ExecutionLogDTO> executionLogCache) {
         this.stateManager = stateManager;
         this.executionStateCache = executionStateCache;
         this.executionLogCache = executionLogCache;
-        this.requestChainService = requestChainService;
     }
 
     @Override
-    public ExecutionState getExecutionState(final @NonNull GenericExecutionCacheKey key) {
+    public ExecutionState getExecutionState(final @NonNull ExecutionStateCacheKey key) {
         return executionStateCache.get(key);
     }
 
     @Override
-    public ExecutionState updateExecutionStateCache(final @NonNull ExecutionSignal executionSignal) {
-        final GenericExecutionCacheKey genericExecutionCacheKey = executionSignal.getKey();
+    public ExecutionStateCacheKey initExecutionStateCache(final @NonNull RequestContainerDTO requestContainerDTO) {
+        final ExecutionStateCacheKey executionStateCacheKey = new ExecutionStateCacheKey(UUID.randomUUID().toString());
 
-        ExecutionState executionState = executionStateCache.get(genericExecutionCacheKey);
-        if (executionState == null) {
-            executionState = new ExecutionState();
+        final ExecutionState executionState = new ExecutionState();
 
-            final RequestChainDTO requestChain =
-                    requestChainService.readById(genericExecutionCacheKey.getRequestChainId());
-            executionState.setRequests(requestChain.getRequests());
-        }
+        executionState.setState(stateManager.getInitState());
+        executionState.setRequests(requestContainerDTO.getRequests());
 
-        stateManager.processTransition(executionState, executionSignal);
+        executionStateCache.put(executionStateCacheKey, executionState);
 
-        return executionStateCache.put(genericExecutionCacheKey, executionState);
+        return executionStateCacheKey;
     }
 
     @Override
-    public ExecutionLogDocument getExecutionLog(final GenericExecutionCacheKey key) {
+    public ExecutionState updateExecutionStateCache(final @NonNull ExecutionSignal executionSignal) {
+        final ExecutionStateCacheKey executionStateCacheKey = executionSignal.getExecutionStateCacheKey();
+
+        final ExecutionState executionState = executionStateCache.get(executionStateCacheKey);
+
+        stateManager.processTransition(executionState, executionSignal);
+
+        return executionStateCache.put(executionStateCacheKey, executionState);
+    }
+
+    @Override
+    public ExecutionLogDTO getExecutionLog(final ExecutionStateCacheKey key) {
         return executionLogCache.get(key);
     }
 

@@ -12,12 +12,8 @@ public class RandomValueGenerator {
 
     private static final Random RANDOM = new Random();
 
-    public static int generateRandomPositiveInt() {
-        return RANDOM.nextInt(Integer.MAX_VALUE) + 1;
-    }
-
-    public static int generateRandomNegativeOrZeroInt() {
-        return generateRandomPositiveInt() - Integer.MAX_VALUE;
+    public static Long generateRandomPositiveLong() {
+        return Math.abs(RANDOM.nextLong());
     }
 
     public static String generateRandomStringLettersOnly(final int size) {

@@ -1,6 +1,6 @@
 package com.hurynovich.api_tester.mock;
 
-import com.hurynovich.api_tester.model.document.AbstractDocument;
+import com.hurynovich.api_tester.model.persistence.document.AbstractDocument;
 
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;

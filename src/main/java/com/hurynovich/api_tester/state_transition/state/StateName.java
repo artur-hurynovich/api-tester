@@ -10,6 +10,8 @@ public class StateName {
 
     }
 
+    public static final String INIT = "init";
+
     public static final String PENDING_RUNNING = "pending_running";
 
     public static final String RUNNING = "running";

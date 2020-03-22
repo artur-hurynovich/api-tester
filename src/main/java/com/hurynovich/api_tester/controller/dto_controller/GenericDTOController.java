@@ -13,15 +13,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class GenericDTOController<D extends AbstractDTO, I> {
+public class GenericDTOController<D extends AbstractDTO<I>, I extends Serializable> {
 
     private final Validator<D> validator;
 
     private final DTOService<D, I> service;
 
-    public GenericDTOController(final Validator<D> validator, final DTOService<D, I> service) {
+    public GenericDTOController(final @NonNull Validator<D> validator, final @NonNull DTOService<D, I> service) {
         this.validator = validator;
         this.service = service;
     }

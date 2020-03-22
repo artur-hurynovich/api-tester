@@ -1,6 +1,6 @@
 package com.hurynovich.api_tester.validator.execution_signal_validator.impl;
 
-import com.hurynovich.api_tester.cache.cache_key.impl.GenericExecutionCacheKey;
+import com.hurynovich.api_tester.cache.cache_key.impl.ExecutionStateCacheKey;
 import com.hurynovich.api_tester.model.execution.ExecutionSignal;
 import com.hurynovich.api_tester.model.execution.ExecutionState;
 import com.hurynovich.api_tester.model.validation.ValidationResult;
@@ -26,7 +26,7 @@ import static com.hurynovich.api_tester.model.enumeration.ValidationResultType.V
 public class ControllerExecutionSignalValidatorTest {
 
     @Mock
-    private Validator<GenericExecutionCacheKey> keyValidator;
+    private Validator<ExecutionStateCacheKey> keyValidator;
 
     @Mock
     private ExecutionHelper executionHelper;
@@ -48,9 +48,9 @@ public class ControllerExecutionSignalValidatorTest {
         final ExecutionSignal signal = ExecutionTestHelper.buildExecutionSignal(randomSignalName);
 
         final ValidationResult keyValidationResult = ValidatorTestHelper.buildValidValidationResult();
-        Mockito.when(keyValidator.validate(signal.getKey())).thenReturn(keyValidationResult);
+        Mockito.when(keyValidator.validate(signal.getExecutionStateCacheKey())).thenReturn(keyValidationResult);
 
-        Mockito.when(executionHelper.getExecutionState(signal.getKey())).thenReturn(executionState);
+        Mockito.when(executionHelper.getExecutionState(signal.getExecutionStateCacheKey())).thenReturn(executionState);
         Mockito.when(executionHelper.resolveValidSignalNamesOnInit(executionState)).
                 thenReturn(Collections.singletonList(randomSignalName));
 
@@ -68,9 +68,9 @@ public class ControllerExecutionSignalValidatorTest {
         final ExecutionSignal signal = ExecutionTestHelper.buildExecutionSignal(randomSignalName);
 
         final ValidationResult keyValidationResult = ValidatorTestHelper.buildValidValidationResult();
-        Mockito.when(keyValidator.validate(signal.getKey())).thenReturn(keyValidationResult);
+        Mockito.when(keyValidator.validate(signal.getExecutionStateCacheKey())).thenReturn(keyValidationResult);
 
-        Mockito.when(executionHelper.getExecutionState(signal.getKey())).thenReturn(executionState);
+        Mockito.when(executionHelper.getExecutionState(signal.getExecutionStateCacheKey())).thenReturn(executionState);
         Mockito.when(executionHelper.resolveValidSignalNamesOnInit(executionState)).
                 thenReturn(Collections.emptyList());
 
