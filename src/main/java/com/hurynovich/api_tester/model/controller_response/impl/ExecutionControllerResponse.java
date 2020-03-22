@@ -6,9 +6,19 @@ import java.util.List;
 
 public class ExecutionControllerResponse extends AbstractControllerResponse {
 
+    private String executionKey;
+
     private String stateName;
 
     private List<String> validSignalNames;
+
+    public String getExecutionKey() {
+        return executionKey;
+    }
+
+    public void setExecutionKey(final String executionKey) {
+        this.executionKey = executionKey;
+    }
 
     public String getStateName() {
         return stateName;

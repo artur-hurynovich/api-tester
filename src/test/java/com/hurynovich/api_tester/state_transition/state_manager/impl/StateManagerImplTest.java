@@ -21,6 +21,11 @@ public class StateManagerImplTest {
 
     @Test
     public void processTransitionTest() {
+        executeTest(StateName.INIT, SignalName.RUN, StateName.PENDING_RUNNING);
+        executeTest(StateName.INIT, SignalName.PAUSE);
+        executeTest(StateName.INIT, SignalName.RESUME);
+        executeTest(StateName.INIT, SignalName.STOP);
+
         executeTest(StateName.PENDING_RUNNING, SignalName.RUN, StateName.RUNNING);
         executeTest(StateName.PENDING_RUNNING, SignalName.PAUSE);
         executeTest(StateName.PENDING_RUNNING, SignalName.RESUME, StateName.RUNNING);

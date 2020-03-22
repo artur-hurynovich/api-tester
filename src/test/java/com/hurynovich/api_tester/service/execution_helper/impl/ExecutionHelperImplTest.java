@@ -1,12 +1,10 @@
 package com.hurynovich.api_tester.service.execution_helper.impl;
 
 import com.hurynovich.api_tester.cache.Cache;
-import com.hurynovich.api_tester.cache.cache_key.impl.GenericExecutionCacheKey;
+import com.hurynovich.api_tester.cache.cache_key.impl.ExecutionStateCacheKey;
 import com.hurynovich.api_tester.configuration.APITesterConfiguration;
-import com.hurynovich.api_tester.model.document.impl.ExecutionLogDocument;
-import com.hurynovich.api_tester.model.dto.impl.RequestChainDTO;
+import com.hurynovich.api_tester.model.dto.impl.ExecutionLogDTO;
 import com.hurynovich.api_tester.model.execution.ExecutionState;
-import com.hurynovich.api_tester.service.dto_service.DTOService;
 import com.hurynovich.api_tester.service.execution_helper.ExecutionHelper;
 import com.hurynovich.api_tester.state_transition.signal.SignalName;
 import com.hurynovich.api_tester.state_transition.state.State;
@@ -31,20 +29,17 @@ public class ExecutionHelperImplTest {
     private final StateManager stateManager = new StateManagerImpl(availableStates);
 
     @Mock
-    private Cache<GenericExecutionCacheKey, ExecutionState> executionStateCache;
+    private Cache<ExecutionStateCacheKey, ExecutionState> executionStateCache;
 
     @Mock
-    private Cache<GenericExecutionCacheKey, ExecutionLogDocument> executionLogCache;
-
-    @Mock
-    private DTOService<RequestChainDTO, Long> requestChainService;
+    private Cache<ExecutionStateCacheKey, ExecutionLogDTO> executionLogCache;
 
     private ExecutionHelper executionHelper;
 
     @BeforeEach
     public void init() {
         executionHelper = new ExecutionHelperImpl(stateManager, executionStateCache,
-                executionLogCache, requestChainService);
+                executionLogCache);
     }
 
     @Test

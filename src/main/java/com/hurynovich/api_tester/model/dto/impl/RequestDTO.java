@@ -5,7 +5,7 @@ import org.springframework.http.HttpMethod;
 
 import java.util.List;
 
-public class RequestDTO extends AbstractDTO {
+public class RequestDTO extends AbstractDTO<String> {
 
     private HttpMethod method;
 

@@ -1,59 +1,60 @@
 package com.hurynovich.api_tester.test_helper;
 
-import com.hurynovich.api_tester.converter.dto_entity_converter.DTOEntityConverter;
+import com.hurynovich.api_tester.converter.dto_converter.DTOConverter;
 import com.hurynovich.api_tester.model.dto.AbstractDTO;
-import com.hurynovich.api_tester.model.entity.AbstractEntity;
+import com.hurynovich.api_tester.model.persistence.Identified;
 
 import org.junit.jupiter.api.Assertions;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.function.BiConsumer;
 
-public class DTOEntityConverterTestHelper<D extends AbstractDTO, E extends AbstractEntity> {
+public class DTOEntityConverterTestHelper<D extends AbstractDTO<I>, C extends Identified<I>, I extends Serializable> {
 
-    private final DTOEntityConverter<D, E> converter;
+    private final DTOConverter<D, C, I> converter;
 
-    private final BiConsumer<D, E> checkConsumer;
+    private final BiConsumer<D, C> checkConsumer;
 
-    public DTOEntityConverterTestHelper(final DTOEntityConverter<D, E> converter,
-                                        final BiConsumer<D, E> checkConsumer) {
+    public DTOEntityConverterTestHelper(final DTOConverter<D, C, I> converter,
+                                        final BiConsumer<D, C> checkConsumer) {
         this.converter = converter;
         this.checkConsumer = checkConsumer;
     }
 
-    public void processConvertToEntityTest(final D dto) {
-        final E entity = converter.convert(dto);
+    public void processConvertFromDTOTest(final D dto) {
+        final C convertible = converter.convert(dto);
 
-        checkConsumer.accept(dto, entity);
+        checkConsumer.accept(dto, convertible);
     }
 
-    public void processConvertToDTOTest(final E entity) {
-        final D dto = converter.convert(entity);
+    public void processConvertToDTOTest(final C convertible) {
+        final D dto = converter.convert(convertible);
 
-        checkConsumer.accept(dto, entity);
+        checkConsumer.accept(dto, convertible);
     }
 
-    public void processConvertAllToEntityTest(final List<D> dtos) {
-        final List<E> entities = converter.convertAllToEntity(dtos);
+    public void processConvertAllFromDTOTest(final List<D> dtos) {
+        final List<C> convertibles = converter.convertAllFromDTO(dtos);
 
         final int expectedSize = dtos.size();
 
-        Assertions.assertEquals(expectedSize, entities.size());
+        Assertions.assertEquals(expectedSize, convertibles.size());
 
         for (int i = 0; i < expectedSize; i++) {
-            checkConsumer.accept(dtos.get(i), entities.get(i));
+            checkConsumer.accept(dtos.get(i), convertibles.get(i));
         }
     }
 
-    public void processConvertAllToDTOTest(final List<E> entities) {
-        final List<D> dtos = converter.convertAllToDTO(entities);
+    public void processConvertAllToDTOTest(final List<C> convertibles) {
+        final List<D> dtos = converter.convertAllToDTO(convertibles);
 
-        final int expectedSize = entities.size();
+        final int expectedSize = convertibles.size();
 
         Assertions.assertEquals(expectedSize, dtos.size());
 
         for (int i = 0; i < expectedSize; i++) {
-            checkConsumer.accept(dtos.get(i), entities.get(i));
+            checkConsumer.accept(dtos.get(i), convertibles.get(i));
         }
     }
 

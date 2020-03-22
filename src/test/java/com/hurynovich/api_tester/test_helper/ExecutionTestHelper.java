@@ -1,6 +1,6 @@
 package com.hurynovich.api_tester.test_helper;
 
-import com.hurynovich.api_tester.cache.cache_key.impl.GenericExecutionCacheKey;
+import com.hurynovich.api_tester.cache.cache_key.impl.ExecutionStateCacheKey;
 import com.hurynovich.api_tester.configuration.APITesterConfiguration;
 import com.hurynovich.api_tester.model.execution.ExecutionSignal;
 import com.hurynovich.api_tester.model.execution.ExecutionState;
@@ -11,6 +11,7 @@ import com.hurynovich.api_tester.state_transition.state.StateName;
 
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class ExecutionTestHelper {
@@ -41,8 +42,8 @@ public class ExecutionTestHelper {
         final Signal signal = new SignalImpl(signalName);
         executionSignal.setSignal(signal);
 
-        final GenericExecutionCacheKey key = buildExecutionStateCacheKey();
-        executionSignal.setKey(key);
+        final ExecutionStateCacheKey key = buildExecutionStateCacheKey();
+        executionSignal.setExecutionStateCacheKey(key);
 
         return executionSignal;
     }
@@ -61,13 +62,6 @@ public class ExecutionTestHelper {
                 orElse(null);
     }
 
-    public static String getRandomStateName() {
-        return AVAILABLE_STATES.stream().
-                map(State::getName).
-                findAny().
-                orElse(null);
-    }
-
     public static String getRandomSignalName() {
         return AVAILABLE_STATES.stream().
                 flatMap(state -> state.getValidSignalNames().stream()).
@@ -81,16 +75,8 @@ public class ExecutionTestHelper {
                 collect(Collectors.toList());
     }
 
-    public static GenericExecutionCacheKey buildExecutionStateCacheKey() {
-        final GenericExecutionCacheKey key = new GenericExecutionCacheKey();
-
-        final long userId = RandomValueGenerator.generateRandomPositiveInt();
-        key.setUserId(userId);
-
-        final long requestChainId = RandomValueGenerator.generateRandomPositiveInt();
-        key.setRequestChainId(requestChainId);
-
-        return key;
+    public static ExecutionStateCacheKey buildExecutionStateCacheKey() {
+        return new ExecutionStateCacheKey(UUID.randomUUID().toString());
     }
 
 }

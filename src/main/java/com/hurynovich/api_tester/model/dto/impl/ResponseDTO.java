@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
-public class ResponseDTO extends AbstractDTO {
+public class ResponseDTO extends AbstractDTO<String> {
 
     private HttpStatus status;
 

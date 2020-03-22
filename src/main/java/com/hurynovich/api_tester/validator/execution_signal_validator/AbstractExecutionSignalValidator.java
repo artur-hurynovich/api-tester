@@ -1,6 +1,6 @@
 package com.hurynovich.api_tester.validator.execution_signal_validator;
 
-import com.hurynovich.api_tester.cache.cache_key.impl.GenericExecutionCacheKey;
+import com.hurynovich.api_tester.cache.cache_key.impl.ExecutionStateCacheKey;
 import com.hurynovich.api_tester.model.enumeration.ValidationResultType;
 import com.hurynovich.api_tester.model.execution.ExecutionSignal;
 import com.hurynovich.api_tester.model.validation.ValidationResult;
@@ -13,9 +13,9 @@ import java.util.List;
 
 public abstract class AbstractExecutionSignalValidator implements Validator<ExecutionSignal> {
 
-    private final Validator<GenericExecutionCacheKey> keyValidator;
+    private final Validator<ExecutionStateCacheKey> keyValidator;
 
-    public AbstractExecutionSignalValidator(final @NonNull Validator<GenericExecutionCacheKey> keyValidator) {
+    public AbstractExecutionSignalValidator(final @NonNull Validator<ExecutionStateCacheKey> keyValidator) {
         this.keyValidator = keyValidator;
     }
 
@@ -34,13 +34,13 @@ public abstract class AbstractExecutionSignalValidator implements Validator<Exec
 
     private void validateExecutionStateCacheKey(final @NonNull ExecutionSignal executionSignal,
                                                 final @NonNull ValidationResult validationResult) {
-        final GenericExecutionCacheKey key = executionSignal.getKey();
+        final ExecutionStateCacheKey executionStateCacheKey = executionSignal.getExecutionStateCacheKey();
 
-        if (key == null) {
+        if (executionStateCacheKey == null) {
             validationResult.setType(ValidationResultType.NON_VALID);
-            validationResult.getDescriptions().add("'key' can't be null");
+            validationResult.getDescriptions().add("'executionStateCacheKey' can't be null");
         } else {
-            final ValidationResult keyValidationResult = keyValidator.validate(key);
+            final ValidationResult keyValidationResult = keyValidator.validate(executionStateCacheKey);
 
             final ValidationResultType keyValidationResultType = keyValidationResult.getType();
             if (keyValidationResultType == ValidationResultType.NON_VALID) {

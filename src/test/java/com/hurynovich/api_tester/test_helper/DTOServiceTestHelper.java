@@ -1,34 +1,38 @@
 package com.hurynovich.api_tester.test_helper;
 
-import com.hurynovich.api_tester.converter.dto_entity_converter.DTOEntityConverter;
+import com.hurynovich.api_tester.converter.dto_converter.DTOConverter;
 import com.hurynovich.api_tester.model.dto.AbstractDTO;
-import com.hurynovich.api_tester.model.entity.AbstractEntity;
+import com.hurynovich.api_tester.model.persistence.Identified;
 import com.hurynovich.api_tester.service.dto_service.DTOService;
-
 import org.junit.jupiter.api.Assertions;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.CrudRepository;
 
+import javax.persistence.EntityNotFoundException;
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
-import javax.persistence.EntityNotFoundException;
+public class DTOServiceTestHelper<D extends AbstractDTO<I>, P extends Identified<I>, I extends Serializable> {
 
-public class DTOServiceTestHelper<D extends AbstractDTO, E extends AbstractEntity> {
+    private final Supplier<I> idSupplier;
 
-    private final JpaRepository<E, Long> repository;
+    private final CrudRepository<P, I> repository;
 
-    private final DTOEntityConverter<D, E> converter;
+    private final DTOConverter<D, P, I> converter;
 
-    private final DTOService<D, Long> service;
+    private final DTOService<D, I> service;
 
     private final BiConsumer<D, D> checkConsumer;
 
-    public DTOServiceTestHelper(final JpaRepository<E, Long> repository,
-                                final DTOEntityConverter<D, E> converter,
-                                final DTOService<D, Long> service,
+    public DTOServiceTestHelper(final Supplier<I> idSupplier,
+                                final CrudRepository<P, I> repository,
+                                final DTOConverter<D, P, I> converter,
+                                final DTOService<D, I> service,
                                 final BiConsumer<D, D> checkConsumer) {
+        this.idSupplier = idSupplier;
         this.repository = repository;
         this.converter = converter;
         this.service = service;
@@ -54,9 +58,7 @@ public class DTOServiceTestHelper<D extends AbstractDTO, E extends AbstractEntit
     public void processReadByIdFailureTest() {
         clearRepository();
 
-        final long id = RandomValueGenerator.generateRandomPositiveInt();
-
-        Assertions.assertThrows(EntityNotFoundException.class, () -> service.readById(id));
+        Assertions.assertThrows(EntityNotFoundException.class, () -> service.readById(idSupplier.get()));
     }
 
     public void processReadAllTest(final List<D> dtos) {
@@ -103,9 +105,7 @@ public class DTOServiceTestHelper<D extends AbstractDTO, E extends AbstractEntit
     public void processDeleteByIdFailureTest() {
         clearRepository();
 
-        final long id = RandomValueGenerator.generateRandomPositiveInt();
-
-        Assertions.assertThrows(EntityNotFoundException.class, () -> service.deleteById(id));
+        Assertions.assertThrows(EntityNotFoundException.class, () -> service.deleteById(idSupplier.get()));
     }
 
     public void processExistsByIdSuccessTest(final D dto) {
@@ -119,9 +119,7 @@ public class DTOServiceTestHelper<D extends AbstractDTO, E extends AbstractEntit
     public void processExistsByIdFailureTest() {
         clearRepository();
 
-        final long id = RandomValueGenerator.generateRandomPositiveInt();
-
-        Assertions.assertFalse(service.existsById(id));
+        Assertions.assertFalse(service.existsById(idSupplier.get()));
     }
 
     private void clearRepository() {
@@ -129,9 +127,9 @@ public class DTOServiceTestHelper<D extends AbstractDTO, E extends AbstractEntit
     }
 
     private void initRepository(final List<D> dtos) {
-        final List<E> entities = converter.convertAllToEntity(dtos);
+        final List<P> persistentObjects = converter.convertAllFromDTO(dtos);
 
-        entities.forEach(repository::save);
+        persistentObjects.forEach(repository::save);
     }
 
 }
