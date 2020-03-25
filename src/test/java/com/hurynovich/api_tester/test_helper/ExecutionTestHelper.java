@@ -1,6 +1,6 @@
 package com.hurynovich.api_tester.test_helper;
 
-import com.hurynovich.api_tester.cache.cache_key.impl.ExecutionStateCacheKey;
+import com.hurynovich.api_tester.cache.cache_key.impl.ExecutionCacheKey;
 import com.hurynovich.api_tester.configuration.APITesterConfiguration;
 import com.hurynovich.api_tester.model.execution.ExecutionSignal;
 import com.hurynovich.api_tester.model.execution.ExecutionState;
@@ -42,8 +42,8 @@ public class ExecutionTestHelper {
         final Signal signal = new SignalImpl(signalName);
         executionSignal.setSignal(signal);
 
-        final ExecutionStateCacheKey key = buildExecutionStateCacheKey();
-        executionSignal.setExecutionStateCacheKey(key);
+        final ExecutionCacheKey executionCacheKey = buildExecutionStateCacheKey();
+        executionSignal.setExecutionCacheKey(executionCacheKey);
 
         return executionSignal;
     }
@@ -75,8 +75,8 @@ public class ExecutionTestHelper {
                 collect(Collectors.toList());
     }
 
-    public static ExecutionStateCacheKey buildExecutionStateCacheKey() {
-        return new ExecutionStateCacheKey(UUID.randomUUID().toString());
+    public static ExecutionCacheKey buildExecutionStateCacheKey() {
+        return new ExecutionCacheKey(UUID.randomUUID().toString());
     }
 
 }

@@ -1,6 +1,6 @@
 package com.hurynovich.api_tester.validator.impl;
 
-import com.hurynovich.api_tester.cache.cache_key.impl.ExecutionStateCacheKey;
+import com.hurynovich.api_tester.cache.cache_key.impl.ExecutionCacheKey;
 import com.hurynovich.api_tester.model.enumeration.ValidationResultType;
 import com.hurynovich.api_tester.model.validation.ValidationResult;
 import com.hurynovich.api_tester.test_helper.ExecutionTestHelper;
@@ -15,13 +15,13 @@ import java.lang.reflect.Field;
 import java.util.List;
 
 @ExtendWith({MockitoExtension.class})
-public class ExecutionStateCacheKeyValidatorTest {
+public class ExecutionCacheKeyValidatorTest {
 
-    private Validator<ExecutionStateCacheKey> keyValidator = new ExecutionStateCacheKeyValidator();
+    private Validator<ExecutionCacheKey> keyValidator = new ExecutionCacheKeyValidator();
 
     @Test
     public void successValidationTest() {
-        final ExecutionStateCacheKey key = ExecutionTestHelper.buildExecutionStateCacheKey();
+        final ExecutionCacheKey key = ExecutionTestHelper.buildExecutionStateCacheKey();
 
         final ValidationResult validationResult = keyValidator.validate(key);
 
@@ -31,7 +31,7 @@ public class ExecutionStateCacheKeyValidatorTest {
 
     @Test
     public void executionKeyNullFailureValidationTest() throws NoSuchFieldException, IllegalAccessException {
-        final ExecutionStateCacheKey key = ExecutionTestHelper.buildExecutionStateCacheKey();
+        final ExecutionCacheKey key = ExecutionTestHelper.buildExecutionStateCacheKey();
 
         applyExecutionKeyReflect(key, null);
 
@@ -45,7 +45,7 @@ public class ExecutionStateCacheKeyValidatorTest {
 
     @Test
     public void executionKeyNotValidFailureValidationTest() throws NoSuchFieldException, IllegalAccessException {
-        final ExecutionStateCacheKey key = ExecutionTestHelper.buildExecutionStateCacheKey();
+        final ExecutionCacheKey key = ExecutionTestHelper.buildExecutionStateCacheKey();
 
         applyExecutionKeyReflect(key, RandomValueGenerator.generateRandomStringLettersOnly(15));
 
@@ -57,7 +57,7 @@ public class ExecutionStateCacheKeyValidatorTest {
         Assertions.assertEquals("'executionKey' is not valid", descriptions.get(0));
     }
 
-    private void applyExecutionKeyReflect(final ExecutionStateCacheKey key, final String executionKey)
+    private void applyExecutionKeyReflect(final ExecutionCacheKey key, final String executionKey)
             throws NoSuchFieldException, IllegalAccessException {
         final Field executionKeyField = key.getClass().getDeclaredField("executionKey");
 

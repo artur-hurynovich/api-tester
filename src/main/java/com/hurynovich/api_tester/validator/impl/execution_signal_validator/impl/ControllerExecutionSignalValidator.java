@@ -1,6 +1,6 @@
 package com.hurynovich.api_tester.validator.impl.execution_signal_validator.impl;
 
-import com.hurynovich.api_tester.cache.cache_key.impl.ExecutionStateCacheKey;
+import com.hurynovich.api_tester.cache.cache_key.impl.ExecutionCacheKey;
 import com.hurynovich.api_tester.model.enumeration.ValidationResultType;
 import com.hurynovich.api_tester.model.execution.ExecutionSignal;
 import com.hurynovich.api_tester.model.execution.ExecutionState;
@@ -21,7 +21,7 @@ public class ControllerExecutionSignalValidator extends AbstractExecutionSignalV
 
     private final ExecutionHelper executionHelper;
 
-    public ControllerExecutionSignalValidator(final @NonNull Validator<ExecutionStateCacheKey> keyValidator,
+    public ControllerExecutionSignalValidator(final @NonNull Validator<ExecutionCacheKey> keyValidator,
                                               final @NonNull ExecutionHelper executionHelper) {
         super(keyValidator);
 
@@ -33,9 +33,9 @@ public class ControllerExecutionSignalValidator extends AbstractExecutionSignalV
         final ValidationResult validationResult = super.validate(executionSignal);
 
         if (executionSignal != null) {
-            final ExecutionStateCacheKey executionStateCacheKey = executionSignal.getExecutionStateCacheKey();
+            final ExecutionCacheKey executionCacheKey = executionSignal.getExecutionCacheKey();
 
-            final ExecutionState executionState = executionHelper.getExecutionState(executionStateCacheKey);
+            final ExecutionState executionState = executionHelper.getExecutionState(executionCacheKey);
 
             if (executionState == null) {
                 validationResult.setType(ValidationResultType.NON_VALID);
@@ -48,9 +48,9 @@ public class ControllerExecutionSignalValidator extends AbstractExecutionSignalV
 
     @Override
     protected List<String> getValidSignalNames(final ExecutionSignal executionSignal) {
-        final ExecutionStateCacheKey executionStateCacheKey = executionSignal.getExecutionStateCacheKey();
+        final ExecutionCacheKey executionCacheKey = executionSignal.getExecutionCacheKey();
 
-        final ExecutionState executionState = executionHelper.getExecutionState(executionStateCacheKey);
+        final ExecutionState executionState = executionHelper.getExecutionState(executionCacheKey);
 
         if (executionState != null) {
             return executionHelper.resolveValidSignalNamesOnInit(executionState);

@@ -1,7 +1,7 @@
 package com.hurynovich.api_tester.service.execution_helper.impl;
 
 import com.hurynovich.api_tester.cache.Cache;
-import com.hurynovich.api_tester.cache.cache_key.impl.ExecutionStateCacheKey;
+import com.hurynovich.api_tester.cache.cache_key.impl.ExecutionCacheKey;
 import com.hurynovich.api_tester.configuration.APITesterConfiguration;
 import com.hurynovich.api_tester.model.dto.impl.ExecutionLogDTO;
 import com.hurynovich.api_tester.model.execution.ExecutionState;
@@ -29,10 +29,10 @@ public class ExecutionHelperImplTest {
     private final StateManager stateManager = new StateManagerImpl(availableStates);
 
     @Mock
-    private Cache<ExecutionStateCacheKey, ExecutionState> executionStateCache;
+    private Cache<ExecutionCacheKey, ExecutionState> executionStateCache;
 
     @Mock
-    private Cache<ExecutionStateCacheKey, ExecutionLogDTO> executionLogCache;
+    private Cache<ExecutionCacheKey, ExecutionLogDTO> executionLogCache;
 
     private ExecutionHelper executionHelper;
 

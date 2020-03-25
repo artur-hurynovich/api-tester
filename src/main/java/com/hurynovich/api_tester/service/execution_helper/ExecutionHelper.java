@@ -1,6 +1,6 @@
 package com.hurynovich.api_tester.service.execution_helper;
 
-import com.hurynovich.api_tester.cache.cache_key.impl.ExecutionStateCacheKey;
+import com.hurynovich.api_tester.cache.cache_key.impl.ExecutionCacheKey;
 import com.hurynovich.api_tester.model.dto.impl.ExecutionLogDTO;
 import com.hurynovich.api_tester.model.dto.impl.RequestContainerDTO;
 import com.hurynovich.api_tester.model.execution.ExecutionSignal;
@@ -10,13 +10,13 @@ import java.util.List;
 
 public interface ExecutionHelper {
 
-    ExecutionState getExecutionState(ExecutionStateCacheKey key);
+    ExecutionState getExecutionState(ExecutionCacheKey key);
 
-    ExecutionStateCacheKey initExecutionStateCache(RequestContainerDTO requestContainer);
+    ExecutionCacheKey initExecutionStateCache(RequestContainerDTO requestContainer);
 
     ExecutionState updateExecutionStateCache(ExecutionSignal executionSignal);
 
-    ExecutionLogDTO getExecutionLog(ExecutionStateCacheKey key);
+    ExecutionLogDTO getExecutionLog(ExecutionCacheKey key);
 
     List<String> resolveValidSignalNamesOnInit(ExecutionState executionState);
 

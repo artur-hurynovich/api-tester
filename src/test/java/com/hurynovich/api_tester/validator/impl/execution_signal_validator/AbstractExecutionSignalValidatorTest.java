@@ -1,6 +1,6 @@
 package com.hurynovich.api_tester.validator.impl.execution_signal_validator;
 
-import com.hurynovich.api_tester.cache.cache_key.impl.ExecutionStateCacheKey;
+import com.hurynovich.api_tester.cache.cache_key.impl.ExecutionCacheKey;
 import com.hurynovich.api_tester.model.enumeration.ValidationResultType;
 import com.hurynovich.api_tester.model.execution.ExecutionSignal;
 import com.hurynovich.api_tester.model.validation.ValidationResult;
@@ -22,7 +22,7 @@ import java.util.List;
 public class AbstractExecutionSignalValidatorTest {
 
     @Mock
-    private Validator<ExecutionStateCacheKey> keyValidator;
+    private Validator<ExecutionCacheKey> keyValidator;
 
     private Validator<ExecutionSignal> signalValidator;
 
@@ -44,7 +44,7 @@ public class AbstractExecutionSignalValidatorTest {
         final ExecutionSignal signal = ExecutionTestHelper.buildExecutionSignal(randomSignalName);
 
         final ValidationResult keyValidationResult = ValidatorTestHelper.buildValidValidationResult();
-        Mockito.when(keyValidator.validate(signal.getExecutionStateCacheKey())).thenReturn(keyValidationResult);
+        Mockito.when(keyValidator.validate(signal.getExecutionCacheKey())).thenReturn(keyValidationResult);
 
         final ValidationResult validationResult = signalValidator.validate(signal);
 
@@ -58,7 +58,7 @@ public class AbstractExecutionSignalValidatorTest {
 
         final ExecutionSignal signal = ExecutionTestHelper.buildExecutionSignal(randomSignalName);
 
-        signal.setExecutionStateCacheKey(null);
+        signal.setExecutionCacheKey(null);
 
         final ValidationResult validationResult = signalValidator.validate(signal);
 

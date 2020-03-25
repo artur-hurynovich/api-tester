@@ -48,7 +48,7 @@ public class ExecutionLogValidator implements Validator<ExecutionLogDTO> {
                 validationResult.getDescriptions().add("'executionLog.userId' can't be null");
             } else if (!userService.existsById(userId)) {
                 validationResult.setType(ValidationResultType.NON_VALID);
-                validationResult.getDescriptions().add("No user found for executionLog.userId '" + userId + "'");
+                validationResult.getDescriptions().add("No user found for 'executionLog.userId' '" + userId + "'");
             }
 
             validateExecutionLogEntries(executionLog, validationResult);

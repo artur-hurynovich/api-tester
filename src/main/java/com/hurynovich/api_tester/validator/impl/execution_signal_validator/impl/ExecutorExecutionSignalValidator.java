@@ -1,6 +1,6 @@
 package com.hurynovich.api_tester.validator.impl.execution_signal_validator.impl;
 
-import com.hurynovich.api_tester.cache.cache_key.impl.ExecutionStateCacheKey;
+import com.hurynovich.api_tester.cache.cache_key.impl.ExecutionCacheKey;
 import com.hurynovich.api_tester.model.execution.ExecutionSignal;
 import com.hurynovich.api_tester.model.execution.ExecutionState;
 import com.hurynovich.api_tester.service.execution_helper.ExecutionHelper;
@@ -16,7 +16,7 @@ public class ExecutorExecutionSignalValidator extends AbstractExecutionSignalVal
 
     private final ExecutionHelper executionHelper;
 
-    public ExecutorExecutionSignalValidator(final @NonNull Validator<ExecutionStateCacheKey> keyValidator,
+    public ExecutorExecutionSignalValidator(final @NonNull Validator<ExecutionCacheKey> keyValidator,
                                             final @NonNull ExecutionHelper executionHelper) {
         super(keyValidator);
 
@@ -25,9 +25,9 @@ public class ExecutorExecutionSignalValidator extends AbstractExecutionSignalVal
 
     @Override
     protected List<String> getValidSignalNames(final ExecutionSignal executionSignal) {
-        final ExecutionStateCacheKey executionStateCacheKey = executionSignal.getExecutionStateCacheKey();
+        final ExecutionCacheKey executionCacheKey = executionSignal.getExecutionCacheKey();
 
-        final ExecutionState executionState = executionHelper.getExecutionState(executionStateCacheKey);
+        final ExecutionState executionState = executionHelper.getExecutionState(executionCacheKey);
 
         return executionHelper.resolveValidSignalNamesOnExecution(executionState);
     }

@@ -1,9 +1,13 @@
 package com.hurynovich.api_tester.cache;
 
-public interface Cache<K, V> {
+import com.hurynovich.api_tester.cache.cache_key.CacheKey;
+
+public interface Cache<K extends CacheKey, V> {
 
     V put(K key, V value);
 
     V get(K key);
+
+    void invalidate(K key);
 
 }

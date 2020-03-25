@@ -9,7 +9,6 @@ import com.hurynovich.api_tester.model.dto.impl.ResponseDTO;
 import com.hurynovich.api_tester.model.execution.ExecutionResult;
 import com.hurynovich.api_tester.model.execution.ExecutionSignal;
 import com.hurynovich.api_tester.model.execution.ExecutionState;
-import com.hurynovich.api_tester.model.persistence.document.impl.ExecutionLogDocument;
 import com.hurynovich.api_tester.service.execution_helper.ExecutionHelper;
 import com.hurynovich.api_tester.service.executor.Executor;
 import com.hurynovich.api_tester.state_transition.state.StateName;
@@ -58,7 +57,7 @@ public class ExecutorImpl implements Executor {
         final ExecutionState executionState = executionHelper.updateExecutionStateCache(executionSignal);
 
         final List<RequestDTO> requests = executionState.getRequests();
-        ExecutionLogDTO executionLog = executionHelper.getExecutionLog(executionSignal.getExecutionStateCacheKey());
+        ExecutionLogDTO executionLog = executionHelper.getExecutionLog(executionSignal.getExecutionCacheKey());
         if (executionLog == null) {
             executionLog = new ExecutionLogDTO();
             executionLog.setDateTime(LocalDateTime.now(ZoneId.systemDefault()));
