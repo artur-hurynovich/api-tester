@@ -5,7 +5,9 @@ import com.hurynovich.api_tester.model.dto.impl.NameValueElementDTO;
 import com.hurynovich.api_tester.model.enumeration.ExecutionLogEntryType;
 import com.hurynovich.api_tester.model.enumeration.ValidationResultType;
 import com.hurynovich.api_tester.model.validation.ValidationResult;
+import com.hurynovich.api_tester.utils.RequestUtils;
 import com.hurynovich.api_tester.validator.Validator;
+import org.apache.commons.validator.routines.UrlValidator;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,8 @@ import java.util.List;
 public class ExecutionLogEntryValidator implements Validator<ExecutionLogEntryDTO> {
 
     private final Validator<NameValueElementDTO> nameValueElementValidator;
+
+    private final UrlValidator urlValidator = new UrlValidator(RequestUtils.URL_SCHEMES);
 
     public ExecutionLogEntryValidator(final @NonNull Validator<NameValueElementDTO> nameValueElementValidator) {
         this.nameValueElementValidator = nameValueElementValidator;
@@ -67,27 +71,15 @@ public class ExecutionLogEntryValidator implements Validator<ExecutionLogEntryDT
                                                   final @NonNull ValidationResult validationResult) {
         validateDateTime(executionLogEntry, validationResult);
 
-        if (executionLogEntry.getMethod() == null) {
-            validationResult.setType(ValidationResultType.NON_VALID);
-            validationResult.getDescriptions().add("'executionLogEntry.method' can't be null for 'executionLogEntry.type' '" +
-                    executionLogEntry.getType() + "'");
-        }
+        validateMethod(executionLogEntry, validationResult);
 
         validateHeaders(executionLogEntry, validationResult);
 
         validateParameters(executionLogEntry, validationResult);
 
-        if (executionLogEntry.getUrl() == null) {
-            validationResult.setType(ValidationResultType.NON_VALID);
-            validationResult.getDescriptions().add("'executionLogEntry.url' can't be null for 'executionLogEntry.type' '" +
-                    executionLogEntry.getType() + "'");
-        }
+        validateUrl(executionLogEntry, validationResult);
 
-        if (executionLogEntry.getBody() == null) {
-            validationResult.setType(ValidationResultType.NON_VALID);
-            validationResult.getDescriptions().add("'executionLogEntry.body' can't be null for 'executionLogEntry.type' '" +
-                    executionLogEntry.getType() + "'");
-        }
+        validateBody(executionLogEntry, validationResult);
     }
 
     private void validateResponseExecutionLogEntry(final @NonNull ExecutionLogEntryDTO executionLogEntry,
@@ -96,28 +88,16 @@ public class ExecutionLogEntryValidator implements Validator<ExecutionLogEntryDT
 
         validateHeaders(executionLogEntry, validationResult);
 
-        if (executionLogEntry.getStatus() == null) {
-            validationResult.setType(ValidationResultType.NON_VALID);
-            validationResult.getDescriptions().add("'executionLogEntry.status' can't be null for 'executionLogEntry.type' '" +
-                    executionLogEntry.getType() + "'");
-        }
+        validateStatus(executionLogEntry, validationResult);
 
-        if (executionLogEntry.getBody() == null) {
-            validationResult.setType(ValidationResultType.NON_VALID);
-            validationResult.getDescriptions().add("'executionLogEntry.body' can't be null for 'executionLogEntry.type' '" +
-                    executionLogEntry.getType() + "'");
-        }
+        validateBody(executionLogEntry, validationResult);
     }
 
     private void validateErrorExecutionLogEntry(final @NonNull ExecutionLogEntryDTO executionLogEntry,
                                                 final @NonNull ValidationResult validationResult) {
         validateDateTime(executionLogEntry, validationResult);
 
-        if (executionLogEntry.getErrorMessage() == null) {
-            validationResult.setType(ValidationResultType.NON_VALID);
-            validationResult.getDescriptions().add("'executionLogEntry.errorMessage' can't be null for 'executionLogEntry.type' '" +
-                    executionLogEntry.getType() + "'");
-        }
+        validateErrorMessage(executionLogEntry, validationResult);
     }
 
     private void validateDateTime(final @NonNull ExecutionLogEntryDTO executionLogEntry,
@@ -130,6 +110,15 @@ public class ExecutionLogEntryValidator implements Validator<ExecutionLogEntryDT
         } else if (dateTime.isAfter(LocalDateTime.now(ZoneId.systemDefault()))) {
             validationResult.setType(ValidationResultType.NON_VALID);
             validationResult.getDescriptions().add("'executionLogEntry.dateTime' can't be later than now");
+        }
+    }
+
+    private void validateMethod(final @NonNull ExecutionLogEntryDTO executionLogEntry,
+                                final @NonNull ValidationResult validationResult) {
+        if (executionLogEntry.getMethod() == null) {
+            validationResult.setType(ValidationResultType.NON_VALID);
+            validationResult.getDescriptions().add("'executionLogEntry.method' can't be null for 'executionLogEntry.type' '" +
+                    executionLogEntry.getType() + "'");
         }
     }
 
@@ -176,6 +165,48 @@ public class ExecutionLogEntryValidator implements Validator<ExecutionLogEntryDT
                     executionLogEntry.getType() + "'");
         } else {
             validateNameValueElements(parameters, validationResult);
+        }
+    }
+
+    private void validateUrl(final @NonNull ExecutionLogEntryDTO executionLogEntry,
+                             final @NonNull ValidationResult validationResult) {
+        final String url = executionLogEntry.getUrl();
+
+        if (url == null) {
+            validationResult.setType(ValidationResultType.NON_VALID);
+            validationResult.getDescriptions().add("'executionLogEntry.url' can't be null for 'executionLogEntry.type' '" +
+                    executionLogEntry.getType() + "'");
+
+        } else if (!urlValidator.isValid(url)) {
+            validationResult.setType(ValidationResultType.NON_VALID);
+            validationResult.getDescriptions().add("'" + url + "' is not a valid 'executionLogEntry.url'");
+        }
+    }
+
+    private void validateStatus(final @NonNull ExecutionLogEntryDTO executionLogEntry,
+                                final @NonNull ValidationResult validationResult) {
+        if (executionLogEntry.getStatus() == null) {
+            validationResult.setType(ValidationResultType.NON_VALID);
+            validationResult.getDescriptions().add("'executionLogEntry.status' can't be null for 'executionLogEntry.type' '" +
+                    executionLogEntry.getType() + "'");
+        }
+    }
+
+    private void validateBody(final @NonNull ExecutionLogEntryDTO executionLogEntry,
+                              final @NonNull ValidationResult validationResult) {
+        if (executionLogEntry.getBody() == null) {
+            validationResult.setType(ValidationResultType.NON_VALID);
+            validationResult.getDescriptions().add("'executionLogEntry.body' can't be null for 'executionLogEntry.type' '" +
+                    executionLogEntry.getType() + "'");
+        }
+    }
+
+    private void validateErrorMessage(final @NonNull ExecutionLogEntryDTO executionLogEntry,
+                                      final @NonNull ValidationResult validationResult) {
+        if (executionLogEntry.getErrorMessage() == null) {
+            validationResult.setType(ValidationResultType.NON_VALID);
+            validationResult.getDescriptions().add("'executionLogEntry.errorMessage' can't be null for 'executionLogEntry.type' '" +
+                    executionLogEntry.getType() + "'");
         }
     }
 

@@ -34,6 +34,25 @@ public class RequestTestHelper {
     private static final int EXECUTION_LOG_ENTRIES_SIZE = 5;
     private static final int DOCUMENT_ID_LENGTH = 10;
 
+    private enum Domain {
+
+        COM("com"),
+        NET("net"),
+        BY("by"),
+        RU("ru");
+
+        private final String name;
+
+        Domain(final String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+    }
+
     public static HttpMethod generateRandomHttpMethod() {
         return RandomValueGenerator.generateRandomEnumValue(HttpMethod.class);
     }
@@ -55,18 +74,30 @@ public class RequestTestHelper {
 
     public static List<NameValueElementDTO> generateRandomNameValueElementDTOs(final int size) {
         return IntStream.range(1, size + 1).mapToObj(index -> {
+            final NameValueElementType nameValueElementType =
+                    RandomValueGenerator.generateRandomEnumValue(NameValueElementType.class);
+
             final NameValueElementDTO requestElement = new NameValueElementDTO();
 
             requestElement.setName(RandomValueGenerator.generateRandomStringLettersOnly(
                     NAME_VALUE_ELEMENT_NAME_MAX_LENGTH));
 
-            requestElement.setValue(RandomValueGenerator.generateRandomStringLettersOnly(
-                    NAME_VALUE_ELEMENT_VALUE_MAX_LENGTH));
+            switch (nameValueElementType) {
+                case VALUE:
+                    requestElement.setValue(RandomValueGenerator.generateRandomStringLettersOnly(
+                            NAME_VALUE_ELEMENT_VALUE_MAX_LENGTH));
+                    break;
 
-            requestElement.setExpression(RandomValueGenerator.generateRandomStringLettersOnly(
-                    NAME_VALUE_ELEMENT_EXPRESSION_MAX_LENGTH));
+                case EXPRESSION:
+                    requestElement.setExpression(RandomValueGenerator.generateRandomStringLettersOnly(
+                            NAME_VALUE_ELEMENT_EXPRESSION_MAX_LENGTH));
+                    break;
 
-            requestElement.setType(RandomValueGenerator.generateRandomEnumValue(NameValueElementType.class));
+                default:
+                    throw new RuntimeException("Unknown NameValueElementType + '" + nameValueElementType + "'");
+            }
+
+            requestElement.setType(nameValueElementType);
 
             return requestElement;
         }).collect(Collectors.toList());
@@ -142,13 +173,55 @@ public class RequestTestHelper {
         }).collect(Collectors.toList());
     }
 
+    public static List<ExecutionLogEntryDTO> generateRandomRequestExecutionLogEntries(final int size) {
+        return IntStream.range(1, size + 1).mapToObj(index -> {
+            final ExecutionLogEntryDTO executionLogEntry = new ExecutionLogEntryDTO();
+
+            executionLogEntry.setType(ExecutionLogEntryType.REQUEST);
+            executionLogEntry.setDateTime(LocalDateTime.now());
+            executionLogEntry.setMethod(generateRandomHttpMethod());
+            executionLogEntry.setHeaders(generateRandomNameValueElementDTOs(HEADERS_SIZE));
+            executionLogEntry.setParameters(generateRandomNameValueElementDTOs(PARAMETERS_SIZE));
+            executionLogEntry.setUrl(generateRandomHttpUrl());
+            executionLogEntry.setBody(generateRandomBody());
+
+            return executionLogEntry;
+        }).collect(Collectors.toList());
+    }
+
+    public static List<ExecutionLogEntryDTO> generateRandomResponseExecutionLogEntries(final int size) {
+        return IntStream.range(1, size + 1).mapToObj(index -> {
+            final ExecutionLogEntryDTO executionLogEntry = new ExecutionLogEntryDTO();
+
+            executionLogEntry.setType(ExecutionLogEntryType.RESPONSE);
+            executionLogEntry.setDateTime(LocalDateTime.now());
+            executionLogEntry.setHeaders(generateRandomNameValueElementDTOs(HEADERS_SIZE));
+            executionLogEntry.setStatus(generateRandomHttpStatus());
+            executionLogEntry.setBody(generateRandomBody());
+
+            return executionLogEntry;
+        }).collect(Collectors.toList());
+    }
+
+    public static List<ExecutionLogEntryDTO> generateRandomErrorExecutionLogEntries(final int size) {
+        return IntStream.range(1, size + 1).mapToObj(index -> {
+            final ExecutionLogEntryDTO executionLogEntry = new ExecutionLogEntryDTO();
+
+            executionLogEntry.setType(ExecutionLogEntryType.ERROR);
+            executionLogEntry.setDateTime(LocalDateTime.now());
+            executionLogEntry.setErrorMessage(generateRandomBody());
+
+            return executionLogEntry;
+        }).collect(Collectors.toList());
+    }
+
     public static HttpStatus generateRandomHttpStatus() {
         return RandomValueGenerator.generateRandomEnumValue(HttpStatus.class);
     }
 
     public static String generateRandomHttpUrl() {
-        return HTTP_PROTOCOL + "://" + RandomValueGenerator.generateRandomStringLettersOnly(DOMAIN_NAME_LENGTH) + '.' +
-                RandomValueGenerator.generateRandomStringLettersOnly(DOMAIN_LENGTH);
+        return HTTP_PROTOCOL + "://" + RandomValueGenerator.generateRandomStringLettersOnly(DOMAIN_NAME_LENGTH).toLowerCase() + '.' +
+                RandomValueGenerator.generateRandomEnumValue(Domain.class).getName();
     }
 
     public static String generateRandomBody() {
