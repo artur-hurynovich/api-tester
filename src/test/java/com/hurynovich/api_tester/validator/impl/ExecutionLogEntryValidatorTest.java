@@ -125,7 +125,7 @@ public class ExecutionLogEntryValidatorTest {
     public void requestExecutionLogEntryUrlNonValidFailureValidationTest() {
         final ExecutionLogEntryDTO executionLogEntry =
                 RequestTestHelper.generateRandomRequestExecutionLogEntryDTOs(1).iterator().next();
-        final String url = RandomValueGenerator.generateRandomStringLettersOnly(10);
+        final String url = RandomValueGenerator.generateRandomStringLettersOnly();
         executionLogEntry.setUrl(url);
 
         final ValidationResult validationResult = executionLogEntryValidator.validate(executionLogEntry);

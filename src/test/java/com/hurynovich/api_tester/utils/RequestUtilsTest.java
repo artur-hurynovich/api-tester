@@ -18,13 +18,11 @@ public class RequestUtilsTest {
 
     private static final String URL_NO_PARAMETERS = RequestTestHelper.generateRandomHttpUrl();
     private static final String URL_NO_PARAMETERS_WITH_PREFIX = URL_NO_PARAMETERS + PARAMETERS_PREFIX;
-    private static final String PARAMETER_ONE = RandomValueGenerator.generateRandomStringLettersOnly(3, 10) +
-            PARAMETER_NAME_VALUE_SEPARATOR +
-            RandomValueGenerator.generateRandomStringLettersOnly(3, 10);
+    private static final String PARAMETER_ONE = RandomValueGenerator.generateRandomStringLettersOnly() +
+            PARAMETER_NAME_VALUE_SEPARATOR + RandomValueGenerator.generateRandomStringLettersOnly();
     private static final String URL_WITH_ONE_PARAMETER = URL_NO_PARAMETERS_WITH_PREFIX + PARAMETER_ONE;
-    private static final String PARAMETER_TWO = RandomValueGenerator.generateRandomStringLettersOnly(3, 10) +
-            PARAMETER_NAME_VALUE_SEPARATOR +
-            RandomValueGenerator.generateRandomStringLettersOnly(3, 10);
+    private static final String PARAMETER_TWO = RandomValueGenerator.generateRandomStringLettersOnly() +
+            PARAMETER_NAME_VALUE_SEPARATOR + RandomValueGenerator.generateRandomStringLettersOnly();
     private static final String URL_WITH_TWO_PARAMETERS = URL_WITH_ONE_PARAMETER + PARAMETERS_SEPARATOR +
             PARAMETER_TWO;
 

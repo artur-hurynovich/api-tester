@@ -44,7 +44,7 @@ public class ExecutionCacheKeyValidatorTest {
     public void executionKeyNotValidFailureValidationTest() throws NoSuchFieldException, IllegalAccessException {
         final ExecutionCacheKey executionCacheKey = ExecutionTestHelper.buildExecutionCacheKey();
 
-        applyExecutionKeyReflect(executionCacheKey, RandomValueGenerator.generateRandomStringLettersOnly(15));
+        applyExecutionKeyReflect(executionCacheKey, RandomValueGenerator.generateRandomStringLettersOnly());
 
         final ValidationResult validationResult = keyValidator.validate(executionCacheKey);
         Assertions.assertEquals(ValidationResultType.NON_VALID, validationResult.getType());

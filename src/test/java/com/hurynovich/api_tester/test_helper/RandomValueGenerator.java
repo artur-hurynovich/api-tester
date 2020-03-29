@@ -10,20 +10,16 @@ import java.util.Random;
 
 public class RandomValueGenerator {
 
+    private static final int DEFAULT_STRING_LENGTH = 10;
+
     private static final Random RANDOM = new Random();
 
     public static Long generateRandomPositiveLong() {
         return Math.abs(RANDOM.nextLong());
     }
 
-    public static String generateRandomStringLettersOnly(final int size) {
-        return RandomStringUtils.random(size, true, false);
-    }
-
-    public static String generateRandomStringLettersOnly(final int minSize, final int maxSize) {
-        final int size = minSize + RANDOM.nextInt(maxSize - minSize);
-
-        return RandomStringUtils.random(size, true, false);
+    public static String generateRandomStringLettersOnly() {
+        return RandomStringUtils.random(DEFAULT_STRING_LENGTH, true, false);
     }
 
     public static <E extends Enum<E>> E generateRandomEnumValue(final @NonNull Class<E> enumClass) {

@@ -81,7 +81,7 @@ public class ExecutionLogEntryBuilderImplTest {
 
     @Test
     public void buildOfErrorMessageTest() {
-        final String errorMessage = RandomValueGenerator.generateRandomStringLettersOnly(10);
+        final String errorMessage = RandomValueGenerator.generateRandomStringLettersOnly();
 
         final ExecutionLogEntryDTO executionLogEntry = executionLogEntryBuilder.build(errorMessage);
 

@@ -27,7 +27,7 @@ public class UserDTOServiceTest extends GenericDTOServiceTest<UserDTO, UserEntit
         readAllTest();
 
         updateTest(userDTO -> {
-            userDTO.setName(RandomValueGenerator.generateRandomStringLettersOnly(10));
+            userDTO.setName(RandomValueGenerator.generateRandomStringLettersOnly());
 
             return userDTO;
         });

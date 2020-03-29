@@ -70,7 +70,7 @@ public class RequestValidatorTest {
     @Test
     public void requestUrlNonValidFailureValidationTest() {
         final RequestDTO request = RequestTestHelper.generateRandomRequestDTOs(1).iterator().next();
-        final String url = RandomValueGenerator.generateRandomStringLettersOnly(10);
+        final String url = RandomValueGenerator.generateRandomStringLettersOnly();
         request.setUrl(url);
 
         final ValidationResult validationResult = requestValidator.validate(request);
