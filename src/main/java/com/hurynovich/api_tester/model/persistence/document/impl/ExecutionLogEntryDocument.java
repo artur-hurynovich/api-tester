@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class ExecutionLogEntryDocument extends AbstractDocument {
+public class ExecutionLogEntryDocument extends AbstractDocument<String> {
 
     private ExecutionLogEntryType type;
 

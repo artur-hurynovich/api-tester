@@ -13,7 +13,7 @@ import java.util.function.Supplier;
 public abstract class GenericDTOConverterTest<D extends AbstractDTO<I>, P extends Identified<I>, I extends Serializable> {
 
     protected static final int DEFAULT_DTO_COUNT = 5;
-    protected static final int DEFAULT_ENTITY_COUNT = DEFAULT_DTO_COUNT;
+    protected static final int DEFAULT_CONVERTIBLE_COUNT = DEFAULT_DTO_COUNT;
 
     private final Supplier<List<D>> dtosSupplier;
 

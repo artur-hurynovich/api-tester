@@ -42,7 +42,7 @@ public class ExecutionTestHelper {
         final Signal signal = new SignalImpl(signalName);
         executionSignal.setSignal(signal);
 
-        final ExecutionCacheKey executionCacheKey = buildExecutionStateCacheKey();
+        final ExecutionCacheKey executionCacheKey = buildExecutionCacheKey();
         executionSignal.setExecutionCacheKey(executionCacheKey);
 
         return executionSignal;
@@ -75,7 +75,7 @@ public class ExecutionTestHelper {
                 collect(Collectors.toList());
     }
 
-    public static ExecutionCacheKey buildExecutionStateCacheKey() {
+    public static ExecutionCacheKey buildExecutionCacheKey() {
         return new ExecutionCacheKey(UUID.randomUUID().toString());
     }
 

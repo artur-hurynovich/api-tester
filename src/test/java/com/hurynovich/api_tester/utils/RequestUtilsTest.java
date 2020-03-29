@@ -10,7 +10,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static com.hurynovich.api_tester.utils.RequestUtils.*;
+import static com.hurynovich.api_tester.utils.RequestUtils.PARAMETERS_PREFIX;
+import static com.hurynovich.api_tester.utils.RequestUtils.PARAMETERS_SEPARATOR;
+import static com.hurynovich.api_tester.utils.RequestUtils.PARAMETER_NAME_VALUE_SEPARATOR;
 
 public class RequestUtilsTest {
 

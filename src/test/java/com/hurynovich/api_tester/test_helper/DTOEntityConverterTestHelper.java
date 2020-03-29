@@ -3,7 +3,6 @@ package com.hurynovich.api_tester.test_helper;
 import com.hurynovich.api_tester.converter.dto_converter.DTOConverter;
 import com.hurynovich.api_tester.model.dto.AbstractDTO;
 import com.hurynovich.api_tester.model.persistence.Identified;
-
 import org.junit.jupiter.api.Assertions;
 
 import java.io.Serializable;

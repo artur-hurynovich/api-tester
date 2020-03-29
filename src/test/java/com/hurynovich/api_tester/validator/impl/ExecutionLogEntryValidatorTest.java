@@ -25,7 +25,7 @@ public class ExecutionLogEntryValidatorTest {
     @Test
     public void successValidationTest() {
         final ExecutionLogEntryDTO executionLogEntry =
-                RequestTestHelper.generateRandomExecutionLogEntries(1).iterator().next();
+                RequestTestHelper.generateRandomExecutionLogEntryDTOs(1).iterator().next();
 
         final ValidationResult validationResult = executionLogEntryValidator.validate(executionLogEntry);
 
@@ -47,7 +47,7 @@ public class ExecutionLogEntryValidatorTest {
     @Test
     public void executionLogEntryTypeNullFailureValidationTest() {
         final ExecutionLogEntryDTO executionLogEntry =
-                RequestTestHelper.generateRandomExecutionLogEntries(1).iterator().next();
+                RequestTestHelper.generateRandomExecutionLogEntryDTOs(1).iterator().next();
         executionLogEntry.setType(null);
 
         final ValidationResult validationResult = executionLogEntryValidator.validate(executionLogEntry);
@@ -62,7 +62,7 @@ public class ExecutionLogEntryValidatorTest {
     @Test
     public void executionLogEntryDateTimeNullFailureValidationTest() {
         final ExecutionLogEntryDTO executionLogEntry =
-                RequestTestHelper.generateRandomExecutionLogEntries(1).iterator().next();
+                RequestTestHelper.generateRandomExecutionLogEntryDTOs(1).iterator().next();
         executionLogEntry.setDateTime(null);
 
         final ValidationResult validationResult = executionLogEntryValidator.validate(executionLogEntry);
@@ -77,7 +77,7 @@ public class ExecutionLogEntryValidatorTest {
     @Test
     public void executionLogEntryDateTimeLaterThanNowFailureValidationTest() {
         final ExecutionLogEntryDTO executionLogEntry =
-                RequestTestHelper.generateRandomExecutionLogEntries(1).iterator().next();
+                RequestTestHelper.generateRandomExecutionLogEntryDTOs(1).iterator().next();
         executionLogEntry.setDateTime(LocalDateTime.now(ZoneId.systemDefault()).plusMinutes(1L));
 
         final ValidationResult validationResult = executionLogEntryValidator.validate(executionLogEntry);
@@ -92,7 +92,7 @@ public class ExecutionLogEntryValidatorTest {
     @Test
     public void requestExecutionLogEntryMethodNullFailureValidationTest() {
         final ExecutionLogEntryDTO executionLogEntry =
-                RequestTestHelper.generateRandomRequestExecutionLogEntries(1).iterator().next();
+                RequestTestHelper.generateRandomRequestExecutionLogEntryDTOs(1).iterator().next();
         executionLogEntry.setMethod(null);
 
         final ValidationResult validationResult = executionLogEntryValidator.validate(executionLogEntry);
@@ -108,7 +108,7 @@ public class ExecutionLogEntryValidatorTest {
     @Test
     public void requestExecutionLogEntryHeadersNullFailureValidationTest() {
         final ExecutionLogEntryDTO executionLogEntry =
-                RequestTestHelper.generateRandomRequestExecutionLogEntries(1).iterator().next();
+                RequestTestHelper.generateRandomRequestExecutionLogEntryDTOs(1).iterator().next();
         executionLogEntry.setHeaders(null);
 
         final ValidationResult validationResult = executionLogEntryValidator.validate(executionLogEntry);
@@ -124,7 +124,7 @@ public class ExecutionLogEntryValidatorTest {
     @Test
     public void requestExecutionLogEntryHeadersEmptyFailureValidationTest() {
         final ExecutionLogEntryDTO executionLogEntry =
-                RequestTestHelper.generateRandomRequestExecutionLogEntries(1).iterator().next();
+                RequestTestHelper.generateRandomRequestExecutionLogEntryDTOs(1).iterator().next();
         executionLogEntry.setHeaders(Collections.emptyList());
 
         final ValidationResult validationResult = executionLogEntryValidator.validate(executionLogEntry);
@@ -140,7 +140,7 @@ public class ExecutionLogEntryValidatorTest {
     @Test
     public void requestExecutionLogEntryParametersNullFailureValidationTest() {
         final ExecutionLogEntryDTO executionLogEntry =
-                RequestTestHelper.generateRandomRequestExecutionLogEntries(1).iterator().next();
+                RequestTestHelper.generateRandomRequestExecutionLogEntryDTOs(1).iterator().next();
         executionLogEntry.setParameters(null);
 
         final ValidationResult validationResult = executionLogEntryValidator.validate(executionLogEntry);
@@ -156,7 +156,7 @@ public class ExecutionLogEntryValidatorTest {
     @Test
     public void requestExecutionLogEntryParametersEmptyFailureValidationTest() {
         final ExecutionLogEntryDTO executionLogEntry =
-                RequestTestHelper.generateRandomRequestExecutionLogEntries(1).iterator().next();
+                RequestTestHelper.generateRandomRequestExecutionLogEntryDTOs(1).iterator().next();
         executionLogEntry.setParameters(Collections.emptyList());
 
         final ValidationResult validationResult = executionLogEntryValidator.validate(executionLogEntry);
@@ -172,7 +172,7 @@ public class ExecutionLogEntryValidatorTest {
     @Test
     public void requestExecutionLogEntryUrlNullFailureValidationTest() {
         final ExecutionLogEntryDTO executionLogEntry =
-                RequestTestHelper.generateRandomRequestExecutionLogEntries(1).iterator().next();
+                RequestTestHelper.generateRandomRequestExecutionLogEntryDTOs(1).iterator().next();
         executionLogEntry.setUrl(null);
 
         final ValidationResult validationResult = executionLogEntryValidator.validate(executionLogEntry);
@@ -188,7 +188,7 @@ public class ExecutionLogEntryValidatorTest {
     @Test
     public void requestExecutionLogEntryStatusNullFailureValidationTest() {
         final ExecutionLogEntryDTO executionLogEntry =
-                RequestTestHelper.generateRandomResponseExecutionLogEntries(1).iterator().next();
+                RequestTestHelper.generateRandomResponseExecutionLogEntryDTOs(1).iterator().next();
         executionLogEntry.setStatus(null);
 
         final ValidationResult validationResult = executionLogEntryValidator.validate(executionLogEntry);
@@ -204,7 +204,7 @@ public class ExecutionLogEntryValidatorTest {
     @Test
     public void requestExecutionLogEntryBodyNullFailureValidationTest() {
         final ExecutionLogEntryDTO executionLogEntry =
-                RequestTestHelper.generateRandomRequestExecutionLogEntries(1).iterator().next();
+                RequestTestHelper.generateRandomRequestExecutionLogEntryDTOs(1).iterator().next();
         executionLogEntry.setBody(null);
 
         final ValidationResult validationResult = executionLogEntryValidator.validate(executionLogEntry);
@@ -220,7 +220,7 @@ public class ExecutionLogEntryValidatorTest {
     @Test
     public void requestExecutionLogEntryErrorMessageNullFailureValidationTest() {
         final ExecutionLogEntryDTO executionLogEntry =
-                RequestTestHelper.generateRandomErrorExecutionLogEntries(1).iterator().next();
+                RequestTestHelper.generateRandomErrorExecutionLogEntryDTOs(1).iterator().next();
         executionLogEntry.setErrorMessage(null);
 
         final ValidationResult validationResult = executionLogEntryValidator.validate(executionLogEntry);

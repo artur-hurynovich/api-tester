@@ -7,13 +7,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Document(collection = "apte_execution_logs")
-public class ExecutionLogDocument extends AbstractDocument {
+public class ExecutionLogDocument extends AbstractDocument<String> {
 
     private LocalDateTime dateTime;
 
     private Long userId;
-
-    private String requestContainerId;
 
     private List<ExecutionLogEntryDocument> entries;
 
@@ -31,14 +29,6 @@ public class ExecutionLogDocument extends AbstractDocument {
 
     public void setUserId(final Long userId) {
         this.userId = userId;
-    }
-
-    public String getRequestContainerId() {
-        return requestContainerId;
-    }
-
-    public void setRequestContainerId(final String requestContainerId) {
-        this.requestContainerId = requestContainerId;
     }
 
     public List<ExecutionLogEntryDocument> getEntries() {

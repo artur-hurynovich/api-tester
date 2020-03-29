@@ -30,7 +30,7 @@ public abstract class AbstractExecutionSignalValidator implements Validator<Exec
             validationResult.setType(ValidationResultType.NON_VALID);
             validationResult.getDescriptions().add("'executionSignal' can't be null");
         } else {
-            validateExecutionStateCacheKey(executionSignal, validationResult);
+            validateExecutionCacheKey(executionSignal, validationResult);
 
             validateSignal(executionSignal, validationResult);
         }
@@ -38,13 +38,13 @@ public abstract class AbstractExecutionSignalValidator implements Validator<Exec
         return validationResult;
     }
 
-    private void validateExecutionStateCacheKey(final @NonNull ExecutionSignal executionSignal,
+    private void validateExecutionCacheKey(final @NonNull ExecutionSignal executionSignal,
                                                 final @NonNull ValidationResult validationResult) {
         final ExecutionCacheKey executionCacheKey = executionSignal.getExecutionCacheKey();
 
         if (executionCacheKey == null) {
             validationResult.setType(ValidationResultType.NON_VALID);
-            validationResult.getDescriptions().add("'executionSignal.executionStateCacheKey' can't be null");
+            validationResult.getDescriptions().add("'executionSignal.executionCacheKey' can't be null");
         } else {
             final ValidationResult keyValidationResult = keyValidator.validate(executionCacheKey);
 

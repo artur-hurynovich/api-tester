@@ -8,22 +8,19 @@ import com.hurynovich.api_tester.test_helper.RandomValueGenerator;
 import com.hurynovich.api_tester.validator.Validator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.lang.reflect.Field;
 import java.util.List;
 
-@ExtendWith({MockitoExtension.class})
 public class ExecutionCacheKeyValidatorTest {
 
     private Validator<ExecutionCacheKey> keyValidator = new ExecutionCacheKeyValidator();
 
     @Test
     public void successValidationTest() {
-        final ExecutionCacheKey key = ExecutionTestHelper.buildExecutionStateCacheKey();
+        final ExecutionCacheKey executionCacheKey = ExecutionTestHelper.buildExecutionCacheKey();
 
-        final ValidationResult validationResult = keyValidator.validate(key);
+        final ValidationResult validationResult = keyValidator.validate(executionCacheKey);
 
         Assertions.assertEquals(ValidationResultType.VALID, validationResult.getType());
         Assertions.assertTrue(validationResult.getDescriptions().isEmpty());
@@ -31,11 +28,11 @@ public class ExecutionCacheKeyValidatorTest {
 
     @Test
     public void executionKeyNullFailureValidationTest() throws NoSuchFieldException, IllegalAccessException {
-        final ExecutionCacheKey key = ExecutionTestHelper.buildExecutionStateCacheKey();
+        final ExecutionCacheKey executionCacheKey = ExecutionTestHelper.buildExecutionCacheKey();
 
-        applyExecutionKeyReflect(key, null);
+        applyExecutionKeyReflect(executionCacheKey, null);
 
-        final ValidationResult validationResult = keyValidator.validate(key);
+        final ValidationResult validationResult = keyValidator.validate(executionCacheKey);
         Assertions.assertEquals(ValidationResultType.NON_VALID, validationResult.getType());
 
         final List<String> descriptions = validationResult.getDescriptions();
@@ -45,11 +42,11 @@ public class ExecutionCacheKeyValidatorTest {
 
     @Test
     public void executionKeyNotValidFailureValidationTest() throws NoSuchFieldException, IllegalAccessException {
-        final ExecutionCacheKey key = ExecutionTestHelper.buildExecutionStateCacheKey();
+        final ExecutionCacheKey executionCacheKey = ExecutionTestHelper.buildExecutionCacheKey();
 
-        applyExecutionKeyReflect(key, RandomValueGenerator.generateRandomStringLettersOnly(15));
+        applyExecutionKeyReflect(executionCacheKey, RandomValueGenerator.generateRandomStringLettersOnly(15));
 
-        final ValidationResult validationResult = keyValidator.validate(key);
+        final ValidationResult validationResult = keyValidator.validate(executionCacheKey);
         Assertions.assertEquals(ValidationResultType.NON_VALID, validationResult.getType());
 
         final List<String> descriptions = validationResult.getDescriptions();
@@ -57,13 +54,13 @@ public class ExecutionCacheKeyValidatorTest {
         Assertions.assertEquals("'executionKey' is not valid", descriptions.get(0));
     }
 
-    private void applyExecutionKeyReflect(final ExecutionCacheKey key, final String executionKey)
+    private void applyExecutionKeyReflect(final ExecutionCacheKey executionCacheKey, final String executionKey)
             throws NoSuchFieldException, IllegalAccessException {
-        final Field executionKeyField = key.getClass().getDeclaredField("executionKey");
+        final Field executionKeyField = executionCacheKey.getClass().getDeclaredField("executionKey");
 
         executionKeyField.setAccessible(true);
 
-        executionKeyField.set(key, executionKey);
+        executionKeyField.set(executionCacheKey, executionKey);
     }
 
 }

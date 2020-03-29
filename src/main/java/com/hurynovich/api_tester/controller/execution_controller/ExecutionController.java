@@ -25,23 +25,23 @@ public class ExecutionController {
     private final Validator<RequestContainerDTO> requestContainerValidator;
 
     private final Validator<ExecutionSignal> executionSignalValidator;
-    private final Validator<ExecutionCacheKey> executionStateCacheKeyValidator;
+    private final Validator<ExecutionCacheKey> executionCacheKeyValidator;
 
     private final ExecutionHelper executionHelper;
 
     public ExecutionController(final @NonNull Validator<RequestContainerDTO> requestContainerValidator,
                                final @NonNull @Qualifier("controllerExecutionSignalValidator") Validator<ExecutionSignal> executionSignalValidator,
-                               final @NonNull Validator<ExecutionCacheKey> executionStateCacheKeyValidator,
+                               final @NonNull Validator<ExecutionCacheKey> executionCacheKeyValidator,
                                final @NonNull ExecutionHelper executionHelper) {
         this.requestContainerValidator = requestContainerValidator;
         this.executionSignalValidator = executionSignalValidator;
-        this.executionStateCacheKeyValidator = executionStateCacheKeyValidator;
+        this.executionCacheKeyValidator = executionCacheKeyValidator;
         this.executionHelper = executionHelper;
     }
 
     @GetMapping("/state")
     public ResponseEntity<ExecutionControllerResponse> getState(final @NonNull @RequestBody ExecutionCacheKey executionCacheKey) {
-        final ValidationResult validationResult = executionStateCacheKeyValidator.validate(executionCacheKey);
+        final ValidationResult validationResult = executionCacheKeyValidator.validate(executionCacheKey);
 
         final ExecutionControllerResponse response = new ExecutionControllerResponse();
         response.setValidationResult(validationResult);

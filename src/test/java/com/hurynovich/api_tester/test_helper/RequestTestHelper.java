@@ -1,14 +1,20 @@
 package com.hurynovich.api_tester.test_helper;
 
+import com.hurynovich.api_tester.model.dto.impl.ExecutionLogDTO;
 import com.hurynovich.api_tester.model.dto.impl.ExecutionLogEntryDTO;
 import com.hurynovich.api_tester.model.dto.impl.NameValueElementDTO;
+import com.hurynovich.api_tester.model.dto.impl.RequestContainerDTO;
 import com.hurynovich.api_tester.model.dto.impl.RequestDTO;
 import com.hurynovich.api_tester.model.dto.impl.ResponseDTO;
+import com.hurynovich.api_tester.model.dto.impl.UserDTO;
 import com.hurynovich.api_tester.model.enumeration.ExecutionLogEntryType;
 import com.hurynovich.api_tester.model.enumeration.NameValueElementType;
 import com.hurynovich.api_tester.model.persistence.document.impl.ExecutionLogDocument;
+import com.hurynovich.api_tester.model.persistence.document.impl.ExecutionLogEntryDocument;
+import com.hurynovich.api_tester.model.persistence.document.impl.NameValueElementDocument;
 import com.hurynovich.api_tester.model.persistence.document.impl.RequestContainerDocument;
 import com.hurynovich.api_tester.model.persistence.document.impl.RequestDocument;
+import com.hurynovich.api_tester.model.persistence.entity.impl.UserEntity;
 import org.junit.jupiter.api.Assertions;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -25,13 +31,13 @@ public class RequestTestHelper {
     private static final int NAME_VALUE_ELEMENT_VALUE_MAX_LENGTH = 10;
     private static final int NAME_VALUE_ELEMENT_EXPRESSION_MAX_LENGTH = 10;
     private static final String HTTP_PROTOCOL = "http";
-    private static final int DOMAIN_NAME_LENGTH = 7;
-    private static final int DOMAIN_LENGTH = 2;
+    private static final int DOMAIN_NAME_LENGTH = 10;
     private static final int BODY_MIN_LENGTH = 10;
     private static final int BODY_MAX_LENGTH = 100;
     private static final int HEADERS_SIZE = 3;
     private static final int PARAMETERS_SIZE = 3;
     private static final int EXECUTION_LOG_ENTRIES_SIZE = 5;
+    private static final int REQUESTS_SIZE = 5;
     private static final int DOCUMENT_ID_LENGTH = 10;
 
     private enum Domain {
@@ -74,22 +80,25 @@ public class RequestTestHelper {
 
     public static List<NameValueElementDTO> generateRandomNameValueElementDTOs(final int size) {
         return IntStream.range(1, size + 1).mapToObj(index -> {
+            final NameValueElementDTO nameValueElementDTO = new NameValueElementDTO();
+
+            nameValueElementDTO.setId(RandomValueGenerator.generateRandomStringLettersOnly(DOCUMENT_ID_LENGTH));
+
+            nameValueElementDTO.setName(RandomValueGenerator.generateRandomStringLettersOnly(
+                    NAME_VALUE_ELEMENT_NAME_MAX_LENGTH));
+
             final NameValueElementType nameValueElementType =
                     RandomValueGenerator.generateRandomEnumValue(NameValueElementType.class);
-
-            final NameValueElementDTO requestElement = new NameValueElementDTO();
-
-            requestElement.setName(RandomValueGenerator.generateRandomStringLettersOnly(
-                    NAME_VALUE_ELEMENT_NAME_MAX_LENGTH));
+            nameValueElementDTO.setType(nameValueElementType);
 
             switch (nameValueElementType) {
                 case VALUE:
-                    requestElement.setValue(RandomValueGenerator.generateRandomStringLettersOnly(
+                    nameValueElementDTO.setValue(RandomValueGenerator.generateRandomStringLettersOnly(
                             NAME_VALUE_ELEMENT_VALUE_MAX_LENGTH));
                     break;
 
                 case EXPRESSION:
-                    requestElement.setExpression(RandomValueGenerator.generateRandomStringLettersOnly(
+                    nameValueElementDTO.setExpression(RandomValueGenerator.generateRandomStringLettersOnly(
                             NAME_VALUE_ELEMENT_EXPRESSION_MAX_LENGTH));
                     break;
 
@@ -97,83 +106,300 @@ public class RequestTestHelper {
                     throw new RuntimeException("Unknown NameValueElementType + '" + nameValueElementType + "'");
             }
 
-            requestElement.setType(nameValueElementType);
-
-            return requestElement;
+            return nameValueElementDTO;
         }).collect(Collectors.toList());
+    }
+
+    public static List<NameValueElementDocument> generateRandomNameValueElementDocuments(final int size) {
+        return IntStream.range(1, size + 1).mapToObj(index -> {
+            final NameValueElementDocument nameValueElementDocument = new NameValueElementDocument();
+
+            nameValueElementDocument.setId(RandomValueGenerator.generateRandomStringLettersOnly(DOCUMENT_ID_LENGTH));
+
+            nameValueElementDocument.setName(RandomValueGenerator.generateRandomStringLettersOnly(
+                    NAME_VALUE_ELEMENT_NAME_MAX_LENGTH));
+
+            final NameValueElementType nameValueElementType =
+                    RandomValueGenerator.generateRandomEnumValue(NameValueElementType.class);
+            nameValueElementDocument.setType(nameValueElementType);
+
+            switch (nameValueElementType) {
+                case VALUE:
+                    nameValueElementDocument.setValue(RandomValueGenerator.generateRandomStringLettersOnly(
+                            NAME_VALUE_ELEMENT_VALUE_MAX_LENGTH));
+                    break;
+
+                case EXPRESSION:
+                    nameValueElementDocument.setExpression(RandomValueGenerator.generateRandomStringLettersOnly(
+                            NAME_VALUE_ELEMENT_EXPRESSION_MAX_LENGTH));
+                    break;
+
+                default:
+                    throw new RuntimeException("Unknown NameValueElementType + '" + nameValueElementType + "'");
+            }
+
+            return nameValueElementDocument;
+        }).collect(Collectors.toList());
+    }
+
+    public static void checkNameValueElementConversion(final NameValueElementDTO nameValueElementDTO,
+                                                       final NameValueElementDocument nameValueElementDocument) {
+        Assertions.assertEquals(nameValueElementDTO.getId(), nameValueElementDocument.getId());
+        Assertions.assertEquals(nameValueElementDTO.getName(), nameValueElementDocument.getName());
+        Assertions.assertEquals(nameValueElementDTO.getType(), nameValueElementDocument.getType());
+
+        final String nameValueElementDTOValue = nameValueElementDTO.getValue();
+        final String nameValueElementDocumentValue = nameValueElementDocument.getValue();
+        Assertions.assertTrue((nameValueElementDTOValue == null && nameValueElementDocumentValue == null) ||
+                (nameValueElementDTOValue != null && nameValueElementDTOValue.equals(nameValueElementDocumentValue)));
+
+        final String nameValueElementDTOExpression = nameValueElementDTO.getExpression();
+        final String nameValueElementDocumentExpression = nameValueElementDocument.getExpression();
+        Assertions.assertTrue((nameValueElementDTOExpression == null && nameValueElementDocumentExpression == null) ||
+                (nameValueElementDTOExpression != null && nameValueElementDTOExpression.equals(nameValueElementDocumentExpression)));
     }
 
     public static List<RequestDTO> generateRandomRequestDTOs(final int size) {
         return IntStream.range(1, size + 1).mapToObj(index -> {
-            final HttpMethod method = generateRandomHttpMethod();
-            final List<NameValueElementDTO> headers = generateRandomNameValueElementDTOs(HEADERS_SIZE);
-            final String url = generateRandomHttpUrl();
-            final List<NameValueElementDTO> parameters = generateRandomNameValueElementDTOs(PARAMETERS_SIZE);
-            final String body = generateRandomBody();
+            final RequestDTO requestDTO = new RequestDTO();
 
-            final RequestDTO request = new RequestDTO();
+            requestDTO.setId(RandomValueGenerator.generateRandomStringLettersOnly(DOCUMENT_ID_LENGTH));
+            requestDTO.setMethod(generateRandomHttpMethod());
+            requestDTO.setHeaders(generateRandomNameValueElementDTOs(HEADERS_SIZE));
+            requestDTO.setUrl(generateRandomHttpUrl());
+            requestDTO.setParameters(generateRandomNameValueElementDTOs(PARAMETERS_SIZE));
+            requestDTO.setBody(generateRandomBody());
 
-            request.setMethod(method);
-            request.setHeaders(headers);
-            request.setUrl(url);
-            request.setParameters(parameters);
-            request.setBody(body);
-
-            return request;
+            return requestDTO;
         }).collect(Collectors.toList());
+    }
+
+    public static List<RequestDocument> generateRandomRequestDocuments(final int size) {
+        return IntStream.range(1, size + 1).mapToObj(index -> {
+            final RequestDocument requestDocument = new RequestDocument();
+
+            requestDocument.setId(RandomValueGenerator.generateRandomStringLettersOnly(DOCUMENT_ID_LENGTH));
+            requestDocument.setMethod(generateRandomHttpMethod());
+            requestDocument.setHeaders(generateRandomNameValueElementDocuments(HEADERS_SIZE));
+            requestDocument.setUrl(generateRandomHttpUrl());
+            requestDocument.setParameters(generateRandomNameValueElementDocuments(PARAMETERS_SIZE));
+            requestDocument.setBody(generateRandomBody());
+
+            return requestDocument;
+        }).collect(Collectors.toList());
+    }
+
+    public static void checkRequestConversion(final RequestDTO requestDTO,
+                                              final RequestDocument requestDocument) {
+        Assertions.assertEquals(requestDTO.getId(), requestDocument.getId());
+        Assertions.assertEquals(requestDTO.getMethod(), requestDocument.getMethod());
+
+        final List<NameValueElementDTO> requestDTOHeaders = requestDTO.getHeaders();
+        final List<NameValueElementDocument> requestDocumentHeaders = requestDocument.getHeaders();
+        Assertions.assertEquals(requestDTOHeaders.size(), requestDocumentHeaders.size());
+        for (int i = 0; i < requestDTOHeaders.size(); i++) {
+            checkNameValueElementConversion(requestDTOHeaders.get(i), requestDocumentHeaders.get(i));
+        }
+
+        Assertions.assertEquals(requestDTO.getUrl(), requestDocument.getUrl());
+
+        final List<NameValueElementDTO> requestDTOParameters = requestDTO.getParameters();
+        final List<NameValueElementDocument> requestDocumentParameters = requestDocument.getParameters();
+        Assertions.assertEquals(requestDTOParameters.size(), requestDocumentParameters.size());
+        for (int i = 0; i < requestDTOParameters.size(); i++) {
+            checkNameValueElementConversion(requestDTOParameters.get(i), requestDocumentParameters.get(i));
+        }
+
+        Assertions.assertEquals(requestDTO.getBody(), requestDocument.getBody());
+    }
+
+    public static List<RequestContainerDTO> generateRandomRequestContainerDTOs(final int size) {
+        return IntStream.range(1, size + 1).mapToObj(index -> {
+            final RequestContainerDTO requestContainerDTO = new RequestContainerDTO();
+
+            requestContainerDTO.setId(RandomValueGenerator.generateRandomStringLettersOnly(DOCUMENT_ID_LENGTH));
+            requestContainerDTO.setName(RandomValueGenerator.generateRandomStringLettersOnly(BODY_MIN_LENGTH));
+            requestContainerDTO.setDescription(RandomValueGenerator.generateRandomStringLettersOnly(BODY_MAX_LENGTH));
+            requestContainerDTO.setRequests(generateRandomRequestDTOs(REQUESTS_SIZE));
+
+            return requestContainerDTO;
+        }).collect(Collectors.toList());
+    }
+
+    public static List<RequestContainerDocument> generateRandomRequestContainerDocuments(final int size) {
+        return IntStream.range(1, size + 1).mapToObj(index -> {
+            final RequestContainerDocument requestContainerDocument = new RequestContainerDocument();
+
+            requestContainerDocument.setId(RandomValueGenerator.generateRandomStringLettersOnly(DOCUMENT_ID_LENGTH));
+            requestContainerDocument.setName(RandomValueGenerator.generateRandomStringLettersOnly(BODY_MIN_LENGTH));
+            requestContainerDocument.setDescription(RandomValueGenerator.generateRandomStringLettersOnly(BODY_MAX_LENGTH));
+            requestContainerDocument.setRequests(generateRandomRequestDocuments(REQUESTS_SIZE));
+
+            return requestContainerDocument;
+        }).collect(Collectors.toList());
+    }
+
+    public static void checkRequestContainerConversion(final RequestContainerDTO requestContainerDTO,
+                                                       final RequestContainerDocument requestContainerDocument) {
+        Assertions.assertEquals(requestContainerDTO.getId(), requestContainerDocument.getId());
+        Assertions.assertEquals(requestContainerDTO.getName(), requestContainerDocument.getName());
+        Assertions.assertEquals(requestContainerDTO.getDescription(), requestContainerDocument.getDescription());
+
+        final List<RequestDTO> requestContainerDTORequests = requestContainerDTO.getRequests();
+        final List<RequestDocument> requestContainerDocumentRequests = requestContainerDocument.getRequests();
+        Assertions.assertEquals(requestContainerDTORequests.size(), requestContainerDocumentRequests.size());
+        for (int i = 0; i < requestContainerDTORequests.size(); i++) {
+            checkRequestConversion(requestContainerDTORequests.get(i), requestContainerDocumentRequests.get(i));
+        }
     }
 
     public static List<ResponseDTO> generateRandomResponseDTOs(final int size) {
         return IntStream.range(1, size + 1).mapToObj(index -> {
-            final HttpStatus status = generateRandomHttpStatus();
-            final List<NameValueElementDTO> headers = generateRandomNameValueElementDTOs(HEADERS_SIZE);
-            final String body = generateRandomBody();
-
             final ResponseDTO response = new ResponseDTO();
 
-            response.setStatus(status);
-            response.setHeaders(headers);
-            response.setBody(body);
+            response.setStatus(generateRandomHttpStatus());
+            response.setHeaders(generateRandomNameValueElementDTOs(HEADERS_SIZE));
+            response.setBody(generateRandomBody());
 
             return response;
         }).collect(Collectors.toList());
     }
 
+    public static List<UserDTO> generateRandomUserDTOs(final int size) {
+        return IntStream.range(1, size + 1).mapToObj(index -> {
+            final UserDTO user = new UserDTO();
+
+            user.setId(RandomValueGenerator.generateRandomPositiveLong());
+            user.setName(RandomValueGenerator.generateRandomStringLettersOnly(BODY_MIN_LENGTH));
+
+            return user;
+        }).collect(Collectors.toList());
+    }
+
+    public static List<UserEntity> generateRandomUserEntities(final int size) {
+        return IntStream.range(1, size + 1).mapToObj(index -> {
+            final UserEntity user = new UserEntity();
+
+            user.setId(RandomValueGenerator.generateRandomPositiveLong());
+            user.setName(RandomValueGenerator.generateRandomStringLettersOnly(BODY_MIN_LENGTH));
+
+            return user;
+        }).collect(Collectors.toList());
+    }
+
+    public static void checkUserConversion(final UserDTO userDTO, final UserEntity userEntity) {
+        Assertions.assertEquals(userDTO.getId(), userEntity.getId());
+        Assertions.assertEquals(userDTO.getName(), userEntity.getName());
+    }
+
+    public static void checkUserDTOs(final UserDTO expectedUser, final UserDTO actualUser) {
+        Assertions.assertEquals(expectedUser.getId(), actualUser.getId());
+        Assertions.assertEquals(expectedUser.getName(), actualUser.getName());
+    }
+
+    public static List<ExecutionLogDTO> generateRandomExecutionLogDTOs(final int size) {
+        return IntStream.range(1, size + 1).mapToObj(index -> {
+            final ExecutionLogDTO executionLogDTO = new ExecutionLogDTO();
+
+            executionLogDTO.setId(RandomValueGenerator.generateRandomStringLettersOnly(DOCUMENT_ID_LENGTH));
+            executionLogDTO.setDateTime(LocalDateTime.now());
+            executionLogDTO.setUserId(RandomValueGenerator.generateRandomPositiveLong());
+            executionLogDTO.setEntries(generateRandomExecutionLogEntryDTOs(EXECUTION_LOG_ENTRIES_SIZE));
+
+            return executionLogDTO;
+        }).collect(Collectors.toList());
+    }
+
     public static List<ExecutionLogDocument> generateRandomExecutionLogDocuments(final int size) {
         return IntStream.range(1, size + 1).mapToObj(index -> {
-            final ExecutionLogDocument executionLog = new ExecutionLogDocument();
+            final ExecutionLogDocument executionLogDocument = new ExecutionLogDocument();
 
-            executionLog.setId(RandomValueGenerator.generateRandomStringLettersOnly(DOCUMENT_ID_LENGTH));
-            executionLog.setDateTime(LocalDateTime.now());
-            executionLog.setUserId(RandomValueGenerator.generateRandomPositiveLong());
-            executionLog.setRequestContainerId(RandomValueGenerator.generateRandomStringLettersOnly(DOCUMENT_ID_LENGTH));
+            executionLogDocument.setId(RandomValueGenerator.generateRandomStringLettersOnly(DOCUMENT_ID_LENGTH));
+            executionLogDocument.setDateTime(LocalDateTime.now());
+            executionLogDocument.setUserId(RandomValueGenerator.generateRandomPositiveLong());
+            executionLogDocument.setEntries(generateRandomExecutionLogEntryDocuments(EXECUTION_LOG_ENTRIES_SIZE));
 
-            // TODO fix
-//            executionLog.setEntries(generateRandomExecutionLogEntries(EXECUTION_LOG_ENTRIES_SIZE));
-
-            return executionLog;
+            return executionLogDocument;
         }).collect(Collectors.toList());
     }
 
-    public static List<ExecutionLogEntryDTO> generateRandomExecutionLogEntries(final int size) {
+    public static void checkExecutionLogConversion(final ExecutionLogDTO executionLogDTO,
+                                                   final ExecutionLogDocument executionLogDocument) {
+        Assertions.assertEquals(executionLogDTO.getId(), executionLogDocument.getId());
+        Assertions.assertEquals(executionLogDTO.getDateTime(), executionLogDocument.getDateTime());
+        Assertions.assertEquals(executionLogDTO.getUserId(), executionLogDocument.getUserId());
+
+        final List<ExecutionLogEntryDTO> executionLogDTOEntries = executionLogDTO.getEntries();
+        final List<ExecutionLogEntryDocument> executionLogDocumentEntries = executionLogDocument.getEntries();
+        Assertions.assertEquals(executionLogDTOEntries.size(), executionLogDocumentEntries.size());
+        for (int i = 0; i < executionLogDTOEntries.size(); i++) {
+            checkExecutionLogEntryConversion(executionLogDTOEntries.get(i), executionLogDocumentEntries.get(i));
+        }
+    }
+
+    public static List<ExecutionLogEntryDTO> generateRandomExecutionLogEntryDTOs(final int size) {
         return IntStream.range(1, size + 1).mapToObj(index -> {
-            final ExecutionLogEntryDTO executionLogEntry = new ExecutionLogEntryDTO();
+            final ExecutionLogEntryDTO executionLogEntryDTO = new ExecutionLogEntryDTO();
 
-            executionLogEntry.setType(RandomValueGenerator.generateRandomEnumValue(ExecutionLogEntryType.class));
-            executionLogEntry.setDateTime(LocalDateTime.now());
-            executionLogEntry.setMethod(generateRandomHttpMethod());
-            executionLogEntry.setHeaders(generateRandomNameValueElementDTOs(HEADERS_SIZE));
-            executionLogEntry.setParameters(generateRandomNameValueElementDTOs(PARAMETERS_SIZE));
-            executionLogEntry.setUrl(generateRandomHttpUrl());
-            executionLogEntry.setStatus(generateRandomHttpStatus());
-            executionLogEntry.setBody(generateRandomBody());
-            executionLogEntry.setErrorMessage(generateRandomBody());
+            executionLogEntryDTO.setType(RandomValueGenerator.generateRandomEnumValue(ExecutionLogEntryType.class));
+            executionLogEntryDTO.setDateTime(LocalDateTime.now());
+            executionLogEntryDTO.setMethod(generateRandomHttpMethod());
+            executionLogEntryDTO.setHeaders(generateRandomNameValueElementDTOs(HEADERS_SIZE));
+            executionLogEntryDTO.setParameters(generateRandomNameValueElementDTOs(PARAMETERS_SIZE));
+            executionLogEntryDTO.setUrl(generateRandomHttpUrl());
+            executionLogEntryDTO.setStatus(generateRandomHttpStatus());
+            executionLogEntryDTO.setBody(generateRandomBody());
+            executionLogEntryDTO.setErrorMessage(generateRandomBody());
 
-            return executionLogEntry;
+            return executionLogEntryDTO;
         }).collect(Collectors.toList());
     }
 
-    public static List<ExecutionLogEntryDTO> generateRandomRequestExecutionLogEntries(final int size) {
+    public static List<ExecutionLogEntryDocument> generateRandomExecutionLogEntryDocuments(final int size) {
+        return IntStream.range(1, size + 1).mapToObj(index -> {
+            final ExecutionLogEntryDocument executionLogEntryDocument = new ExecutionLogEntryDocument();
+
+            executionLogEntryDocument.setType(RandomValueGenerator.generateRandomEnumValue(ExecutionLogEntryType.class));
+            executionLogEntryDocument.setDateTime(LocalDateTime.now());
+            executionLogEntryDocument.setMethod(generateRandomHttpMethod());
+            executionLogEntryDocument.setHeaders(generateRandomNameValueElementDocuments(HEADERS_SIZE));
+            executionLogEntryDocument.setParameters(generateRandomNameValueElementDocuments(PARAMETERS_SIZE));
+            executionLogEntryDocument.setUrl(generateRandomHttpUrl());
+            executionLogEntryDocument.setStatus(generateRandomHttpStatus());
+            executionLogEntryDocument.setBody(generateRandomBody());
+            executionLogEntryDocument.setErrorMessage(generateRandomBody());
+
+            return executionLogEntryDocument;
+        }).collect(Collectors.toList());
+    }
+
+    public static void checkExecutionLogEntryConversion(final ExecutionLogEntryDTO executionLogEntryDTO,
+                                                        final ExecutionLogEntryDocument executionLogEntryDocument) {
+        Assertions.assertEquals(executionLogEntryDTO.getType(), executionLogEntryDocument.getType());
+        Assertions.assertEquals(executionLogEntryDTO.getDateTime(), executionLogEntryDocument.getDateTime());
+        Assertions.assertEquals(executionLogEntryDTO.getMethod(), executionLogEntryDocument.getMethod());
+
+        final List<NameValueElementDTO> executionLogEntryDTOHeaders = executionLogEntryDTO.getHeaders();
+        final List<NameValueElementDocument> executionLogEntryDocumentHeaders = executionLogEntryDocument.getHeaders();
+        Assertions.assertEquals(executionLogEntryDTOHeaders.size(), executionLogEntryDocumentHeaders.size());
+        for (int i = 0; i < executionLogEntryDTOHeaders.size(); i++) {
+            checkNameValueElementConversion(executionLogEntryDTOHeaders.get(i), executionLogEntryDocumentHeaders.get(i));
+        }
+
+        final List<NameValueElementDTO> executionLogEntryDTOParameters = executionLogEntryDTO.getParameters();
+        final List<NameValueElementDocument> executionLogEntryDocumentParameters = executionLogEntryDocument.getParameters();
+        Assertions.assertEquals(executionLogEntryDTOParameters.size(), executionLogEntryDocumentParameters.size());
+        for (int i = 0; i < executionLogEntryDTOParameters.size(); i++) {
+            checkNameValueElementConversion(executionLogEntryDTOParameters.get(i), executionLogEntryDocumentParameters.get(i));
+        }
+
+        Assertions.assertEquals(executionLogEntryDTO.getUrl(), executionLogEntryDocument.getUrl());
+        Assertions.assertEquals(executionLogEntryDTO.getStatus(), executionLogEntryDocument.getStatus());
+        Assertions.assertEquals(executionLogEntryDTO.getBody(), executionLogEntryDocument.getBody());
+        Assertions.assertEquals(executionLogEntryDTO.getErrorMessage(), executionLogEntryDocument.getErrorMessage());
+    }
+
+    public static List<ExecutionLogEntryDTO> generateRandomRequestExecutionLogEntryDTOs(final int size) {
         return IntStream.range(1, size + 1).mapToObj(index -> {
             final ExecutionLogEntryDTO executionLogEntry = new ExecutionLogEntryDTO();
 
@@ -189,7 +415,7 @@ public class RequestTestHelper {
         }).collect(Collectors.toList());
     }
 
-    public static List<ExecutionLogEntryDTO> generateRandomResponseExecutionLogEntries(final int size) {
+    public static List<ExecutionLogEntryDTO> generateRandomResponseExecutionLogEntryDTOs(final int size) {
         return IntStream.range(1, size + 1).mapToObj(index -> {
             final ExecutionLogEntryDTO executionLogEntry = new ExecutionLogEntryDTO();
 
@@ -203,7 +429,7 @@ public class RequestTestHelper {
         }).collect(Collectors.toList());
     }
 
-    public static List<ExecutionLogEntryDTO> generateRandomErrorExecutionLogEntries(final int size) {
+    public static List<ExecutionLogEntryDTO> generateRandomErrorExecutionLogEntryDTOs(final int size) {
         return IntStream.range(1, size + 1).mapToObj(index -> {
             final ExecutionLogEntryDTO executionLogEntry = new ExecutionLogEntryDTO();
 
@@ -286,7 +512,6 @@ public class RequestTestHelper {
                                          final ExecutionLogDocument actualExecutionLog) {
         Assertions.assertEquals(expectedExecutionLog.getDateTime(), actualExecutionLog.getDateTime());
         Assertions.assertEquals(expectedExecutionLog.getUserId(), actualExecutionLog.getUserId());
-        Assertions.assertEquals(expectedExecutionLog.getRequestContainerId(), actualExecutionLog.getRequestContainerId());
 
         // TODO fix
 //        final List<ExecutionLogEntryDTO> expectedExecutionLogEntries = expectedExecutionLog.getEntries();
