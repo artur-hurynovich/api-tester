@@ -7,6 +7,7 @@ import com.hurynovich.api_tester.model.enumeration.ValidationResultType;
 import com.hurynovich.api_tester.model.validation.ValidationResult;
 import com.hurynovich.api_tester.utils.RequestUtils;
 import com.hurynovich.api_tester.validator.Validator;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
@@ -78,8 +79,6 @@ public class ExecutionLogEntryValidator implements Validator<ExecutionLogEntryDT
         validateParameters(executionLogEntry, validationResult);
 
         validateUrl(executionLogEntry, validationResult);
-
-        validateBody(executionLogEntry, validationResult);
     }
 
     private void validateResponseExecutionLogEntry(final @NonNull ExecutionLogEntryDTO executionLogEntry,
@@ -89,8 +88,6 @@ public class ExecutionLogEntryValidator implements Validator<ExecutionLogEntryDT
         validateHeaders(executionLogEntry, validationResult);
 
         validateStatus(executionLogEntry, validationResult);
-
-        validateBody(executionLogEntry, validationResult);
     }
 
     private void validateErrorExecutionLogEntry(final @NonNull ExecutionLogEntryDTO executionLogEntry,
@@ -126,15 +123,7 @@ public class ExecutionLogEntryValidator implements Validator<ExecutionLogEntryDT
                                  final @NonNull ValidationResult validationResult) {
         final List<NameValueElementDTO> headers = executionLogEntry.getHeaders();
 
-        if (headers == null) {
-            validationResult.setType(ValidationResultType.NON_VALID);
-            validationResult.getDescriptions().add("'executionLogEntry.headers' can't be null for 'executionLogEntry.type' '" +
-                    executionLogEntry.getType() + "'");
-        } else if (headers.isEmpty()) {
-            validationResult.setType(ValidationResultType.NON_VALID);
-            validationResult.getDescriptions().add("'executionLogEntry.headers' can't be empty for 'executionLogEntry.type' '" +
-                    executionLogEntry.getType() + "'");
-        } else {
+        if (CollectionUtils.isNotEmpty(headers)) {
             validateNameValueElements(headers, validationResult);
         }
     }
@@ -155,15 +144,7 @@ public class ExecutionLogEntryValidator implements Validator<ExecutionLogEntryDT
                                     final @NonNull ValidationResult validationResult) {
         final List<NameValueElementDTO> parameters = executionLogEntry.getParameters();
 
-        if (parameters == null) {
-            validationResult.setType(ValidationResultType.NON_VALID);
-            validationResult.getDescriptions().add("'executionLogEntry.parameters' can't be null for 'executionLogEntry.type' '" +
-                    executionLogEntry.getType() + "'");
-        } else if (parameters.isEmpty()) {
-            validationResult.setType(ValidationResultType.NON_VALID);
-            validationResult.getDescriptions().add("'executionLogEntry.parameters' can't be empty for 'executionLogEntry.type' '" +
-                    executionLogEntry.getType() + "'");
-        } else {
+        if (CollectionUtils.isNotEmpty(parameters)) {
             validateNameValueElements(parameters, validationResult);
         }
     }
@@ -188,15 +169,6 @@ public class ExecutionLogEntryValidator implements Validator<ExecutionLogEntryDT
         if (executionLogEntry.getStatus() == null) {
             validationResult.setType(ValidationResultType.NON_VALID);
             validationResult.getDescriptions().add("'executionLogEntry.status' can't be null for 'executionLogEntry.type' '" +
-                    executionLogEntry.getType() + "'");
-        }
-    }
-
-    private void validateBody(final @NonNull ExecutionLogEntryDTO executionLogEntry,
-                              final @NonNull ValidationResult validationResult) {
-        if (executionLogEntry.getBody() == null) {
-            validationResult.setType(ValidationResultType.NON_VALID);
-            validationResult.getDescriptions().add("'executionLogEntry.body' can't be null for 'executionLogEntry.type' '" +
                     executionLogEntry.getType() + "'");
         }
     }

@@ -6,7 +6,6 @@ import com.hurynovich.api_tester.model.enumeration.NameValueElementType;
 import org.springframework.http.HttpHeaders;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
@@ -21,7 +20,7 @@ public class RequestElementConverterImpl implements RequestElementConverter {
 
     @Override
     public MultiValueMap<String, String> convertToMultiValueMap(final @NonNull List<NameValueElementDTO> elements) {
-        if (!CollectionUtils.isEmpty(elements)) {
+        if (!elements.isEmpty()) {
             final MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<>();
 
             elements.forEach(element ->
@@ -35,7 +34,7 @@ public class RequestElementConverterImpl implements RequestElementConverter {
 
     @Override
     public HttpHeaders convertToHttpHeaders(final @NonNull List<NameValueElementDTO> elements) {
-        if (!CollectionUtils.isEmpty(elements)) {
+        if (!elements.isEmpty()) {
             final HttpHeaders httpHeaders = new HttpHeaders();
 
             elements.forEach(element -> httpHeaders.add(element.getName(), element.getValue()));

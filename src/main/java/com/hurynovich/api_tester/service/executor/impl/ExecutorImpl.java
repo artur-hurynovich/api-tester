@@ -14,11 +14,11 @@ import com.hurynovich.api_tester.service.executor.Executor;
 import com.hurynovich.api_tester.state_transition.state.StateName;
 import com.hurynovich.api_tester.state_transition.state_manager.StateManager;
 import com.hurynovich.api_tester.validator.Validator;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -65,7 +65,7 @@ public class ExecutorImpl implements Executor {
         }
 
         while (executionState.getState().getName().equals(StateName.RUNNING)) {
-            if (!CollectionUtils.isEmpty(requests)) {
+            if (CollectionUtils.isNotEmpty(requests)) {
 
                 final RequestDTO request = requests.get(0);
 

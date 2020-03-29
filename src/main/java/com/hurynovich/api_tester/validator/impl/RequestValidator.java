@@ -4,7 +4,10 @@ import com.hurynovich.api_tester.model.dto.impl.NameValueElementDTO;
 import com.hurynovich.api_tester.model.dto.impl.RequestDTO;
 import com.hurynovich.api_tester.model.enumeration.ValidationResultType;
 import com.hurynovich.api_tester.model.validation.ValidationResult;
+import com.hurynovich.api_tester.utils.RequestUtils;
 import com.hurynovich.api_tester.validator.Validator;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.validator.routines.UrlValidator;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
@@ -16,6 +19,8 @@ import java.util.List;
 public class RequestValidator implements Validator<RequestDTO> {
 
     private final Validator<NameValueElementDTO> nameValueElementValidator;
+
+    private final UrlValidator urlValidator = new UrlValidator(RequestUtils.URL_SCHEMES);
 
     public RequestValidator(final @NonNull Validator<NameValueElementDTO> nameValueElementValidator) {
         this.nameValueElementValidator = nameValueElementValidator;
@@ -31,40 +36,31 @@ public class RequestValidator implements Validator<RequestDTO> {
             validationResult.setType(ValidationResultType.NON_VALID);
             validationResult.getDescriptions().add("'request' can't be null");
         } else {
-            if (request.getMethod() == null) {
-                validationResult.setType(ValidationResultType.NON_VALID);
-                validationResult.getDescriptions().add("'request.method' can't be null");
-            }
+            validateMethod(request, validationResult);
 
             validateHeaders(request, validationResult);
 
-            if (request.getUrl() == null) {
-                validationResult.setType(ValidationResultType.NON_VALID);
-                validationResult.getDescriptions().add("'request.url' can't be null");
-            }
+            validateUrl(request, validationResult);
 
             validateParameters(request, validationResult);
-
-            if (request.getBody() == null) {
-                validationResult.setType(ValidationResultType.NON_VALID);
-                validationResult.getDescriptions().add("'request.body' can't be null");
-            }
         }
 
         return validationResult;
+    }
+
+    private void validateMethod(final @NonNull RequestDTO request,
+                                final @NonNull ValidationResult validationResult) {
+        if (request.getMethod() == null) {
+            validationResult.setType(ValidationResultType.NON_VALID);
+            validationResult.getDescriptions().add("'request.method' can't be null");
+        }
     }
 
     private void validateHeaders(final @NonNull RequestDTO request,
                                  final @NonNull ValidationResult validationResult) {
         final List<NameValueElementDTO> headers = request.getHeaders();
 
-        if (headers == null) {
-            validationResult.setType(ValidationResultType.NON_VALID);
-            validationResult.getDescriptions().add("'request.headers' can't be null");
-        } else if (headers.isEmpty()) {
-            validationResult.setType(ValidationResultType.NON_VALID);
-            validationResult.getDescriptions().add("'request.headers' can't be empty");
-        } else {
+        if (CollectionUtils.isNotEmpty(headers)) {
             validateNameValueElements(headers, validationResult);
         }
     }
@@ -81,17 +77,25 @@ public class RequestValidator implements Validator<RequestDTO> {
         });
     }
 
+    private void validateUrl(final @NonNull RequestDTO request,
+                             final @NonNull ValidationResult validationResult) {
+        final String url = request.getUrl();
+
+        if (url == null) {
+            validationResult.setType(ValidationResultType.NON_VALID);
+            validationResult.getDescriptions().add("'request.url' can't be null");
+
+        } else if (!urlValidator.isValid(url)) {
+            validationResult.setType(ValidationResultType.NON_VALID);
+            validationResult.getDescriptions().add("'" + url + "' is not a valid 'request.url'");
+        }
+    }
+
     private void validateParameters(final @NonNull RequestDTO request,
                                     final @NonNull ValidationResult validationResult) {
         final List<NameValueElementDTO> parameters = request.getParameters();
 
-        if (parameters == null) {
-            validationResult.setType(ValidationResultType.NON_VALID);
-            validationResult.getDescriptions().add("'request.parameters' can't be null");
-        } else if (parameters.isEmpty()) {
-            validationResult.setType(ValidationResultType.NON_VALID);
-            validationResult.getDescriptions().add("'request.parameters' can't be empty");
-        } else {
+        if (CollectionUtils.isNotEmpty(parameters)) {
             validateNameValueElements(parameters, validationResult);
         }
     }

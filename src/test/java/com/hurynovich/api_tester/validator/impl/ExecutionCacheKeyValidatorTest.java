@@ -37,7 +37,7 @@ public class ExecutionCacheKeyValidatorTest {
 
         final List<String> descriptions = validationResult.getDescriptions();
         Assertions.assertEquals(1, descriptions.size());
-        Assertions.assertEquals("'executionKey' can't be null", descriptions.get(0));
+        Assertions.assertEquals("'executionCacheKey.executionKey' can't be null", descriptions.get(0));
     }
 
     @Test
@@ -51,7 +51,8 @@ public class ExecutionCacheKeyValidatorTest {
 
         final List<String> descriptions = validationResult.getDescriptions();
         Assertions.assertEquals(1, descriptions.size());
-        Assertions.assertEquals("'executionKey' is not valid", descriptions.get(0));
+        Assertions.assertEquals("'" + executionCacheKey.getExecutionKey() +
+                "' is not a valid 'executionCacheKey.executionKey'", descriptions.get(0));
     }
 
     private void applyExecutionKeyReflect(final ExecutionCacheKey executionCacheKey, final String executionKey)

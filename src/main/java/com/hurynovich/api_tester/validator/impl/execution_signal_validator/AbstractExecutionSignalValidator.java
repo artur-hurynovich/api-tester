@@ -82,7 +82,7 @@ public abstract class AbstractExecutionSignalValidator implements Validator<Exec
 
             if (!validSignalNames.contains(signalName)) {
                 validationResult.setType(ValidationResultType.NON_VALID);
-                validationResult.getDescriptions().add("'" + signalName + "' is not a valid 'executionSignal.signal.signalName");
+                validationResult.getDescriptions().add("'" + signalName + "' is not a valid 'executionSignal.signal.signalName'");
             }
         }
     }

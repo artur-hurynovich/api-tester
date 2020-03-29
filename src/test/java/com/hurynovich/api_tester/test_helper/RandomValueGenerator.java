@@ -1,8 +1,8 @@
 package com.hurynovich.api_tester.test_helper;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.lang.NonNull;
-import org.springframework.util.CollectionUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -37,7 +37,7 @@ public class RandomValueGenerator {
     }
 
     private static <E> E getRandomListElement(final List<E> list) {
-        if (!CollectionUtils.isEmpty(list)) {
+        if (CollectionUtils.isNotEmpty(list)) {
             final int randomIndex = RANDOM.nextInt(list.size());
 
             return list.get(randomIndex);

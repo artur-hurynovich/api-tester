@@ -79,7 +79,7 @@ public class ExecutorExecutionSignalValidatorTest {
 
         final List<String> descriptions = validationResult.getDescriptions();
         Assertions.assertEquals(1, descriptions.size());
-        Assertions.assertEquals("'" + randomSignalName + "' is not a valid signal name",
+        Assertions.assertEquals("'" + randomSignalName + "' is not a valid 'executionSignal.signal.signalName'",
                 descriptions.get(0));
     }
 
