@@ -3,8 +3,10 @@ package com.hurynovich.api_tester.converter.request_element_converter.impl;
 import com.hurynovich.api_tester.converter.request_element_converter.RequestElementConverter;
 import com.hurynovich.api_tester.model.dto.impl.NameValueElementDTO;
 import com.hurynovich.api_tester.model.enumeration.NameValueElementType;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -19,8 +21,8 @@ import java.util.stream.Collectors;
 public class RequestElementConverterImpl implements RequestElementConverter {
 
     @Override
-    public MultiValueMap<String, String> convertToMultiValueMap(final @NonNull List<NameValueElementDTO> elements) {
-        if (!elements.isEmpty()) {
+    public MultiValueMap<String, String> convertToMultiValueMap(final @Nullable List<NameValueElementDTO> elements) {
+        if (CollectionUtils.isNotEmpty(elements)) {
             final MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<>();
 
             elements.forEach(element ->
@@ -33,8 +35,8 @@ public class RequestElementConverterImpl implements RequestElementConverter {
     }
 
     @Override
-    public HttpHeaders convertToHttpHeaders(final @NonNull List<NameValueElementDTO> elements) {
-        if (!elements.isEmpty()) {
+    public HttpHeaders convertToHttpHeaders(final @Nullable List<NameValueElementDTO> elements) {
+        if (CollectionUtils.isNotEmpty(elements)) {
             final HttpHeaders httpHeaders = new HttpHeaders();
 
             elements.forEach(element -> httpHeaders.add(element.getName(), element.getValue()));
