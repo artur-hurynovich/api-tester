@@ -12,7 +12,6 @@ import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -28,9 +27,7 @@ public class RequestValidator implements Validator<RequestDTO> {
 
     @Override
     public ValidationResult validate(final @Nullable RequestDTO request) {
-        final ValidationResult validationResult = new ValidationResult();
-        validationResult.setType(ValidationResultType.VALID);
-        validationResult.setDescriptions(new ArrayList<>());
+        final ValidationResult validationResult = ValidationResult.createValidResult();
 
         if (request == null) {
             validationResult.setType(ValidationResultType.NON_VALID);

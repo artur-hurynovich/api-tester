@@ -54,16 +54,13 @@ public class APITesterConfiguration {
                         new StateTransitionDescriptorImpl(SignalName.STOP, StateName.STOPPED))));
 
         availableStates.add(
-                new StateImpl(StateName.STOPPED, Collections.singleton(
-                        new StateTransitionDescriptorImpl(SignalName.RUN, StateName.PENDING_RUNNING))));
+                new StateImpl(StateName.STOPPED, Collections.emptyList()));
 
         availableStates.add(
-                new StateImpl(StateName.FINISHED, Collections.singleton(
-                        new StateTransitionDescriptorImpl(SignalName.RUN, StateName.PENDING_RUNNING))));
+                new StateImpl(StateName.FINISHED, Collections.emptyList()));
 
         availableStates.add(
-                new StateImpl(StateName.ERROR, Collections.singleton(
-                        new StateTransitionDescriptorImpl(SignalName.RUN, StateName.PENDING_RUNNING))));
+                new StateImpl(StateName.ERROR, Collections.emptyList()));
 
         return availableStates;
     }

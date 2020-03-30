@@ -9,7 +9,6 @@ import com.hurynovich.api_tester.validator.Validator;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public abstract class AbstractExecutionSignalValidator implements Validator<ExecutionSignal> {
@@ -22,9 +21,7 @@ public abstract class AbstractExecutionSignalValidator implements Validator<Exec
 
     @Override
     public ValidationResult validate(final @Nullable ExecutionSignal executionSignal) {
-        final ValidationResult validationResult = new ValidationResult();
-        validationResult.setType(ValidationResultType.VALID);
-        validationResult.setDescriptions(new ArrayList<>());
+        final ValidationResult validationResult = ValidationResult.createValidResult();
 
         if (executionSignal == null) {
             validationResult.setType(ValidationResultType.NON_VALID);

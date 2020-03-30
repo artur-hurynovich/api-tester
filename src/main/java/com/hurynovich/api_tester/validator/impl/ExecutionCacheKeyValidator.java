@@ -8,8 +8,6 @@ import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-
 @Service
 public class ExecutionCacheKeyValidator implements Validator<ExecutionCacheKey> {
 
@@ -18,9 +16,7 @@ public class ExecutionCacheKeyValidator implements Validator<ExecutionCacheKey> 
 
     @Override
     public ValidationResult validate(final @Nullable ExecutionCacheKey executionCacheKey) {
-        final ValidationResult validationResult = new ValidationResult();
-        validationResult.setType(ValidationResultType.VALID);
-        validationResult.setDescriptions(new ArrayList<>());
+        final ValidationResult validationResult = ValidationResult.createValidResult();
 
         if (executionCacheKey == null) {
             validationResult.setType(ValidationResultType.NON_VALID);

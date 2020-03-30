@@ -8,16 +8,12 @@ import com.hurynovich.api_tester.validator.Validator;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-
 @Service
 public class NameValueElementValidator implements Validator<NameValueElementDTO> {
 
     @Override
     public ValidationResult validate(final @Nullable NameValueElementDTO nameValueElement) {
-        final ValidationResult validationResult = new ValidationResult();
-        validationResult.setType(ValidationResultType.VALID);
-        validationResult.setDescriptions(new ArrayList<>());
+        final ValidationResult validationResult = ValidationResult.createValidResult();
 
         if (nameValueElement == null) {
             validationResult.setType(ValidationResultType.NON_VALID);

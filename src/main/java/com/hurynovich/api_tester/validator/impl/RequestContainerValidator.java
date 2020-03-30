@@ -9,7 +9,6 @@ import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -23,9 +22,7 @@ public class RequestContainerValidator implements Validator<RequestContainerDTO>
 
     @Override
     public ValidationResult validate(final @Nullable RequestContainerDTO requestContainer) {
-        final ValidationResult validationResult = new ValidationResult();
-        validationResult.setType(ValidationResultType.VALID);
-        validationResult.setDescriptions(new ArrayList<>());
+        final ValidationResult validationResult = ValidationResult.createValidResult();
 
         if (requestContainer == null) {
             validationResult.setType(ValidationResultType.NON_VALID);

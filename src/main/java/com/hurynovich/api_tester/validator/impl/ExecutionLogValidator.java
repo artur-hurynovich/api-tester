@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -31,9 +30,7 @@ public class ExecutionLogValidator implements Validator<ExecutionLogDTO> {
 
     @Override
     public ValidationResult validate(final @Nullable ExecutionLogDTO executionLog) {
-        final ValidationResult validationResult = new ValidationResult();
-        validationResult.setType(ValidationResultType.VALID);
-        validationResult.setDescriptions(new ArrayList<>());
+        final ValidationResult validationResult = ValidationResult.createValidResult();
 
         if (executionLog == null) {
             validationResult.setType(ValidationResultType.NON_VALID);

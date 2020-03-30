@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -31,9 +30,7 @@ public class ExecutionLogEntryValidator implements Validator<ExecutionLogEntryDT
 
     @Override
     public ValidationResult validate(final @Nullable ExecutionLogEntryDTO executionLogEntry) {
-        final ValidationResult validationResult = new ValidationResult();
-        validationResult.setType(ValidationResultType.VALID);
-        validationResult.setDescriptions(new ArrayList<>());
+        final ValidationResult validationResult = ValidationResult.createValidResult();
 
         if (executionLogEntry == null) {
             validationResult.setType(ValidationResultType.NON_VALID);

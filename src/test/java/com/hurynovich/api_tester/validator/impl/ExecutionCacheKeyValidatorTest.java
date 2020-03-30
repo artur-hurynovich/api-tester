@@ -27,6 +27,16 @@ public class ExecutionCacheKeyValidatorTest {
     }
 
     @Test
+    public void executionCacheKeyNullFailureValidationTest() {
+        final ValidationResult validationResult = keyValidator.validate(null);
+        Assertions.assertEquals(ValidationResultType.NON_VALID, validationResult.getType());
+
+        final List<String> descriptions = validationResult.getDescriptions();
+        Assertions.assertEquals(1, descriptions.size());
+        Assertions.assertEquals("'executionCacheKey' can't be null", descriptions.get(0));
+    }
+
+    @Test
     public void executionKeyNullFailureValidationTest() throws NoSuchFieldException, IllegalAccessException {
         final ExecutionCacheKey executionCacheKey = ExecutionTestHelper.buildExecutionCacheKey();
 
