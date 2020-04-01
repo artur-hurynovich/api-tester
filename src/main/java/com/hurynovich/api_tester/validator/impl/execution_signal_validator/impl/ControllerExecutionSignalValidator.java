@@ -43,7 +43,7 @@ public class ControllerExecutionSignalValidator extends AbstractExecutionSignalV
             }
         } else {
             validationResult.setType(ValidationResultType.NON_VALID);
-            validationResult.getDescriptions().add("Execution hasn't been initialized yet");
+            validationResult.getDescriptions().add("Execution hasn't been initialized yet or has already been expired");
         }
     }
 

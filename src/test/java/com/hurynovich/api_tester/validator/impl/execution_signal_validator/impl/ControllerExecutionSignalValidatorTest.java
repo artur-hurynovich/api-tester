@@ -78,7 +78,8 @@ public class ControllerExecutionSignalValidatorTest {
 
         final List<String> descriptions = validationResult.getDescriptions();
         Assertions.assertEquals(1, descriptions.size());
-        Assertions.assertEquals("Execution hasn't been initialized yet", descriptions.get(0));
+        Assertions.assertEquals("Execution hasn't been initialized yet or has already been expired",
+                descriptions.get(0));
     }
 
     @Test
