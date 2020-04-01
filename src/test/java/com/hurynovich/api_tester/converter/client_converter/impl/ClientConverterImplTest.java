@@ -2,14 +2,13 @@ package com.hurynovich.api_tester.converter.client_converter.impl;
 
 import com.hurynovich.api_tester.converter.client_converter.ClientConverter;
 import com.hurynovich.api_tester.converter.exception.ConverterException;
-import com.hurynovich.api_tester.converter.request_element_converter.RequestElementConverter;
-import com.hurynovich.api_tester.converter.request_element_converter.impl.RequestElementConverterImpl;
+import com.hurynovich.api_tester.converter.request_element_converter.RequestNameValueElementConverter;
+import com.hurynovich.api_tester.converter.request_element_converter.impl.RequestNameValueElementConverterImpl;
 import com.hurynovich.api_tester.model.dto.impl.NameValueElementDTO;
 import com.hurynovich.api_tester.model.dto.impl.RequestDTO;
 import com.hurynovich.api_tester.model.dto.impl.ResponseDTO;
 import com.hurynovich.api_tester.test_helper.RequestTestHelper;
 import com.hurynovich.api_tester.utils.RequestUtils;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,9 +24,9 @@ public class ClientConverterImplTest {
 
     private static final int REQUEST_HEADERS_SIZE = 3;
 
-    private RequestElementConverter requestElementConverter = new RequestElementConverterImpl();
+    private RequestNameValueElementConverter requestNameValueElementConverter = new RequestNameValueElementConverterImpl();
 
-    private ClientConverter<String> clientConverter = new ClientConverterImpl(requestElementConverter);
+    private ClientConverter<String> clientConverter = new ClientConverterImpl(requestNameValueElementConverter);
 
     @Test
     public void convertRequestDTOToRequestEntityTest() {
@@ -35,7 +34,7 @@ public class ClientConverterImplTest {
 
         final RequestEntity<String> requestEntity = clientConverter.convert(requestDTO);
         Assertions.assertEquals(requestDTO.getMethod(), requestEntity.getMethod());
-        Assertions.assertEquals(requestElementConverter.convertToHttpHeaders(requestDTO.getHeaders()),
+        Assertions.assertEquals(requestNameValueElementConverter.convertToHttpHeaders(requestDTO.getHeaders()),
                 requestEntity.getHeaders());
         checkUrl(requestDTO.getUrl(), requestEntity);
 
@@ -64,7 +63,7 @@ public class ClientConverterImplTest {
         final ResponseEntity<String> responseEntity =
                 ResponseEntity.
                         status(httpStatus).
-                        headers(requestElementConverter.convertToHttpHeaders(headers)).
+                        headers(requestNameValueElementConverter.convertToHttpHeaders(headers)).
                         body(body);
 
         final ResponseDTO response = clientConverter.convert(responseEntity);

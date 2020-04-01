@@ -6,21 +6,22 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
+import java.io.Serializable;
 
 @MappedSuperclass
-public class AbstractEntity implements Identified<Long> {
+public class AbstractEntity<I extends Serializable> implements Identified<I> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private I id;
 
     @Override
-    public Long getId() {
+    public I getId() {
         return id;
     }
 
     @Override
-    public void setId(final Long id) {
+    public void setId(final I id) {
         this.id = id;
     }
 

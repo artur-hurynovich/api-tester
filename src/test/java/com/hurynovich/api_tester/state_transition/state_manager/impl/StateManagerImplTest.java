@@ -51,17 +51,17 @@ public class StateManagerImplTest {
         executeTest(StateName.PENDING_STOPPED, SignalName.RESUME);
         executeTest(StateName.PENDING_STOPPED, SignalName.STOP, StateName.STOPPED);
 
-        executeTest(StateName.STOPPED, SignalName.RUN, StateName.PENDING_RUNNING);
+        executeTest(StateName.STOPPED, SignalName.RUN);
         executeTest(StateName.STOPPED, SignalName.PAUSE);
         executeTest(StateName.STOPPED, SignalName.RESUME);
         executeTest(StateName.STOPPED, SignalName.STOP);
 
-        executeTest(StateName.FINISHED, SignalName.RUN, StateName.PENDING_RUNNING);
+        executeTest(StateName.FINISHED, SignalName.RUN);
         executeTest(StateName.FINISHED, SignalName.PAUSE);
         executeTest(StateName.FINISHED, SignalName.RESUME);
         executeTest(StateName.FINISHED, SignalName.STOP);
 
-        executeTest(StateName.ERROR, SignalName.RUN, StateName.PENDING_RUNNING);
+        executeTest(StateName.ERROR, SignalName.RUN);
         executeTest(StateName.ERROR, SignalName.PAUSE);
         executeTest(StateName.ERROR, SignalName.RESUME);
         executeTest(StateName.ERROR, SignalName.STOP);

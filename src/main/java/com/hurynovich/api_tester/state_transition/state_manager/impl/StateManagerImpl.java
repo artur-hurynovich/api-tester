@@ -51,10 +51,10 @@ public class StateManagerImpl implements StateManager {
                 collect(Collectors.toList());
 
         if (toStates.isEmpty()) {
-            throw new StateManagerException("Transition processing failed. No toState with name '" +
+            throw new StateManagerException("Transition processing failed. No 'toState' with name '" +
                     toStateName + "' found");
         } else if (toStates.size() > 1) {
-            throw new StateManagerException("Transition processing failed. More than one toState with name '" +
+            throw new StateManagerException("Transition processing failed. More than one 'toState' with name '" +
                     toStateName + "' found");
         } else {
             final State toState = toStates.iterator().next();

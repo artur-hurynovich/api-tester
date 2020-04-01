@@ -1,6 +1,6 @@
 package com.hurynovich.api_tester.controller.execution_controller;
 
-import com.hurynovich.api_tester.cache.cache_key.impl.ExecutionStateCacheKey;
+import com.hurynovich.api_tester.cache.cache_key.impl.ExecutionCacheKey;
 import com.hurynovich.api_tester.model.controller_response.impl.ExecutionControllerResponse;
 import com.hurynovich.api_tester.model.dto.impl.RequestContainerDTO;
 import com.hurynovich.api_tester.model.enumeration.ValidationResultType;
@@ -22,32 +22,32 @@ import java.util.List;
 @RestController
 public class ExecutionController {
 
-    private final Validator<RequestContainerDTO> requestContainerDocumentValidator;
+    private final Validator<RequestContainerDTO> requestContainerValidator;
 
     private final Validator<ExecutionSignal> executionSignalValidator;
-    private final Validator<ExecutionStateCacheKey> executionStateCacheKeyValidator;
+    private final Validator<ExecutionCacheKey> executionCacheKeyValidator;
 
     private final ExecutionHelper executionHelper;
 
-    public ExecutionController(final @NonNull Validator<RequestContainerDTO> requestContainerDocumentValidator,
+    public ExecutionController(final @NonNull Validator<RequestContainerDTO> requestContainerValidator,
                                final @NonNull @Qualifier("controllerExecutionSignalValidator") Validator<ExecutionSignal> executionSignalValidator,
-                               final @NonNull Validator<ExecutionStateCacheKey> executionStateCacheKeyValidator,
+                               final @NonNull Validator<ExecutionCacheKey> executionCacheKeyValidator,
                                final @NonNull ExecutionHelper executionHelper) {
-        this.requestContainerDocumentValidator = requestContainerDocumentValidator;
+        this.requestContainerValidator = requestContainerValidator;
         this.executionSignalValidator = executionSignalValidator;
-        this.executionStateCacheKeyValidator = executionStateCacheKeyValidator;
+        this.executionCacheKeyValidator = executionCacheKeyValidator;
         this.executionHelper = executionHelper;
     }
 
     @GetMapping("/state")
-    public ResponseEntity<ExecutionControllerResponse> getState(final @NonNull @RequestBody ExecutionStateCacheKey executionStateCacheKey) {
-        final ValidationResult validationResult = executionStateCacheKeyValidator.validate(executionStateCacheKey);
+    public ResponseEntity<ExecutionControllerResponse> getState(final @NonNull @RequestBody ExecutionCacheKey executionCacheKey) {
+        final ValidationResult validationResult = executionCacheKeyValidator.validate(executionCacheKey);
 
         final ExecutionControllerResponse response = new ExecutionControllerResponse();
         response.setValidationResult(validationResult);
 
         if (validationResult.getType() == ValidationResultType.VALID) {
-            final ExecutionState executionState = executionHelper.getExecutionState(executionStateCacheKey);
+            final ExecutionState executionState = executionHelper.getExecutionState(executionCacheKey);
 
             response.setStateName(executionState.getState().getName());
 
@@ -62,15 +62,15 @@ public class ExecutionController {
 
     @PostMapping("/initExecution")
     public ResponseEntity<ExecutionControllerResponse> postInitExecution(final @NonNull @RequestBody RequestContainerDTO requestContainer) {
-        final ValidationResult validationResult = requestContainerDocumentValidator.validate(requestContainer);
+        final ValidationResult validationResult = requestContainerValidator.validate(requestContainer);
 
         final ExecutionControllerResponse response = new ExecutionControllerResponse();
         response.setValidationResult(validationResult);
 
         if (validationResult.getType() == ValidationResultType.VALID) {
-            final ExecutionStateCacheKey executionStateCacheKey = executionHelper.initExecutionStateCache(requestContainer);
+            final ExecutionCacheKey executionCacheKey = executionHelper.initExecutionStateCache(requestContainer);
 
-            response.setExecutionKey(executionStateCacheKey.getExecutionKey());
+            response.setExecutionKey(executionCacheKey.getExecutionKey());
 
             return ResponseEntity.ok(response);
         } else {
@@ -100,6 +100,5 @@ public class ExecutionController {
             return ResponseEntity.badRequest().body(response);
         }
     }
-
 
 }

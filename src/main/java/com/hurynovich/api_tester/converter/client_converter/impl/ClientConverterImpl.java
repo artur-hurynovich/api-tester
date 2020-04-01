@@ -2,7 +2,7 @@ package com.hurynovich.api_tester.converter.client_converter.impl;
 
 import com.hurynovich.api_tester.converter.client_converter.ClientConverter;
 import com.hurynovich.api_tester.converter.exception.ConverterException;
-import com.hurynovich.api_tester.converter.request_element_converter.RequestElementConverter;
+import com.hurynovich.api_tester.converter.request_element_converter.RequestNameValueElementConverter;
 import com.hurynovich.api_tester.model.dto.impl.RequestDTO;
 import com.hurynovich.api_tester.model.dto.impl.ResponseDTO;
 import org.springframework.http.HttpHeaders;
@@ -19,22 +19,22 @@ import java.net.URISyntaxException;
 @Service
 public class ClientConverterImpl implements ClientConverter<String> {
 
-    private final RequestElementConverter requestElementConverter;
+    private final RequestNameValueElementConverter requestNameValueElementConverter;
 
-    public ClientConverterImpl(final @NonNull RequestElementConverter requestElementConverter) {
-        this.requestElementConverter = requestElementConverter;
+    public ClientConverterImpl(final @NonNull RequestNameValueElementConverter requestNameValueElementConverter) {
+        this.requestNameValueElementConverter = requestNameValueElementConverter;
     }
 
     @Override
     public RequestEntity<String> convert(final @NonNull RequestDTO request) {
         try {
             final MultiValueMap<String, String> uriVariables =
-                    requestElementConverter.convertToMultiValueMap(request.getParameters());
+                    requestNameValueElementConverter.convertToMultiValueMap(request.getParameters());
             final UriComponentsBuilder uriComponentsBuilder =
                     UriComponentsBuilder.fromUri(new URI(request.getUrl())).queryParams(uriVariables);
 
             final HttpHeaders httpHeaders =
-                    requestElementConverter.convertToHttpHeaders(request.getHeaders());
+                    requestNameValueElementConverter.convertToHttpHeaders(request.getHeaders());
             return RequestEntity.method(request.getMethod(), uriComponentsBuilder.build(uriVariables)).
                     headers(httpHeaders).
                     body(request.getBody());
@@ -48,7 +48,7 @@ public class ClientConverterImpl implements ClientConverter<String> {
         final ResponseDTO response = new ResponseDTO();
 
         response.setStatus(responseEntity.getStatusCode());
-        response.setHeaders(requestElementConverter.convertToRequestElements(responseEntity.getHeaders()));
+        response.setHeaders(requestNameValueElementConverter.convertToRequestElements(responseEntity.getHeaders()));
         response.setBody(responseEntity.getBody());
 
         return response;

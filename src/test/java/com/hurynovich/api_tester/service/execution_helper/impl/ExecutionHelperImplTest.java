@@ -1,21 +1,26 @@
 package com.hurynovich.api_tester.service.execution_helper.impl;
 
 import com.hurynovich.api_tester.cache.Cache;
-import com.hurynovich.api_tester.cache.cache_key.impl.ExecutionStateCacheKey;
+import com.hurynovich.api_tester.cache.cache_key.impl.ExecutionCacheKey;
+import com.hurynovich.api_tester.cache.impl.ExecutionLogCache;
+import com.hurynovich.api_tester.cache.impl.ExecutionStateCache;
 import com.hurynovich.api_tester.configuration.APITesterConfiguration;
 import com.hurynovich.api_tester.model.dto.impl.ExecutionLogDTO;
+import com.hurynovich.api_tester.model.dto.impl.RequestContainerDTO;
+import com.hurynovich.api_tester.model.execution.ExecutionSignal;
 import com.hurynovich.api_tester.model.execution.ExecutionState;
 import com.hurynovich.api_tester.service.execution_helper.ExecutionHelper;
+import com.hurynovich.api_tester.state_transition.exception.StateException;
 import com.hurynovich.api_tester.state_transition.signal.SignalName;
 import com.hurynovich.api_tester.state_transition.state.State;
+import com.hurynovich.api_tester.state_transition.state.StateName;
 import com.hurynovich.api_tester.state_transition.state_manager.StateManager;
 import com.hurynovich.api_tester.state_transition.state_manager.impl.StateManagerImpl;
 import com.hurynovich.api_tester.test_helper.ExecutionTestHelper;
+import com.hurynovich.api_tester.test_helper.RequestTestHelper;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
@@ -28,18 +33,106 @@ public class ExecutionHelperImplTest {
 
     private final StateManager stateManager = new StateManagerImpl(availableStates);
 
-    @Mock
-    private Cache<ExecutionStateCacheKey, ExecutionState> executionStateCache;
+    private Cache<ExecutionCacheKey, ExecutionState> executionStateCache = new ExecutionStateCache();
 
-    @Mock
-    private Cache<ExecutionStateCacheKey, ExecutionLogDTO> executionLogCache;
+    private Cache<ExecutionCacheKey, ExecutionLogDTO> executionLogCache = new ExecutionLogCache();
 
-    private ExecutionHelper executionHelper;
+    private ExecutionHelper executionHelper = new ExecutionHelperImpl(stateManager, executionStateCache,
+            executionLogCache);
 
-    @BeforeEach
-    public void init() {
-        executionHelper = new ExecutionHelperImpl(stateManager, executionStateCache,
-                executionLogCache);
+    @Test
+    public void initExecutionStateCacheTest() {
+        final RequestContainerDTO requestContainer =
+                RequestTestHelper.generateRandomRequestContainerDTOs(1).iterator().next();
+
+        final ExecutionCacheKey executionCacheKey = executionHelper.initExecutionStateCache(requestContainer);
+
+        Assertions.assertNotNull(executionCacheKey);
+        Assertions.assertNotNull(executionCacheKey.getExecutionKey());
+
+        final ExecutionState executionState = executionHelper.getExecutionState(executionCacheKey);
+
+        Assertions.assertNotNull(executionState);
+        Assertions.assertEquals(StateName.INIT, executionState.getState().getName());
+    }
+
+    @Test
+    public void updateExecutionStateCacheSuccessTest() {
+        checkUpdateExecutionStateCache(StateName.INIT, SignalName.RUN, StateName.PENDING_RUNNING);
+        checkUpdateExecutionStateCache(StateName.INIT, SignalName.PAUSE);
+        checkUpdateExecutionStateCache(StateName.INIT, SignalName.RESUME);
+        checkUpdateExecutionStateCache(StateName.INIT, SignalName.STOP);
+
+        checkUpdateExecutionStateCache(StateName.PENDING_RUNNING, SignalName.RUN, StateName.RUNNING);
+        checkUpdateExecutionStateCache(StateName.PENDING_RUNNING, SignalName.PAUSE);
+        checkUpdateExecutionStateCache(StateName.PENDING_RUNNING, SignalName.RESUME, StateName.RUNNING);
+        checkUpdateExecutionStateCache(StateName.PENDING_RUNNING, SignalName.STOP);
+
+        checkUpdateExecutionStateCache(StateName.RUNNING, SignalName.RUN);
+        checkUpdateExecutionStateCache(StateName.RUNNING, SignalName.PAUSE, StateName.PENDING_PAUSED);
+        checkUpdateExecutionStateCache(StateName.RUNNING, SignalName.RESUME);
+        checkUpdateExecutionStateCache(StateName.RUNNING, SignalName.STOP, StateName.PENDING_STOPPED);
+
+        checkUpdateExecutionStateCache(StateName.PENDING_PAUSED, SignalName.RUN);
+        checkUpdateExecutionStateCache(StateName.PENDING_PAUSED, SignalName.PAUSE, StateName.PAUSED);
+        checkUpdateExecutionStateCache(StateName.PENDING_PAUSED, SignalName.RESUME);
+        checkUpdateExecutionStateCache(StateName.PENDING_PAUSED, SignalName.STOP);
+
+        checkUpdateExecutionStateCache(StateName.PAUSED, SignalName.RUN);
+        checkUpdateExecutionStateCache(StateName.PAUSED, SignalName.PAUSE);
+        checkUpdateExecutionStateCache(StateName.PAUSED, SignalName.RESUME, StateName.PENDING_RUNNING);
+        checkUpdateExecutionStateCache(StateName.PAUSED, SignalName.STOP, StateName.PENDING_STOPPED);
+
+        checkUpdateExecutionStateCache(StateName.PENDING_STOPPED, SignalName.RUN);
+        checkUpdateExecutionStateCache(StateName.PENDING_STOPPED, SignalName.PAUSE);
+        checkUpdateExecutionStateCache(StateName.PENDING_STOPPED, SignalName.RESUME);
+        checkUpdateExecutionStateCache(StateName.PENDING_STOPPED, SignalName.STOP, StateName.STOPPED);
+
+        checkUpdateExecutionStateCache(StateName.STOPPED, SignalName.RUN);
+        checkUpdateExecutionStateCache(StateName.STOPPED, SignalName.PAUSE);
+        checkUpdateExecutionStateCache(StateName.STOPPED, SignalName.RESUME);
+        checkUpdateExecutionStateCache(StateName.STOPPED, SignalName.STOP);
+
+        checkUpdateExecutionStateCache(StateName.FINISHED, SignalName.RUN);
+        checkUpdateExecutionStateCache(StateName.FINISHED, SignalName.PAUSE);
+        checkUpdateExecutionStateCache(StateName.FINISHED, SignalName.RESUME);
+        checkUpdateExecutionStateCache(StateName.FINISHED, SignalName.STOP);
+
+        checkUpdateExecutionStateCache(StateName.ERROR, SignalName.RUN);
+        checkUpdateExecutionStateCache(StateName.ERROR, SignalName.PAUSE);
+        checkUpdateExecutionStateCache(StateName.ERROR, SignalName.RESUME);
+        checkUpdateExecutionStateCache(StateName.ERROR, SignalName.STOP);
+    }
+
+    private void checkUpdateExecutionStateCache(final String currentStateName, final String signalName,
+                                                final String updatedStateName) {
+        final ExecutionCacheKey executionCacheKey = ExecutionTestHelper.buildExecutionCacheKey();
+
+        final ExecutionState executionState = ExecutionTestHelper.buildExecutionState(currentStateName);
+
+        executionStateCache.put(executionCacheKey, executionState);
+
+        final ExecutionSignal executionSignal = ExecutionTestHelper.buildExecutionSignal(signalName);
+        executionSignal.setExecutionCacheKey(executionCacheKey);
+
+        final ExecutionState updatedExecutionState = executionHelper.updateExecutionStateCache(executionSignal);
+
+        Assertions.assertEquals(updatedStateName, updatedExecutionState.getState().getName());
+    }
+
+    private void checkUpdateExecutionStateCache(final String currentStateName, final String signalName) {
+        final ExecutionCacheKey executionCacheKey = ExecutionTestHelper.buildExecutionCacheKey();
+
+        final ExecutionState executionState = ExecutionTestHelper.buildExecutionState(currentStateName);
+
+        executionStateCache.put(executionCacheKey, executionState);
+
+        final ExecutionSignal executionSignal = ExecutionTestHelper.buildExecutionSignal(signalName);
+        executionSignal.setExecutionCacheKey(executionCacheKey);
+
+        Assertions.assertThrows(StateException.class,
+                () -> executionHelper.updateExecutionStateCache(executionSignal),
+                "'" + signalName + "' - is not a valid signal for state '" + currentStateName + "'");
     }
 
     @Test

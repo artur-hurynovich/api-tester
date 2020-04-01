@@ -2,13 +2,14 @@ package com.hurynovich.api_tester.model.validation;
 
 import com.hurynovich.api_tester.model.enumeration.ValidationResultType;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ValidationResult {
 
     private ValidationResultType type;
 
-    private List<String> descriptions;
+    private List<String> descriptions = new ArrayList<>();
 
     public static ValidationResult createValidResult() {
         final ValidationResult validationResult = new ValidationResult();
@@ -28,10 +29,6 @@ public class ValidationResult {
 
     public List<String> getDescriptions() {
         return descriptions;
-    }
-
-    public void setDescriptions(final List<String> descriptions) {
-        this.descriptions = descriptions;
     }
 
 }

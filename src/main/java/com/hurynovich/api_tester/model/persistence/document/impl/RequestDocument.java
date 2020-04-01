@@ -5,7 +5,7 @@ import org.springframework.http.HttpMethod;
 
 import java.util.List;
 
-public class RequestDocument extends AbstractDocument {
+public class RequestDocument extends AbstractDocument<String> {
 
     private HttpMethod method;
 

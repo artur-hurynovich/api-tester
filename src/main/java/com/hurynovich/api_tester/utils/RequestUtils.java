@@ -12,6 +12,8 @@ import java.util.stream.Collectors;
 
 public class RequestUtils {
 
+    public static final String[] URL_SCHEMES = {"http", "https"};
+
     public static final String PARAMETERS_PREFIX = "?";
     public static final String PARAMETERS_SEPARATOR = "&";
     public static final String PARAMETER_NAME_VALUE_SEPARATOR = "=";

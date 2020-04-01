@@ -1,6 +1,6 @@
 package com.hurynovich.api_tester.test_helper;
 
-import com.hurynovich.api_tester.cache.cache_key.impl.ExecutionStateCacheKey;
+import com.hurynovich.api_tester.cache.cache_key.impl.ExecutionCacheKey;
 import com.hurynovich.api_tester.configuration.APITesterConfiguration;
 import com.hurynovich.api_tester.model.execution.ExecutionSignal;
 import com.hurynovich.api_tester.model.execution.ExecutionState;
@@ -42,8 +42,8 @@ public class ExecutionTestHelper {
         final Signal signal = new SignalImpl(signalName);
         executionSignal.setSignal(signal);
 
-        final ExecutionStateCacheKey key = buildExecutionStateCacheKey();
-        executionSignal.setExecutionStateCacheKey(key);
+        final ExecutionCacheKey executionCacheKey = buildExecutionCacheKey();
+        executionSignal.setExecutionCacheKey(executionCacheKey);
 
         return executionSignal;
     }
@@ -69,14 +69,22 @@ public class ExecutionTestHelper {
                 orElse(null);
     }
 
+    public static String getRandomSignalNameExcluding(final String excludedSignalName) {
+        return AVAILABLE_STATES.stream().
+                flatMap(state -> state.getValidSignalNames().stream()).
+                filter(signalName -> !signalName.equals(excludedSignalName)).
+                findAny().
+                orElse(null);
+    }
+
     public static List<String> getAllSignalNames() {
         return AVAILABLE_STATES.stream().
                 flatMap(state -> state.getValidSignalNames().stream()).
                 collect(Collectors.toList());
     }
 
-    public static ExecutionStateCacheKey buildExecutionStateCacheKey() {
-        return new ExecutionStateCacheKey(UUID.randomUUID().toString());
+    public static ExecutionCacheKey buildExecutionCacheKey() {
+        return new ExecutionCacheKey(UUID.randomUUID().toString());
     }
 
 }

@@ -9,17 +9,16 @@ import com.hurynovich.api_tester.model.dto.impl.ResponseDTO;
 import com.hurynovich.api_tester.model.execution.ExecutionResult;
 import com.hurynovich.api_tester.model.execution.ExecutionSignal;
 import com.hurynovich.api_tester.model.execution.ExecutionState;
-import com.hurynovich.api_tester.model.persistence.document.impl.ExecutionLogDocument;
 import com.hurynovich.api_tester.service.execution_helper.ExecutionHelper;
 import com.hurynovich.api_tester.service.executor.Executor;
 import com.hurynovich.api_tester.state_transition.state.StateName;
 import com.hurynovich.api_tester.state_transition.state_manager.StateManager;
 import com.hurynovich.api_tester.validator.Validator;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -58,7 +57,7 @@ public class ExecutorImpl implements Executor {
         final ExecutionState executionState = executionHelper.updateExecutionStateCache(executionSignal);
 
         final List<RequestDTO> requests = executionState.getRequests();
-        ExecutionLogDTO executionLog = executionHelper.getExecutionLog(executionSignal.getExecutionStateCacheKey());
+        ExecutionLogDTO executionLog = executionHelper.getExecutionLog(executionSignal.getExecutionCacheKey());
         if (executionLog == null) {
             executionLog = new ExecutionLogDTO();
             executionLog.setDateTime(LocalDateTime.now(ZoneId.systemDefault()));
@@ -66,7 +65,7 @@ public class ExecutorImpl implements Executor {
         }
 
         while (executionState.getState().getName().equals(StateName.RUNNING)) {
-            if (!CollectionUtils.isEmpty(requests)) {
+            if (CollectionUtils.isNotEmpty(requests)) {
 
                 final RequestDTO request = requests.get(0);
 

@@ -1,21 +1,21 @@
 package com.hurynovich.api_tester.model.execution;
 
-import com.hurynovich.api_tester.cache.cache_key.impl.ExecutionStateCacheKey;
+import com.hurynovich.api_tester.cache.cache_key.impl.ExecutionCacheKey;
 import com.hurynovich.api_tester.state_transition.has_signal.HasSignal;
 import com.hurynovich.api_tester.state_transition.signal.Signal;
 
 public class ExecutionSignal implements HasSignal {
 
-    private ExecutionStateCacheKey executionStateCacheKey;
+    private ExecutionCacheKey executionCacheKey;
 
     private Signal signal;
 
-    public ExecutionStateCacheKey getExecutionStateCacheKey() {
-        return executionStateCacheKey;
+    public ExecutionCacheKey getExecutionCacheKey() {
+        return executionCacheKey;
     }
 
-    public void setExecutionStateCacheKey(final ExecutionStateCacheKey executionStateCacheKey) {
-        this.executionStateCacheKey = executionStateCacheKey;
+    public void setExecutionCacheKey(final ExecutionCacheKey executionCacheKey) {
+        this.executionCacheKey = executionCacheKey;
     }
 
     @Override
