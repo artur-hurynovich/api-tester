@@ -69,6 +69,14 @@ public class ExecutionTestHelper {
                 orElse(null);
     }
 
+    public static String getRandomSignalNameExcluding(final String excludedSignalName) {
+        return AVAILABLE_STATES.stream().
+                flatMap(state -> state.getValidSignalNames().stream()).
+                filter(signalName -> !signalName.equals(excludedSignalName)).
+                findAny().
+                orElse(null);
+    }
+
     public static List<String> getAllSignalNames() {
         return AVAILABLE_STATES.stream().
                 flatMap(state -> state.getValidSignalNames().stream()).

@@ -6,7 +6,7 @@ import org.springframework.util.MultiValueMap;
 
 import java.util.List;
 
-public interface RequestElementConverter {
+public interface RequestNameValueElementConverter {
 
     MultiValueMap<String, String> convertToMultiValueMap(List<NameValueElementDTO> elements);
 

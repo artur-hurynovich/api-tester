@@ -10,6 +10,7 @@ import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -67,7 +68,10 @@ public abstract class GenericDTOConverter<D extends AbstractDTO<I>, C extends Id
     @Override
     public List<C> convertAllFromDTO(final Iterable<D> d) {
         if (d != null) {
-            return StreamSupport.stream(d.spliterator(), false).map(this::convert).collect(Collectors.toList());
+            return StreamSupport.stream(d.spliterator(), false).
+                    map(this::convert).
+                    filter(Objects::nonNull).
+                    collect(Collectors.toList());
         } else {
             return Collections.emptyList();
         }
@@ -76,7 +80,10 @@ public abstract class GenericDTOConverter<D extends AbstractDTO<I>, C extends Id
     @Override
     public List<D> convertAllToDTO(final Iterable<C> p) {
         if (p != null) {
-            return StreamSupport.stream(p.spliterator(), false).map(this::convert).collect(Collectors.toList());
+            return StreamSupport.stream(p.spliterator(), false).
+                    map(this::convert).
+                    filter(Objects::nonNull).
+                    collect(Collectors.toList());
         } else {
             return Collections.emptyList();
         }

@@ -3,8 +3,8 @@ package com.hurynovich.api_tester.client.impl;
 import com.hurynovich.api_tester.client.Client;
 import com.hurynovich.api_tester.converter.client_converter.ClientConverter;
 import com.hurynovich.api_tester.converter.client_converter.impl.ClientConverterImpl;
-import com.hurynovich.api_tester.converter.request_element_converter.RequestElementConverter;
-import com.hurynovich.api_tester.converter.request_element_converter.impl.RequestElementConverterImpl;
+import com.hurynovich.api_tester.converter.request_element_converter.RequestNameValueElementConverter;
+import com.hurynovich.api_tester.converter.request_element_converter.impl.RequestNameValueElementConverterImpl;
 import com.hurynovich.api_tester.model.dto.impl.NameValueElementDTO;
 import com.hurynovich.api_tester.model.dto.impl.RequestDTO;
 import com.hurynovich.api_tester.model.dto.impl.ResponseDTO;
@@ -29,9 +29,9 @@ public class HttpClientTest {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    private final RequestElementConverter requestElementConverter = new RequestElementConverterImpl();
+    private final RequestNameValueElementConverter requestNameValueElementConverter = new RequestNameValueElementConverterImpl();
 
-    private final ClientConverter<String> clientConverter = new ClientConverterImpl(requestElementConverter);
+    private final ClientConverter<String> clientConverter = new ClientConverterImpl(requestNameValueElementConverter);
 
     private final Client client = new HttpClient(restTemplate, clientConverter);
 

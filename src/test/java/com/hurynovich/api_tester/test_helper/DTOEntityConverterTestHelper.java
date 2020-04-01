@@ -27,10 +27,22 @@ public class DTOEntityConverterTestHelper<D extends AbstractDTO<I>, C extends Id
         checkConsumer.accept(dto, convertible);
     }
 
+    public void processConvertFromNullDTOTest() {
+        final C convertible = converter.convert((D) null);
+
+        checkConsumer.accept(null, convertible);
+    }
+
     public void processConvertToDTOTest(final C convertible) {
         final D dto = converter.convert(convertible);
 
         checkConsumer.accept(dto, convertible);
+    }
+
+    public void processConvertFromNullToDTOTest() {
+        final D dto = converter.convert((C) null);
+
+        checkConsumer.accept(dto, null);
     }
 
     public void processConvertAllFromDTOTest(final List<D> dtos) {
@@ -45,6 +57,12 @@ public class DTOEntityConverterTestHelper<D extends AbstractDTO<I>, C extends Id
         }
     }
 
+    public void processConvertAllFromNullDTOTest() {
+        final List<C> convertibles = converter.convertAllFromDTO(null);
+
+        Assertions.assertTrue(convertibles.isEmpty());
+    }
+
     public void processConvertAllToDTOTest(final List<C> convertibles) {
         final List<D> dtos = converter.convertAllToDTO(convertibles);
 
@@ -55,6 +73,12 @@ public class DTOEntityConverterTestHelper<D extends AbstractDTO<I>, C extends Id
         for (int i = 0; i < expectedSize; i++) {
             checkConsumer.accept(dtos.get(i), convertibles.get(i));
         }
+    }
+
+    public void processConvertAllFromNullToDTOTest() {
+        final List<D> dtos = converter.convertAllToDTO(null);
+
+        Assertions.assertTrue(dtos.isEmpty());
     }
 
 }

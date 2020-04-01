@@ -126,19 +126,24 @@ public class RequestTestHelper {
 
     public static void checkNameValueElementConversion(final NameValueElementDTO nameValueElementDTO,
                                                        final NameValueElementDocument nameValueElementDocument) {
-        Assertions.assertEquals(nameValueElementDTO.getId(), nameValueElementDocument.getId());
-        Assertions.assertEquals(nameValueElementDTO.getName(), nameValueElementDocument.getName());
-        Assertions.assertEquals(nameValueElementDTO.getType(), nameValueElementDocument.getType());
+        Assertions.assertTrue((nameValueElementDTO == null && nameValueElementDocument == null) ||
+                (nameValueElementDTO != null && nameValueElementDocument != null));
 
-        final String nameValueElementDTOValue = nameValueElementDTO.getValue();
-        final String nameValueElementDocumentValue = nameValueElementDocument.getValue();
-        Assertions.assertTrue((nameValueElementDTOValue == null && nameValueElementDocumentValue == null) ||
-                (nameValueElementDTOValue != null && nameValueElementDTOValue.equals(nameValueElementDocumentValue)));
+        if (nameValueElementDTO != null) {
+            Assertions.assertEquals(nameValueElementDTO.getId(), nameValueElementDocument.getId());
+            Assertions.assertEquals(nameValueElementDTO.getName(), nameValueElementDocument.getName());
+            Assertions.assertEquals(nameValueElementDTO.getType(), nameValueElementDocument.getType());
 
-        final String nameValueElementDTOExpression = nameValueElementDTO.getExpression();
-        final String nameValueElementDocumentExpression = nameValueElementDocument.getExpression();
-        Assertions.assertTrue((nameValueElementDTOExpression == null && nameValueElementDocumentExpression == null) ||
-                (nameValueElementDTOExpression != null && nameValueElementDTOExpression.equals(nameValueElementDocumentExpression)));
+            final String nameValueElementDTOValue = nameValueElementDTO.getValue();
+            final String nameValueElementDocumentValue = nameValueElementDocument.getValue();
+            Assertions.assertTrue((nameValueElementDTOValue == null && nameValueElementDocumentValue == null) ||
+                    (nameValueElementDTOValue != null && nameValueElementDTOValue.equals(nameValueElementDocumentValue)));
+
+            final String nameValueElementDTOExpression = nameValueElementDTO.getExpression();
+            final String nameValueElementDocumentExpression = nameValueElementDocument.getExpression();
+            Assertions.assertTrue((nameValueElementDTOExpression == null && nameValueElementDocumentExpression == null) ||
+                    (nameValueElementDTOExpression != null && nameValueElementDTOExpression.equals(nameValueElementDocumentExpression)));
+        }
     }
 
     public static List<RequestDTO> generateRandomRequestDTOs(final int size) {
@@ -173,26 +178,31 @@ public class RequestTestHelper {
 
     public static void checkRequestConversion(final RequestDTO requestDTO,
                                               final RequestDocument requestDocument) {
-        Assertions.assertEquals(requestDTO.getId(), requestDocument.getId());
-        Assertions.assertEquals(requestDTO.getMethod(), requestDocument.getMethod());
+        Assertions.assertTrue((requestDTO == null && requestDocument == null) ||
+                (requestDTO != null && requestDocument != null));
 
-        final List<NameValueElementDTO> requestDTOHeaders = requestDTO.getHeaders();
-        final List<NameValueElementDocument> requestDocumentHeaders = requestDocument.getHeaders();
-        Assertions.assertEquals(requestDTOHeaders.size(), requestDocumentHeaders.size());
-        for (int i = 0; i < requestDTOHeaders.size(); i++) {
-            checkNameValueElementConversion(requestDTOHeaders.get(i), requestDocumentHeaders.get(i));
+        if (requestDTO != null) {
+            Assertions.assertEquals(requestDTO.getId(), requestDocument.getId());
+            Assertions.assertEquals(requestDTO.getMethod(), requestDocument.getMethod());
+
+            final List<NameValueElementDTO> requestDTOHeaders = requestDTO.getHeaders();
+            final List<NameValueElementDocument> requestDocumentHeaders = requestDocument.getHeaders();
+            Assertions.assertEquals(requestDTOHeaders.size(), requestDocumentHeaders.size());
+            for (int i = 0; i < requestDTOHeaders.size(); i++) {
+                checkNameValueElementConversion(requestDTOHeaders.get(i), requestDocumentHeaders.get(i));
+            }
+
+            Assertions.assertEquals(requestDTO.getUrl(), requestDocument.getUrl());
+
+            final List<NameValueElementDTO> requestDTOParameters = requestDTO.getParameters();
+            final List<NameValueElementDocument> requestDocumentParameters = requestDocument.getParameters();
+            Assertions.assertEquals(requestDTOParameters.size(), requestDocumentParameters.size());
+            for (int i = 0; i < requestDTOParameters.size(); i++) {
+                checkNameValueElementConversion(requestDTOParameters.get(i), requestDocumentParameters.get(i));
+            }
+
+            Assertions.assertEquals(requestDTO.getBody(), requestDocument.getBody());
         }
-
-        Assertions.assertEquals(requestDTO.getUrl(), requestDocument.getUrl());
-
-        final List<NameValueElementDTO> requestDTOParameters = requestDTO.getParameters();
-        final List<NameValueElementDocument> requestDocumentParameters = requestDocument.getParameters();
-        Assertions.assertEquals(requestDTOParameters.size(), requestDocumentParameters.size());
-        for (int i = 0; i < requestDTOParameters.size(); i++) {
-            checkNameValueElementConversion(requestDTOParameters.get(i), requestDocumentParameters.get(i));
-        }
-
-        Assertions.assertEquals(requestDTO.getBody(), requestDocument.getBody());
     }
 
     public static List<RequestContainerDTO> generateRandomRequestContainerDTOs(final int size) {
@@ -223,15 +233,20 @@ public class RequestTestHelper {
 
     public static void checkRequestContainerConversion(final RequestContainerDTO requestContainerDTO,
                                                        final RequestContainerDocument requestContainerDocument) {
-        Assertions.assertEquals(requestContainerDTO.getId(), requestContainerDocument.getId());
-        Assertions.assertEquals(requestContainerDTO.getName(), requestContainerDocument.getName());
-        Assertions.assertEquals(requestContainerDTO.getDescription(), requestContainerDocument.getDescription());
+        Assertions.assertTrue((requestContainerDTO == null && requestContainerDocument == null) ||
+                (requestContainerDTO != null && requestContainerDocument != null));
 
-        final List<RequestDTO> requestContainerDTORequests = requestContainerDTO.getRequests();
-        final List<RequestDocument> requestContainerDocumentRequests = requestContainerDocument.getRequests();
-        Assertions.assertEquals(requestContainerDTORequests.size(), requestContainerDocumentRequests.size());
-        for (int i = 0; i < requestContainerDTORequests.size(); i++) {
-            checkRequestConversion(requestContainerDTORequests.get(i), requestContainerDocumentRequests.get(i));
+        if (requestContainerDTO != null) {
+            Assertions.assertEquals(requestContainerDTO.getId(), requestContainerDocument.getId());
+            Assertions.assertEquals(requestContainerDTO.getName(), requestContainerDocument.getName());
+            Assertions.assertEquals(requestContainerDTO.getDescription(), requestContainerDocument.getDescription());
+
+            final List<RequestDTO> requestContainerDTORequests = requestContainerDTO.getRequests();
+            final List<RequestDocument> requestContainerDocumentRequests = requestContainerDocument.getRequests();
+            Assertions.assertEquals(requestContainerDTORequests.size(), requestContainerDocumentRequests.size());
+            for (int i = 0; i < requestContainerDTORequests.size(); i++) {
+                checkRequestConversion(requestContainerDTORequests.get(i), requestContainerDocumentRequests.get(i));
+            }
         }
     }
 
@@ -321,8 +336,13 @@ public class RequestTestHelper {
     }
 
     public static void checkUserConversion(final UserDTO userDTO, final UserEntity userEntity) {
-        Assertions.assertEquals(userDTO.getId(), userEntity.getId());
-        Assertions.assertEquals(userDTO.getName(), userEntity.getName());
+        Assertions.assertTrue((userDTO == null && userEntity == null) ||
+                (userDTO != null && userEntity != null));
+
+        if (userDTO != null) {
+            Assertions.assertEquals(userDTO.getId(), userEntity.getId());
+            Assertions.assertEquals(userDTO.getName(), userEntity.getName());
+        }
     }
 
     public static void checkUserDTOs(final UserDTO expectedUser, final UserDTO actualUser) {
@@ -358,15 +378,20 @@ public class RequestTestHelper {
 
     public static void checkExecutionLogConversion(final ExecutionLogDTO executionLogDTO,
                                                    final ExecutionLogDocument executionLogDocument) {
-        Assertions.assertEquals(executionLogDTO.getId(), executionLogDocument.getId());
-        Assertions.assertEquals(executionLogDTO.getDateTime(), executionLogDocument.getDateTime());
-        Assertions.assertEquals(executionLogDTO.getUserId(), executionLogDocument.getUserId());
+        Assertions.assertTrue((executionLogDTO == null && executionLogDocument == null) ||
+                (executionLogDTO != null && executionLogDocument != null));
 
-        final List<ExecutionLogEntryDTO> executionLogDTOEntries = executionLogDTO.getEntries();
-        final List<ExecutionLogEntryDocument> executionLogDocumentEntries = executionLogDocument.getEntries();
-        Assertions.assertEquals(executionLogDTOEntries.size(), executionLogDocumentEntries.size());
-        for (int i = 0; i < executionLogDTOEntries.size(); i++) {
-            checkExecutionLogEntryConversion(executionLogDTOEntries.get(i), executionLogDocumentEntries.get(i));
+        if (executionLogDTO != null) {
+            Assertions.assertEquals(executionLogDTO.getId(), executionLogDocument.getId());
+            Assertions.assertEquals(executionLogDTO.getDateTime(), executionLogDocument.getDateTime());
+            Assertions.assertEquals(executionLogDTO.getUserId(), executionLogDocument.getUserId());
+
+            final List<ExecutionLogEntryDTO> executionLogDTOEntries = executionLogDTO.getEntries();
+            final List<ExecutionLogEntryDocument> executionLogDocumentEntries = executionLogDocument.getEntries();
+            Assertions.assertEquals(executionLogDTOEntries.size(), executionLogDocumentEntries.size());
+            for (int i = 0; i < executionLogDTOEntries.size(); i++) {
+                checkExecutionLogEntryConversion(executionLogDTOEntries.get(i), executionLogDocumentEntries.get(i));
+            }
         }
     }
 
@@ -462,28 +487,34 @@ public class RequestTestHelper {
 
     public static void checkExecutionLogEntryConversion(final ExecutionLogEntryDTO executionLogEntryDTO,
                                                         final ExecutionLogEntryDocument executionLogEntryDocument) {
-        Assertions.assertEquals(executionLogEntryDTO.getType(), executionLogEntryDocument.getType());
-        Assertions.assertEquals(executionLogEntryDTO.getDateTime(), executionLogEntryDocument.getDateTime());
-        Assertions.assertEquals(executionLogEntryDTO.getMethod(), executionLogEntryDocument.getMethod());
+        Assertions.assertTrue((executionLogEntryDTO == null && executionLogEntryDocument == null) ||
+                (executionLogEntryDTO != null && executionLogEntryDocument != null));
 
-        final List<NameValueElementDTO> executionLogEntryDTOHeaders = executionLogEntryDTO.getHeaders();
-        final List<NameValueElementDocument> executionLogEntryDocumentHeaders = executionLogEntryDocument.getHeaders();
-        Assertions.assertEquals(executionLogEntryDTOHeaders.size(), executionLogEntryDocumentHeaders.size());
-        for (int i = 0; i < executionLogEntryDTOHeaders.size(); i++) {
-            checkNameValueElementConversion(executionLogEntryDTOHeaders.get(i), executionLogEntryDocumentHeaders.get(i));
+        if (executionLogEntryDTO != null) {
+            Assertions.assertEquals(executionLogEntryDTO.getId(), executionLogEntryDocument.getId());
+            Assertions.assertEquals(executionLogEntryDTO.getType(), executionLogEntryDocument.getType());
+            Assertions.assertEquals(executionLogEntryDTO.getDateTime(), executionLogEntryDocument.getDateTime());
+            Assertions.assertEquals(executionLogEntryDTO.getMethod(), executionLogEntryDocument.getMethod());
+
+            final List<NameValueElementDTO> executionLogEntryDTOHeaders = executionLogEntryDTO.getHeaders();
+            final List<NameValueElementDocument> executionLogEntryDocumentHeaders = executionLogEntryDocument.getHeaders();
+            Assertions.assertEquals(executionLogEntryDTOHeaders.size(), executionLogEntryDocumentHeaders.size());
+            for (int i = 0; i < executionLogEntryDTOHeaders.size(); i++) {
+                checkNameValueElementConversion(executionLogEntryDTOHeaders.get(i), executionLogEntryDocumentHeaders.get(i));
+            }
+
+            final List<NameValueElementDTO> executionLogEntryDTOParameters = executionLogEntryDTO.getParameters();
+            final List<NameValueElementDocument> executionLogEntryDocumentParameters = executionLogEntryDocument.getParameters();
+            Assertions.assertEquals(executionLogEntryDTOParameters.size(), executionLogEntryDocumentParameters.size());
+            for (int i = 0; i < executionLogEntryDTOParameters.size(); i++) {
+                checkNameValueElementConversion(executionLogEntryDTOParameters.get(i), executionLogEntryDocumentParameters.get(i));
+            }
+
+            Assertions.assertEquals(executionLogEntryDTO.getUrl(), executionLogEntryDocument.getUrl());
+            Assertions.assertEquals(executionLogEntryDTO.getStatus(), executionLogEntryDocument.getStatus());
+            Assertions.assertEquals(executionLogEntryDTO.getBody(), executionLogEntryDocument.getBody());
+            Assertions.assertEquals(executionLogEntryDTO.getErrorMessage(), executionLogEntryDocument.getErrorMessage());
         }
-
-        final List<NameValueElementDTO> executionLogEntryDTOParameters = executionLogEntryDTO.getParameters();
-        final List<NameValueElementDocument> executionLogEntryDocumentParameters = executionLogEntryDocument.getParameters();
-        Assertions.assertEquals(executionLogEntryDTOParameters.size(), executionLogEntryDocumentParameters.size());
-        for (int i = 0; i < executionLogEntryDTOParameters.size(); i++) {
-            checkNameValueElementConversion(executionLogEntryDTOParameters.get(i), executionLogEntryDocumentParameters.get(i));
-        }
-
-        Assertions.assertEquals(executionLogEntryDTO.getUrl(), executionLogEntryDocument.getUrl());
-        Assertions.assertEquals(executionLogEntryDTO.getStatus(), executionLogEntryDocument.getStatus());
-        Assertions.assertEquals(executionLogEntryDTO.getBody(), executionLogEntryDocument.getBody());
-        Assertions.assertEquals(executionLogEntryDTO.getErrorMessage(), executionLogEntryDocument.getErrorMessage());
     }
 
     public static List<ExecutionLogEntryDTO> generateRandomRequestExecutionLogEntryDTOs(final int size) {

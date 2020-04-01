@@ -1,6 +1,6 @@
 package com.hurynovich.api_tester.converter.request_element_converter.impl;
 
-import com.hurynovich.api_tester.converter.request_element_converter.RequestElementConverter;
+import com.hurynovich.api_tester.converter.request_element_converter.RequestNameValueElementConverter;
 import com.hurynovich.api_tester.model.dto.impl.NameValueElementDTO;
 import com.hurynovich.api_tester.model.enumeration.NameValueElementType;
 import org.apache.commons.collections.CollectionUtils;
@@ -18,7 +18,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-public class RequestElementConverterImpl implements RequestElementConverter {
+public class RequestNameValueElementConverterImpl implements RequestNameValueElementConverter {
 
     @Override
     public MultiValueMap<String, String> convertToMultiValueMap(final @Nullable List<NameValueElementDTO> elements) {

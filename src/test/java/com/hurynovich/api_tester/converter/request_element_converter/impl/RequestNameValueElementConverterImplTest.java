@@ -1,6 +1,6 @@
 package com.hurynovich.api_tester.converter.request_element_converter.impl;
 
-import com.hurynovich.api_tester.converter.request_element_converter.RequestElementConverter;
+import com.hurynovich.api_tester.converter.request_element_converter.RequestNameValueElementConverter;
 import com.hurynovich.api_tester.model.dto.impl.NameValueElementDTO;
 import com.hurynovich.api_tester.test_helper.RequestTestHelper;
 import org.junit.jupiter.api.Assertions;
@@ -10,15 +10,15 @@ import org.springframework.util.MultiValueMap;
 
 import java.util.List;
 
-public class RequestElementConverterImplTest {
+public class RequestNameValueElementConverterImplTest {
 
-    private final RequestElementConverter requestElementConverter = new RequestElementConverterImpl();
+    private final RequestNameValueElementConverter requestNameValueElementConverter = new RequestNameValueElementConverterImpl();
 
     @Test
     public void convertToMultiValueMapTest() {
         final List<NameValueElementDTO> parameters = RequestTestHelper.generateRandomNameValueElementDTOs(3);
 
-        final MultiValueMap<String, String> multiValueMap = requestElementConverter.convertToMultiValueMap(parameters);
+        final MultiValueMap<String, String> multiValueMap = requestNameValueElementConverter.convertToMultiValueMap(parameters);
 
         checkMultiValueMap(parameters, multiValueMap);
     }
@@ -27,7 +27,7 @@ public class RequestElementConverterImplTest {
     public void convertToHttpHeadersTest() {
         final List<NameValueElementDTO> headers = RequestTestHelper.generateRandomNameValueElementDTOs(3);
 
-        final HttpHeaders httpHeaders = requestElementConverter.convertToHttpHeaders(headers);
+        final HttpHeaders httpHeaders = requestNameValueElementConverter.convertToHttpHeaders(headers);
 
         checkHttpHeaders(headers, httpHeaders);
     }
@@ -36,7 +36,7 @@ public class RequestElementConverterImplTest {
     public void convertHttpHeadersToRequestElementsTest() {
         final HttpHeaders httpHeaders = RequestTestHelper.generateRandomHttpHeaders(3);
 
-        final List<NameValueElementDTO> requestElements = requestElementConverter.convertToRequestElements(httpHeaders);
+        final List<NameValueElementDTO> requestElements = requestNameValueElementConverter.convertToRequestElements(httpHeaders);
 
         checkHttpHeaders(requestElements, httpHeaders);
     }

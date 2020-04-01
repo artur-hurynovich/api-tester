@@ -45,4 +45,14 @@ public class NameValueElementDTO extends AbstractDTO<String> {
         this.expression = expression;
     }
 
+    @Override
+    public String toString() {
+        return "NameValueElementDTO{" +
+                "name='" + name + '\'' +
+                ", type=" + type +
+                ", value='" + value + '\'' +
+                ", expression='" + expression + '\'' +
+                '}';
+    }
+
 }

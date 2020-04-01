@@ -16,10 +16,14 @@ public class RequestDTOConverterTest extends GenericDTOConverterTest<RequestDTO,
 
     @Test
     public void generalTest() {
-        convertToEntityTest();
+        convertFromDTOTest();
+        convertFromNullDTOTest();
         convertToDTOTest();
-        convertAllToEntityTest();
+        convertFromNullToDTOTest();
+        convertAllFromDTOTest();
+        convertAllFromNullDTOTest();
         convertAllToDTOTest();
+        convertAllFromNullToDTOTest();
     }
 
 }

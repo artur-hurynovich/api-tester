@@ -9,8 +9,6 @@ import com.hurynovich.api_tester.validator.Validator;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
-import java.util.List;
-
 public abstract class AbstractExecutionSignalValidator implements Validator<ExecutionSignal> {
 
     private final Validator<ExecutionCacheKey> keyValidator;
@@ -36,7 +34,7 @@ public abstract class AbstractExecutionSignalValidator implements Validator<Exec
     }
 
     private void validateExecutionCacheKey(final @NonNull ExecutionSignal executionSignal,
-                                                final @NonNull ValidationResult validationResult) {
+                                           final @NonNull ValidationResult validationResult) {
         final ExecutionCacheKey executionCacheKey = executionSignal.getExecutionCacheKey();
 
         if (executionCacheKey == null) {
@@ -75,15 +73,11 @@ public abstract class AbstractExecutionSignalValidator implements Validator<Exec
             validationResult.setType(ValidationResultType.NON_VALID);
             validationResult.getDescriptions().add("'executionSignal.signal.signalName' can't be null or empty");
         } else {
-            final List<String> validSignalNames = getValidSignalNames(executionSignal);
-
-            if (!validSignalNames.contains(signalName)) {
-                validationResult.setType(ValidationResultType.NON_VALID);
-                validationResult.getDescriptions().add("'" + signalName + "' is not a valid 'executionSignal.signal.signalName'");
-            }
+            validateSignalName(executionSignal, validationResult);
         }
     }
 
-    protected abstract List<String> getValidSignalNames(@NonNull final ExecutionSignal executionSignal);
+    protected abstract void validateSignalName(final @NonNull ExecutionSignal executionSignal,
+                                               final @NonNull ValidationResult validationResult);
 
 }

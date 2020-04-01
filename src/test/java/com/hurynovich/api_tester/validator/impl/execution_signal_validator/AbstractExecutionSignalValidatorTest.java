@@ -20,8 +20,9 @@ public class AbstractExecutionSignalValidatorTest {
     private Validator<ExecutionSignal> signalValidator =
             new AbstractExecutionSignalValidator(keyValidator) {
                 @Override
-                protected List<String> getValidSignalNames(@NonNull final ExecutionSignal executionSignal) {
-                    return ExecutionTestHelper.getAllSignalNames();
+                protected void validateSignalName(final @NonNull ExecutionSignal executionSignal,
+                                                  final @NonNull ValidationResult validationResult) {
+
                 }
             };
 
@@ -35,6 +36,19 @@ public class AbstractExecutionSignalValidatorTest {
 
         Assertions.assertEquals(ValidationResultType.VALID, validationResult.getType());
         Assertions.assertTrue(validationResult.getDescriptions().isEmpty());
+    }
+
+    @Test
+    public void executionSignalNullFailureValidationTest() {
+        final ValidationResult validationResult = signalValidator.validate(null);
+
+        Assertions.assertEquals(ValidationResultType.NON_VALID, validationResult.getType());
+
+        final List<String> descriptions = validationResult.getDescriptions();
+
+        Assertions.assertEquals(1, descriptions.size());
+
+        Assertions.assertEquals("'executionSignal' can't be null", descriptions.get(0));
     }
 
     @Test

@@ -6,14 +6,11 @@ import com.hurynovich.api_tester.model.execution.ExecutionSignal;
 import com.hurynovich.api_tester.model.execution.ExecutionState;
 import com.hurynovich.api_tester.model.validation.ValidationResult;
 import com.hurynovich.api_tester.service.execution_helper.ExecutionHelper;
-import com.hurynovich.api_tester.state_transition.signal.SignalName;
 import com.hurynovich.api_tester.validator.Validator;
 import com.hurynovich.api_tester.validator.impl.execution_signal_validator.AbstractExecutionSignalValidator;
 import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 
 @Service("controllerExecutionSignalValidator")
@@ -29,33 +26,24 @@ public class ControllerExecutionSignalValidator extends AbstractExecutionSignalV
     }
 
     @Override
-    public ValidationResult validate(final @Nullable ExecutionSignal executionSignal) {
-        final ValidationResult validationResult = super.validate(executionSignal);
-
-        if (executionSignal != null) {
-            final ExecutionCacheKey executionCacheKey = executionSignal.getExecutionCacheKey();
-
-            final ExecutionState executionState = executionHelper.getExecutionState(executionCacheKey);
-
-            if (executionState == null) {
-                validationResult.setType(ValidationResultType.NON_VALID);
-                validationResult.getDescriptions().add("Execution was not initialized yet");
-            }
-        }
-
-        return validationResult;
-    }
-
-    @Override
-    protected List<String> getValidSignalNames(final ExecutionSignal executionSignal) {
+    protected void validateSignalName(final @NonNull ExecutionSignal executionSignal,
+                                      final @NonNull ValidationResult validationResult) {
         final ExecutionCacheKey executionCacheKey = executionSignal.getExecutionCacheKey();
 
         final ExecutionState executionState = executionHelper.getExecutionState(executionCacheKey);
 
+        final String signalName = executionSignal.getSignal().getName();
+
         if (executionState != null) {
-            return executionHelper.resolveValidSignalNamesOnInit(executionState);
+            final List<String> validSignalNames = executionHelper.resolveValidSignalNamesOnInit(executionState);
+
+            if (!validSignalNames.contains(signalName)) {
+                validationResult.setType(ValidationResultType.NON_VALID);
+                validationResult.getDescriptions().add("'" + signalName + "' is not a valid 'executionSignal.signal.signalName'");
+            }
         } else {
-            return Collections.singletonList(SignalName.RUN);
+            validationResult.setType(ValidationResultType.NON_VALID);
+            validationResult.getDescriptions().add("Execution hasn't been initialized yet");
         }
     }
 

@@ -16,10 +16,14 @@ public class NameValueElementDTOConverterTest extends GenericDTOConverterTest<Na
 
     @Test
     public void generalTest() {
-        convertToEntityTest();
+        convertFromDTOTest();
+        convertFromNullDTOTest();
         convertToDTOTest();
-        convertAllToEntityTest();
+        convertFromNullToDTOTest();
+        convertAllFromDTOTest();
+        convertAllFromNullDTOTest();
         convertAllToDTOTest();
+        convertAllFromNullToDTOTest();
     }
 
 }

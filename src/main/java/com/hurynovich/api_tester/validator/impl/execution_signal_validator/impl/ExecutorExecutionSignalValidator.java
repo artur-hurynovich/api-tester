@@ -1,8 +1,10 @@
 package com.hurynovich.api_tester.validator.impl.execution_signal_validator.impl;
 
 import com.hurynovich.api_tester.cache.cache_key.impl.ExecutionCacheKey;
+import com.hurynovich.api_tester.model.enumeration.ValidationResultType;
 import com.hurynovich.api_tester.model.execution.ExecutionSignal;
 import com.hurynovich.api_tester.model.execution.ExecutionState;
+import com.hurynovich.api_tester.model.validation.ValidationResult;
 import com.hurynovich.api_tester.service.execution_helper.ExecutionHelper;
 import com.hurynovich.api_tester.validator.Validator;
 import com.hurynovich.api_tester.validator.impl.execution_signal_validator.AbstractExecutionSignalValidator;
@@ -24,12 +26,20 @@ public class ExecutorExecutionSignalValidator extends AbstractExecutionSignalVal
     }
 
     @Override
-    protected List<String> getValidSignalNames(final ExecutionSignal executionSignal) {
+    protected void validateSignalName(final @NonNull ExecutionSignal executionSignal,
+                                      final @NonNull ValidationResult validationResult) {
         final ExecutionCacheKey executionCacheKey = executionSignal.getExecutionCacheKey();
 
         final ExecutionState executionState = executionHelper.getExecutionState(executionCacheKey);
 
-        return executionHelper.resolveValidSignalNamesOnExecution(executionState);
+        final List<String> validSignalNames = executionHelper.resolveValidSignalNamesOnExecution(executionState);
+
+        final String signalName = executionSignal.getSignal().getName();
+
+        if (!validSignalNames.contains(signalName)) {
+            validationResult.setType(ValidationResultType.NON_VALID);
+            validationResult.getDescriptions().add("'" + signalName + "' is not a valid 'executionSignal.signal.signalName'");
+        }
     }
 
 }

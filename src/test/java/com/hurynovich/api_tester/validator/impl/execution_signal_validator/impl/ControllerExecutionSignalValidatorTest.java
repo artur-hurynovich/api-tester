@@ -5,6 +5,7 @@ import com.hurynovich.api_tester.model.execution.ExecutionSignal;
 import com.hurynovich.api_tester.model.execution.ExecutionState;
 import com.hurynovich.api_tester.model.validation.ValidationResult;
 import com.hurynovich.api_tester.service.execution_helper.ExecutionHelper;
+import com.hurynovich.api_tester.state_transition.signal.SignalName;
 import com.hurynovich.api_tester.test_helper.ExecutionTestHelper;
 import com.hurynovich.api_tester.test_helper.ValidatorTestHelper;
 import com.hurynovich.api_tester.validator.Validator;
@@ -59,6 +60,25 @@ public class ControllerExecutionSignalValidatorTest {
 
         final List<String> descriptions = validationResult.getDescriptions();
         Assertions.assertTrue(descriptions.isEmpty());
+    }
+
+    @Test
+    public void notInitializedExecutionStateTest() {
+        final String randomSignalName = ExecutionTestHelper.getRandomSignalNameExcluding(SignalName.RUN);
+
+        final ExecutionSignal signal = ExecutionTestHelper.buildExecutionSignal(randomSignalName);
+
+        final ValidationResult keyValidationResult = ValidatorTestHelper.buildValidValidationResult();
+        Mockito.when(keyValidator.validate(signal.getExecutionCacheKey())).thenReturn(keyValidationResult);
+
+        Mockito.when(executionHelper.getExecutionState(signal.getExecutionCacheKey())).thenReturn(null);
+
+        final ValidationResult validationResult = signalValidator.validate(signal);
+        Assertions.assertEquals(NON_VALID, validationResult.getType());
+
+        final List<String> descriptions = validationResult.getDescriptions();
+        Assertions.assertEquals(1, descriptions.size());
+        Assertions.assertEquals("Execution hasn't been initialized yet", descriptions.get(0));
     }
 
     @Test
