@@ -1,0 +1,22 @@
+version: '3.5'
+
+services:
+
+  mysql:
+    image: mysql:8.0
+    environment:
+      - MYSQL_ROOT_PASSWORD=retsetipa
+      - MYSQL_DATABASE=apte_dev
+      - MYSQL_USER=apte-admin
+      - MYSQL_PASSWORD=retsetipa
+    ports:
+      - 3306:3306
+
+  mongodb:
+    image: mongo
+    environment:
+      - MONGO_INITDB_DATABASE=apte-dev
+      - MONGODB_USER=apte-admin
+      - MONGODB_PASS=retsetipa
+    ports:
+      - 27017:27017

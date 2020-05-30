@@ -329,7 +329,7 @@ public class RequestTestHelper {
             final UserEntity user = new UserEntity();
 
             user.setId(RandomValueGenerator.generateRandomPositiveLong());
-            user.setName(RandomValueGenerator.generateRandomStringLettersOnly());
+            user.setLogin(RandomValueGenerator.generateRandomStringLettersOnly());
 
             return user;
         }).collect(Collectors.toList());
@@ -341,7 +341,7 @@ public class RequestTestHelper {
 
         if (userDTO != null) {
             Assertions.assertEquals(userDTO.getId(), userEntity.getId());
-            Assertions.assertEquals(userDTO.getName(), userEntity.getName());
+            Assertions.assertEquals(userDTO.getName(), userEntity.getLogin());
         }
     }
 

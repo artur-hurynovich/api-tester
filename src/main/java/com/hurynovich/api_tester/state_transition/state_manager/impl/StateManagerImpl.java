@@ -8,11 +8,13 @@ import com.hurynovich.api_tester.state_transition.state.State;
 import com.hurynovich.api_tester.state_transition.state.StateName;
 import com.hurynovich.api_tester.state_transition.state_manager.StateManager;
 import org.springframework.lang.NonNull;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Service
 public class StateManagerImpl implements StateManager {
 
     private final Set<State> availableStates;
