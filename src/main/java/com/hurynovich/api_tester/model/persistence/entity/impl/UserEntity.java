@@ -9,14 +9,14 @@ import javax.persistence.Table;
 @Table(name = "apte_users")
 public class UserEntity extends AbstractEntity<Long> {
 
-    private String name;
+    private String login;
 
-    public String getName() {
-        return name;
+    public String getLogin() {
+        return login;
     }
 
-    public void setName(final String name) {
-        this.name = name;
+    public void setLogin(final String login) {
+        this.login = login;
     }
 
 }
