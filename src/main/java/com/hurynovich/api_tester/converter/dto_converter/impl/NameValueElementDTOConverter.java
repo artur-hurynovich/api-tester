@@ -14,7 +14,7 @@ public class NameValueElementDTOConverter extends GenericDTOConverter<NameValueE
     }
 
     @Override
-    public Class<NameValueElementDocument> getConvertibleClass() {
+    public Class<NameValueElementDocument> getPersistentObjectClass() {
         return NameValueElementDocument.class;
     }
 

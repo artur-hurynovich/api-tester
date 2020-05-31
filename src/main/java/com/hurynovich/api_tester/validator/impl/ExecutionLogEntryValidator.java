@@ -163,9 +163,9 @@ public class ExecutionLogEntryValidator implements Validator<ExecutionLogEntryDT
 
     private void validateStatus(final @NonNull ExecutionLogEntryDTO executionLogEntry,
                                 final @NonNull ValidationResult validationResult) {
-        if (executionLogEntry.getStatus() == null) {
+        if (executionLogEntry.getHttpStatus() == null) {
             validationResult.setType(ValidationResultType.NON_VALID);
-            validationResult.getDescriptions().add("'executionLogEntry.status' can't be null for 'executionLogEntry.type' '" +
+            validationResult.getDescriptions().add("'executionLogEntry.httpStatus' can't be null for 'executionLogEntry.type' '" +
                     executionLogEntry.getType() + "'");
         }
     }

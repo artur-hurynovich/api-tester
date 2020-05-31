@@ -14,7 +14,7 @@ public class UserDTOConverter extends GenericDTOConverter<UserDTO, UserEntity, L
     }
 
     @Override
-    public Class<UserEntity> getConvertibleClass() {
+    public Class<UserEntity> getPersistentObjectClass() {
         return UserEntity.class;
     }
 

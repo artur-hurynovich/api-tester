@@ -44,7 +44,7 @@ public class ExecutionLogEntryBuilderImpl implements ExecutionLogEntryBuilder {
         executionLogEntry.setDateTime(LocalDateTime.now(ZoneId.systemDefault()));
 
         executionLogEntry.setHeaders(response.getHeaders());
-        executionLogEntry.setStatus(response.getStatus());
+        executionLogEntry.setHttpStatus(response.getHttpStatus());
         executionLogEntry.setBody(response.getBody());
 
         return executionLogEntry;

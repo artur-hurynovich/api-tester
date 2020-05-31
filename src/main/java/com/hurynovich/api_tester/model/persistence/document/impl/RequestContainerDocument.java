@@ -5,7 +5,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
 
-@Document(collection = "apte_request_containers")
+@Document(collection = "APTE_REQUEST_CONTAINERS")
 public class RequestContainerDocument extends AbstractDocument<String> {
 
     private String name;

@@ -141,7 +141,7 @@ public class ExecutionLogEntryValidatorTest {
     public void requestExecutionLogEntryStatusNullFailureValidationTest() {
         final ExecutionLogEntryDTO executionLogEntry =
                 RequestTestHelper.generateRandomResponseExecutionLogEntryDTOs(1).iterator().next();
-        executionLogEntry.setStatus(null);
+        executionLogEntry.setHttpStatus(null);
 
         final ValidationResult validationResult = executionLogEntryValidator.validate(executionLogEntry);
 
@@ -149,7 +149,7 @@ public class ExecutionLogEntryValidatorTest {
 
         final List<String> descriptions = validationResult.getDescriptions();
         Assertions.assertEquals(1, descriptions.size());
-        Assertions.assertEquals("'executionLogEntry.status' can't be null for 'executionLogEntry.type' '" +
+        Assertions.assertEquals("'executionLogEntry.httpStatus' can't be null for 'executionLogEntry.type' '" +
                 executionLogEntry.getType() + "'", descriptions.get(0));
     }
 

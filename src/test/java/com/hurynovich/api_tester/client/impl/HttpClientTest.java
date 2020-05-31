@@ -46,7 +46,7 @@ public class HttpClientTest {
 
         Assertions.assertNotNull(response);
 
-        Assertions.assertEquals(HttpStatus.OK, response.getStatus());
+        Assertions.assertEquals(HttpStatus.OK, response.getHttpStatus());
     }
 
     @Test
@@ -62,7 +62,7 @@ public class HttpClientTest {
 
         Assertions.assertNotNull(response);
 
-        Assertions.assertEquals(HttpStatus.OK, response.getStatus());
+        Assertions.assertEquals(HttpStatus.OK, response.getHttpStatus());
     }
 
     private List<NameValueElementDTO> buildHeaders() {

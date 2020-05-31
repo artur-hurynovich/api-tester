@@ -7,18 +7,18 @@ import java.util.List;
 
 public class ResponseDTO extends AbstractDTO<String> {
 
-    private HttpStatus status;
+    private HttpStatus httpStatus;
 
     private List<NameValueElementDTO> headers;
 
     private String body;
 
-    public HttpStatus getStatus() {
-        return status;
+    public HttpStatus getHttpStatus() {
+        return httpStatus;
     }
 
-    public void setStatus(final HttpStatus status) {
-        this.status = status;
+    public void setStatus(final HttpStatus httpStatus) {
+        this.httpStatus = httpStatus;
     }
 
     public List<NameValueElementDTO> getHeaders() {

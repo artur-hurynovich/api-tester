@@ -2,14 +2,14 @@ package com.hurynovich.api_tester.test_helper;
 
 import com.hurynovich.api_tester.converter.dto_converter.DTOConverter;
 import com.hurynovich.api_tester.model.dto.AbstractDTO;
-import com.hurynovich.api_tester.model.persistence.Identified;
+import com.hurynovich.api_tester.model.persistence.PersistentObject;
 import org.junit.jupiter.api.Assertions;
 
 import java.io.Serializable;
 import java.util.List;
 import java.util.function.BiConsumer;
 
-public class DTOEntityConverterTestHelper<D extends AbstractDTO<I>, C extends Identified<I>, I extends Serializable> {
+public class DTOEntityConverterTestHelper<D extends AbstractDTO<I>, C extends PersistentObject<I>, I extends Serializable> {
 
     private final DTOConverter<D, C, I> converter;
 

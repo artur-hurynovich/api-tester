@@ -76,7 +76,7 @@ public class ExecutorImpl implements Executor {
                 final ExecutionLogEntryDTO responseLogEntry = executionLogEntryBuilder.build(response);
                 executionLog.getEntries().add(responseLogEntry);
 
-                if (response.getStatus() != HttpStatus.OK) {
+                if (response.getHttpStatus() != HttpStatus.OK) {
                     stateManager.processTransition(executionState, StateName.ERROR);
                 }
             } else {

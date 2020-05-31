@@ -9,8 +9,6 @@ import com.hurynovich.api_tester.test_helper.RandomValueGenerator;
 import com.hurynovich.api_tester.test_helper.RequestTestHelper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 
@@ -23,10 +21,9 @@ import static com.hurynovich.api_tester.model.enumeration.ExecutionLogEntryType.
 import static com.hurynovich.api_tester.model.enumeration.ExecutionLogEntryType.REQUEST;
 import static com.hurynovich.api_tester.model.enumeration.ExecutionLogEntryType.RESPONSE;
 
-@ExtendWith(MockitoExtension.class)
 public class ExecutionLogEntryBuilderImplTest {
 
-    private ExecutionLogEntryBuilder executionLogEntryBuilder = new ExecutionLogEntryBuilderImpl();
+    private final ExecutionLogEntryBuilder executionLogEntryBuilder = new ExecutionLogEntryBuilderImpl();
 
     @Test
     public void buildOfRequestDTOTest() {
@@ -61,7 +58,7 @@ public class ExecutionLogEntryBuilderImplTest {
     public void buildOfResponseDTOTest() {
         final ResponseDTO response = RequestTestHelper.generateRandomResponseDTOs(1).iterator().next();
 
-        final HttpStatus status = response.getStatus();
+        final HttpStatus status = response.getHttpStatus();
         final List<NameValueElementDTO> headers = response.getHeaders();
         final String body = response.getBody();
 
@@ -74,7 +71,7 @@ public class ExecutionLogEntryBuilderImplTest {
         Assertions.assertTrue(!logEntryDateTime.isBefore(currentDateTime.minus(500L, ChronoUnit.MILLIS)) &&
                 !logEntryDateTime.isAfter(currentDateTime));
 
-        Assertions.assertEquals(status, executionLogEntry.getStatus());
+        Assertions.assertEquals(status, executionLogEntry.getHttpStatus());
         Assertions.assertEquals(headers, executionLogEntry.getHeaders());
         Assertions.assertEquals(body, executionLogEntry.getBody());
     }

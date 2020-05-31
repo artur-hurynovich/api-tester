@@ -4,14 +4,14 @@ import com.hurynovich.api_tester.model.dto.AbstractDTO;
 
 public class UserDTO extends AbstractDTO<Long> {
 
-    private String name;
+    private String login;
 
-    public String getName() {
-        return name;
+    public String getLogin() {
+        return login;
     }
 
-    public void setName(final String name) {
-        this.name = name;
+    public void setLogin(final String login) {
+        this.login = login;
     }
 
 }

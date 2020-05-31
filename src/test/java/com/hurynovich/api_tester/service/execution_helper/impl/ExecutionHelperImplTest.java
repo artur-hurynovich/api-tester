@@ -20,24 +20,21 @@ import com.hurynovich.api_tester.test_helper.ExecutionTestHelper;
 import com.hurynovich.api_tester.test_helper.RequestTestHelper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 import java.util.Set;
 
-@ExtendWith(MockitoExtension.class)
 public class ExecutionHelperImplTest {
 
     private final Set<State> availableStates = new APITesterConfiguration().availableStates();
 
     private final StateManager stateManager = new StateManagerImpl(availableStates);
 
-    private Cache<ExecutionCacheKey, ExecutionState> executionStateCache = new ExecutionStateCache();
+    private final Cache<ExecutionCacheKey, ExecutionState> executionStateCache = new ExecutionStateCache();
 
-    private Cache<ExecutionCacheKey, ExecutionLogDTO> executionLogCache = new ExecutionLogCache();
+    private final Cache<ExecutionCacheKey, ExecutionLogDTO> executionLogCache = new ExecutionLogCache();
 
-    private ExecutionHelper executionHelper = new ExecutionHelperImpl(stateManager, executionStateCache,
+    private final ExecutionHelper executionHelper = new ExecutionHelperImpl(stateManager, executionStateCache,
             executionLogCache);
 
     @Test

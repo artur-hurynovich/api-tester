@@ -2,7 +2,7 @@ package com.hurynovich.api_tester.converter.dto_converter.impl;
 
 import com.hurynovich.api_tester.converter.dto_converter.DTOConverter;
 import com.hurynovich.api_tester.model.dto.AbstractDTO;
-import com.hurynovich.api_tester.model.persistence.Identified;
+import com.hurynovich.api_tester.model.persistence.PersistentObject;
 import com.hurynovich.api_tester.test_helper.DTOEntityConverterTestHelper;
 
 import java.io.Serializable;
@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
-public abstract class GenericDTOConverterTest<D extends AbstractDTO<I>, P extends Identified<I>, I extends Serializable> {
+public abstract class GenericDTOConverterTest<D extends AbstractDTO<I>, P extends PersistentObject<I>, I extends Serializable> {
 
     protected static final int DEFAULT_DTO_COUNT = 5;
     protected static final int DEFAULT_CONVERTIBLE_COUNT = DEFAULT_DTO_COUNT;
