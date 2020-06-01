@@ -1,6 +1,7 @@
 package com.hurynovich.api_tester.service.dto_service.impl;
 
 import com.hurynovich.api_tester.converter.dto_converter.impl.UserDTOConverter;
+import com.hurynovich.api_tester.converter.dto_converter.impl.UserRoleDTOConverter;
 import com.hurynovich.api_tester.model.dto.impl.UserDTO;
 import com.hurynovich.api_tester.model.persistence.entity.impl.UserEntity;
 import com.hurynovich.api_tester.repository.GenericRepository;
@@ -23,7 +24,7 @@ public class UserDTOServiceTest extends GenericDTOServiceTest<UserDTO, UserEntit
         super.init(() -> RequestTestHelper.generateRandomUserDTOs(DEFAULT_DTO_COUNT),
                 RandomValueGenerator::generateRandomPositiveLong,
                 repository,
-                UserDTOConverter::new,
+                () -> new UserDTOConverter(new UserRoleDTOConverter()),
                 UserDTOService::new,
                 RequestTestHelper::checkUserDTOs);
     }
@@ -36,7 +37,7 @@ public class UserDTOServiceTest extends GenericDTOServiceTest<UserDTO, UserEntit
         readAllTest();
 
         updateTest(userDTO -> {
-            userDTO.setLogin(RandomValueGenerator.generateRandomStringLettersOnly());
+            userDTO.setEmail(RandomValueGenerator.generateRandomStringLettersOnly());
 
             return userDTO;
         });

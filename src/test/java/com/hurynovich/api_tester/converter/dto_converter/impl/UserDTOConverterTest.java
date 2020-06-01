@@ -10,7 +10,7 @@ public class UserDTOConverterTest extends GenericDTOConverterTest<UserDTO, UserE
     public UserDTOConverterTest() {
         super(() -> RequestTestHelper.generateRandomUserDTOs(DEFAULT_DTO_COUNT),
                 () -> RequestTestHelper.generateRandomUserEntities(DEFAULT_CONVERTIBLE_COUNT),
-                UserDTOConverter::new,
+                () -> new UserDTOConverter(new UserRoleDTOConverter()),
                 RequestTestHelper::checkUserConversion);
     }
 

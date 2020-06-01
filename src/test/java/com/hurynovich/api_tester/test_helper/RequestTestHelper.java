@@ -7,6 +7,7 @@ import com.hurynovich.api_tester.model.dto.impl.RequestContainerDTO;
 import com.hurynovich.api_tester.model.dto.impl.RequestDTO;
 import com.hurynovich.api_tester.model.dto.impl.ResponseDTO;
 import com.hurynovich.api_tester.model.dto.impl.UserDTO;
+import com.hurynovich.api_tester.model.dto.impl.UserRoleDTO;
 import com.hurynovich.api_tester.model.enumeration.ExecutionLogEntryType;
 import com.hurynovich.api_tester.model.enumeration.NameValueElementType;
 import com.hurynovich.api_tester.model.enumeration.Status;
@@ -16,6 +17,7 @@ import com.hurynovich.api_tester.model.persistence.document.impl.NameValueElemen
 import com.hurynovich.api_tester.model.persistence.document.impl.RequestContainerDocument;
 import com.hurynovich.api_tester.model.persistence.document.impl.RequestDocument;
 import com.hurynovich.api_tester.model.persistence.entity.impl.UserEntity;
+import com.hurynovich.api_tester.model.persistence.entity.impl.UserRoleEntity;
 import org.junit.jupiter.api.Assertions;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -328,7 +330,9 @@ public class RequestTestHelper {
 
             user.setId(RandomValueGenerator.generateRandomPositiveLong());
             user.setStatus(Status.ACTIVE);
-            user.setLogin(RandomValueGenerator.generateRandomStringLettersOnly());
+            user.setEmail(RandomValueGenerator.generateRandomStringLettersOnly());
+            user.setPassword(RandomValueGenerator.generateRandomStringLettersOnly());
+            user.setRoles(generateRandomUserRoleDTOs(size));
 
             return user;
         }).collect(Collectors.toList());
@@ -340,9 +344,35 @@ public class RequestTestHelper {
 
             user.setId(RandomValueGenerator.generateRandomPositiveLong());
             user.setStatus(Status.ACTIVE);
-            user.setLogin(RandomValueGenerator.generateRandomStringLettersOnly());
+            user.setEmail(RandomValueGenerator.generateRandomStringLettersOnly());
+            user.setPassword(RandomValueGenerator.generateRandomStringLettersOnly());
+            user.setRoles(generateRandomUserRoleEntities(size));
 
             return user;
+        }).collect(Collectors.toList());
+    }
+
+    public static List<UserRoleDTO> generateRandomUserRoleDTOs(final int size) {
+        return IntStream.range(1, size + 1).mapToObj(index -> {
+            final UserRoleDTO userRole = new UserRoleDTO();
+
+            userRole.setId(RandomValueGenerator.generateRandomPositiveLong());
+            userRole.setStatus(Status.ACTIVE);
+            userRole.setName(RandomValueGenerator.generateRandomStringLettersOnly());
+
+            return userRole;
+        }).collect(Collectors.toList());
+    }
+
+    public static List<UserRoleEntity> generateRandomUserRoleEntities(final int size) {
+        return IntStream.range(1, size + 1).mapToObj(index -> {
+            final UserRoleEntity userRole = new UserRoleEntity();
+
+            userRole.setId(RandomValueGenerator.generateRandomPositiveLong());
+            userRole.setStatus(Status.ACTIVE);
+            userRole.setName(RandomValueGenerator.generateRandomStringLettersOnly());
+
+            return userRole;
         }).collect(Collectors.toList());
     }
 
@@ -353,14 +383,51 @@ public class RequestTestHelper {
         if (userDTO != null) {
             Assertions.assertEquals(userDTO.getId(), userEntity.getId());
             Assertions.assertEquals(userDTO.getStatus(), userEntity.getStatus());
-            Assertions.assertEquals(userDTO.getLogin(), userEntity.getLogin());
+            Assertions.assertEquals(userDTO.getEmail(), userEntity.getEmail());
+            Assertions.assertEquals(userDTO.getPassword(), userEntity.getPassword());
+
+            final List<UserRoleDTO> userDTORoles = userDTO.getRoles();
+            final List<UserRoleEntity> userEntityRoles = userEntity.getRoles();
+
+            Assertions.assertEquals(userDTORoles.size(), userEntityRoles.size());
+
+            for (int i = 0; i < userDTORoles.size(); i++) {
+                checkUserRolesConversion(userDTORoles.get(i), userEntityRoles.get(i));
+            }
+        }
+    }
+
+    public static void checkUserRolesConversion(final UserRoleDTO userRoleDTO, final UserRoleEntity userRoleEntity) {
+        Assertions.assertTrue((userRoleDTO == null && userRoleEntity == null) ||
+                (userRoleDTO != null && userRoleEntity != null));
+
+        if (userRoleDTO != null) {
+            Assertions.assertEquals(userRoleDTO.getId(), userRoleEntity.getId());
+            Assertions.assertEquals(userRoleDTO.getStatus(), userRoleEntity.getStatus());
+            Assertions.assertEquals(userRoleDTO.getName(), userRoleEntity.getName());
         }
     }
 
     public static void checkUserDTOs(final UserDTO expectedUser, final UserDTO actualUser) {
         Assertions.assertEquals(expectedUser.getId(), actualUser.getId());
         Assertions.assertEquals(expectedUser.getStatus(), actualUser.getStatus());
-        Assertions.assertEquals(expectedUser.getLogin(), actualUser.getLogin());
+        Assertions.assertEquals(expectedUser.getEmail(), actualUser.getEmail());
+        Assertions.assertEquals(expectedUser.getPassword(), actualUser.getPassword());
+
+        final List<UserRoleDTO> expectedUserRoles = expectedUser.getRoles();
+        final List<UserRoleDTO> actualUserRoles = actualUser.getRoles();
+
+        Assertions.assertEquals(expectedUserRoles.size(), actualUserRoles.size());
+
+        for (int i = 0; i < expectedUserRoles.size(); i++) {
+            checkUserRoleDTOs(expectedUserRoles.get(i), actualUserRoles.get(i));
+        }
+    }
+
+    public static void checkUserRoleDTOs(final UserRoleDTO expectedUserRoleDTO, final UserRoleDTO actualUserRoleDTO) {
+        Assertions.assertEquals(expectedUserRoleDTO.getId(), actualUserRoleDTO.getId());
+        Assertions.assertEquals(expectedUserRoleDTO.getStatus(), actualUserRoleDTO.getStatus());
+        Assertions.assertEquals(expectedUserRoleDTO.getName(), actualUserRoleDTO.getName());
     }
 
     public static List<ExecutionLogDTO> generateRandomExecutionLogDTOs(final int size) {

@@ -14,17 +14,17 @@ import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
-public abstract class GenericDTOService<D extends AbstractDTO<I>, C extends PersistentObject<I>, I extends Serializable>
+public abstract class GenericDTOService<D extends AbstractDTO<I>, P extends PersistentObject<I>, I extends Serializable>
         implements DTOService<D, I> {
 
     private static final String EXCEPTION_MESSAGE = "Failed to instantiate class of type: ";
 
-    private final GenericRepository<C, I> repository;
+    private final GenericRepository<P, I> repository;
 
-    private final DTOConverter<D, C, I> converter;
+    private final DTOConverter<D, P, I> converter;
 
-    public GenericDTOService(final @NonNull GenericRepository<C, I> repository,
-                             final @NonNull DTOConverter<D, C, I> converter) {
+    public GenericDTOService(final @NonNull GenericRepository<P, I> repository,
+                             final @NonNull DTOConverter<D, P, I> converter) {
         this.repository = repository;
         this.converter = converter;
     }
@@ -64,18 +64,18 @@ public abstract class GenericDTOService<D extends AbstractDTO<I>, C extends Pers
         return repository.existsById(id);
     }
 
-    protected abstract Class<C> getPersistentObjectClass();
+    protected abstract Class<P> getPersistentObjectClass();
 
-    private Example<C> getActiveStatusExample() {
-        final C persistentObject = instantiatePersistentObject();
+    private Example<P> getActiveStatusExample() {
+        final P persistentObject = instantiatePersistentObject();
 
         persistentObject.setStatus(Status.ACTIVE);
 
         return Example.of(persistentObject);
     }
 
-    private Example<C> getActiveStatusExample(final I id) {
-        final C persistentObject = instantiatePersistentObject();
+    private Example<P> getActiveStatusExample(final I id) {
+        final P persistentObject = instantiatePersistentObject();
 
         persistentObject.setId(id);
         persistentObject.setStatus(Status.ACTIVE);
@@ -83,8 +83,8 @@ public abstract class GenericDTOService<D extends AbstractDTO<I>, C extends Pers
         return Example.of(persistentObject);
     }
 
-    private C instantiatePersistentObject() {
-        final Class<C> persistentObjectClass = getPersistentObjectClass();
+    private P instantiatePersistentObject() {
+        final Class<P> persistentObjectClass = getPersistentObjectClass();
 
         try {
             return persistentObjectClass.getDeclaredConstructor().newInstance();

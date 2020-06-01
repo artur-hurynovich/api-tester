@@ -6,14 +6,14 @@ import com.hurynovich.api_tester.model.persistence.PersistentObject;
 import java.io.Serializable;
 import java.util.List;
 
-public interface DTOConverter<D extends AbstractDTO<I>, C extends PersistentObject<I>, I extends Serializable> {
+public interface DTOConverter<D extends AbstractDTO<I>, P extends PersistentObject<I>, I extends Serializable> {
 
-    C convert(D d);
+    P convert(D d);
 
-    D convert(C c);
+    D convert(P p);
 
-    List<C> convertAllFromDTO(Iterable<D> d);
+    List<P> convertAllFromDTO(Iterable<D> d);
 
-    List<D> convertAllToDTO(Iterable<C> p);
+    List<D> convertAllToDTO(Iterable<P> p);
 
 }
