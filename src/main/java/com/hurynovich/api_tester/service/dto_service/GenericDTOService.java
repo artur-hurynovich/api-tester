@@ -8,6 +8,7 @@ import com.hurynovich.api_tester.repository.GenericRepository;
 import com.hurynovich.api_tester.service.exception.DTOServiceException;
 import org.springframework.data.domain.Example;
 import org.springframework.lang.NonNull;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.io.Serializable;
@@ -19,6 +20,8 @@ public abstract class GenericDTOService<D extends AbstractDTO<I>, P extends Pers
 
     private static final String EXCEPTION_MESSAGE = "Failed to instantiate class of type: ";
 
+    private static final String ID_FIELD_NAME = "id";
+
     private final GenericRepository<P, I> repository;
 
     private final DTOConverter<D, P, I> converter;
@@ -29,29 +32,39 @@ public abstract class GenericDTOService<D extends AbstractDTO<I>, P extends Pers
         this.converter = converter;
     }
 
+    @Transactional
     @Override
-    public D create(final D d) {
+    public D create(final @NonNull D d) {
         return converter.convert(repository.save(converter.convert(d)));
     }
 
+    @Transactional
     @Override
-    public D readById(final I id) {
+    public D readById(final @NonNull I id) {
         return converter.convert(repository.findOne(getActiveStatusExample(id)).
-                orElseThrow(EntityNotFoundException::new));
+                orElseThrow(() -> new EntityNotFoundException(buildEntityNotFoundExceptionMessage(ID_FIELD_NAME, id))));
     }
 
+    @Transactional
     @Override
     public List<D> readAll() {
         return converter.convertAllToDTO(repository.findAll(getActiveStatusExample()));
     }
 
+    @Transactional
+    public List<D> readByExample(final @NonNull Example<P> example) {
+        return converter.convertAllToDTO(repository.findAll(example));
+    }
+
+    @Transactional
     @Override
-    public D update(final D d) {
+    public D update(final @NonNull D d) {
         return create(d);
     }
 
+    @Transactional
     @Override
-    public void deleteById(final I id) {
+    public void deleteById(final @NonNull I id) {
         final D d = readById(id);
 
         d.setStatus(Status.NOT_ACTIVE);
@@ -59,8 +72,9 @@ public abstract class GenericDTOService<D extends AbstractDTO<I>, P extends Pers
         update(d);
     }
 
+    @Transactional
     @Override
-    public boolean existsById(final I id) {
+    public boolean existsById(final @NonNull I id) {
         return repository.existsById(id);
     }
 
@@ -83,7 +97,7 @@ public abstract class GenericDTOService<D extends AbstractDTO<I>, P extends Pers
         return Example.of(persistentObject);
     }
 
-    private P instantiatePersistentObject() {
+    protected P instantiatePersistentObject() {
         final Class<P> persistentObjectClass = getPersistentObjectClass();
 
         try {
@@ -92,6 +106,20 @@ public abstract class GenericDTOService<D extends AbstractDTO<I>, P extends Pers
                 InvocationTargetException | NoSuchMethodException ex) {
             throw new DTOServiceException(EXCEPTION_MESSAGE + persistentObjectClass, ex);
         }
+    }
+
+    protected String buildEntityNotFoundExceptionMessage(final @NonNull String fieldName,
+                                                         final @NonNull Serializable fieldValue) {
+        final String entityName = getPersistentObjectClass().getSimpleName().replace(".class", "");
+
+        return "No '" + entityName + "' found with '" + fieldName + "' = '" + fieldValue + "'";
+    }
+
+    protected String buildMoreThanOneEntityFoundExceptionMessage(final @NonNull String fieldName,
+                                                                 final @NonNull Serializable fieldValue) {
+        final String entityName = getPersistentObjectClass().getSimpleName().replace(".class", "");
+
+        return "More than one '" + entityName + "' found with '" + fieldName + "' = '" + fieldValue + "'";
     }
 
 }

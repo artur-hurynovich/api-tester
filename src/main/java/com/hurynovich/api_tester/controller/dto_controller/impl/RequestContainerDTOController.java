@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/requestContainer")
+@RequestMapping("/api/requestContainer")
 public class RequestContainerDTOController extends GenericDTOController<RequestContainerDTO, String> {
 
     public RequestContainerDTOController(final @NonNull Validator<RequestContainerDTO> validator,

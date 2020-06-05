@@ -10,7 +10,6 @@ import com.hurynovich.api_tester.test_helper.DTOServiceTestHelper;
 import java.io.Serializable;
 import java.util.List;
 import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -25,13 +24,10 @@ public abstract class GenericDTOServiceTest<D extends AbstractDTO<I>, P extends 
     public void init(final Supplier<List<D>> dtosSupplier,
                      final Supplier<I> idSupplier,
                      final GenericRepository<P, I> repository,
-                     final Supplier<DTOConverter<D, P, I>> converterSupplier,
-                     final BiFunction<GenericRepository<P, I>, DTOConverter<D, P, I>, DTOService<D, I>> serviceBiFunction,
+                     final DTOConverter<D, P, I> converter,
+                     final DTOService<D, I> service,
                      final BiConsumer<D, D> checkConsumer) {
         this.dtosSupplier = dtosSupplier;
-
-        final DTOConverter<D, P, I> converter = converterSupplier.get();
-        final DTOService<D, I> service = serviceBiFunction.apply(repository, converter);
 
         helper = new DTOServiceTestHelper<>(idSupplier, repository, converter, service, checkConsumer);
     }

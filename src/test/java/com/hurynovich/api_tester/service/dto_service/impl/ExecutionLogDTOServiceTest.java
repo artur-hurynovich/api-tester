@@ -6,6 +6,7 @@ import com.hurynovich.api_tester.converter.dto_converter.impl.NameValueElementDT
 import com.hurynovich.api_tester.model.dto.impl.ExecutionLogDTO;
 import com.hurynovich.api_tester.model.persistence.document.impl.ExecutionLogDocument;
 import com.hurynovich.api_tester.repository.GenericRepository;
+import com.hurynovich.api_tester.service.dto_service.DTOService;
 import com.hurynovich.api_tester.test_helper.RandomValueGenerator;
 import com.hurynovich.api_tester.test_helper.RequestTestHelper;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,11 +23,16 @@ public class ExecutionLogDTOServiceTest extends GenericDTOServiceTest<ExecutionL
 
     @BeforeEach
     public void init() {
+        final ExecutionLogDTOConverter converter =
+                new ExecutionLogDTOConverter(new ExecutionLogEntryDTOConverter(new NameValueElementDTOConverter()));
+
+        final DTOService<ExecutionLogDTO, String> service = new ExecutionLogDTOService(repository, converter);
+
         super.init(() -> RequestTestHelper.generateRandomExecutionLogDTOs(DEFAULT_DTO_COUNT),
                 RandomValueGenerator::generateRandomStringLettersOnly,
                 repository,
-                () -> new ExecutionLogDTOConverter(new ExecutionLogEntryDTOConverter(new NameValueElementDTOConverter())),
-                ExecutionLogDTOService::new,
+                converter,
+                service,
                 RequestTestHelper::checkExecutionLog);
     }
 

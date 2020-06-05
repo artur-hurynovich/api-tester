@@ -8,28 +8,36 @@
 
     <changeSet id="create-table-APTE_USERS" author="artur_hurynovich">
         <createTable tableName="APTE_USERS">
-            <column name="ID" type="BIGINT" autoincrement="true">
-                <constraints nullable="false" unique="true"/>
+            <column name="ID" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
             </column>
             <column name="STATUS" type="TINYINT">
-                <constraints nullable="false" unique="true"/>
+                <constraints nullable="false" unique="false"/>
             </column>
             <column name="EMAIL" type="VARCHAR(50)">
                 <constraints nullable="false" unique="true"/>
             </column>
             <column name="PASSWORD" type="VARCHAR(255)">
-                <constraints nullable="false" unique="true"/>
+                <constraints nullable="false" unique="false"/>
             </column>
         </createTable>
     </changeSet>
 
+    <changeSet id="add-admin-user-to-APTE_USERS" author="artur_hurynovich">
+        <insert tableName="APTE_USERS">
+            <column name="STATUS" value="1"/>
+            <column name="EMAIL" value="admin@gmail.com"/>
+            <column name="PASSWORD" value="$2y$12$pk0q7NFqVYgOs9TYjbNS..4keSOLoPb/lIeV4YHPm6PYW16Z9MrWS"/>
+        </insert>
+    </changeSet>
+
     <changeSet id="create-table-APTE_ROLES" author="artur_hurynovich">
         <createTable tableName="APTE_ROLES">
-            <column name="ID" type="BIGINT" autoincrement="true">
-                <constraints nullable="false" unique="true"/>
+            <column name="ID" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" unique="true"/>
             </column>
             <column name="STATUS" type="TINYINT">
-                <constraints nullable="false" unique="true"/>
+                <constraints nullable="false" unique="false"/>
             </column>
             <column name="NAME" type="VARCHAR(50)">
                 <constraints nullable="false" unique="true"/>
@@ -37,10 +45,24 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="add-admin-role-to-APTE_ROLES" author="artur_hurynovich">
+        <insert tableName="APTE_ROLES">
+            <column name="STATUS" value="1"/>
+            <column name="NAME" value="ADMIN"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="add-user-role-to-APTE_ROLES" author="artur_hurynovich">
+        <insert tableName="APTE_ROLES">
+            <column name="STATUS" value="1"/>
+            <column name="NAME" value="USER"/>
+        </insert>
+    </changeSet>
+
     <changeSet id="create-table-APTE_USERS_ROLES" author="artur_hurynovich">
         <createTable tableName="APTE_USERS_ROLES">
-            <column name="USER_ID" type="BIGINT" autoincrement="true"/>
-            <column name="USER_ROLE_ID" type="BIGINT" autoincrement="true"/>
+            <column name="USER_ID" type="BIGINT"/>
+            <column name="ROLE_ID" type="BIGINT"/>
         </createTable>
     </changeSet>
 
@@ -62,17 +84,10 @@
                                  referencedTableName="APTE_ROLES"/>
     </changeSet>
 
-    <changeSet id="add-admin-role-to-APTE_ROLES" author="artur_hurynovich">
-        <insert tableName="APTE_ROLES">
-            <column name="STATUS" value="ACTIVE"/>
-            <column name="NAME" value="ADMIN"/>
-        </insert>
-    </changeSet>
-
-    <changeSet id="add-user-role-to-APTE_ROLES" author="artur_hurynovich">
-        <insert tableName="APTE_ROLES">
-            <column name="STATUS" value="ACTIVE"/>
-            <column name="NAME" value="USER"/>
+    <changeSet id="add-user-with-admin-role-to-APTE_USERS_ROLES" author="artur_hurynovich">
+        <insert tableName="APTE_USERS_ROLES">
+            <column name="USER_ID" value="1"/>
+            <column name="ROLE_ID" value="1"/>
         </insert>
     </changeSet>
 

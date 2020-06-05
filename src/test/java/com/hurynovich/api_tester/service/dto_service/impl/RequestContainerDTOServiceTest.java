@@ -6,6 +6,7 @@ import com.hurynovich.api_tester.converter.dto_converter.impl.RequestDTOConverte
 import com.hurynovich.api_tester.model.dto.impl.RequestContainerDTO;
 import com.hurynovich.api_tester.model.persistence.document.impl.RequestContainerDocument;
 import com.hurynovich.api_tester.repository.GenericRepository;
+import com.hurynovich.api_tester.service.dto_service.DTOService;
 import com.hurynovich.api_tester.test_helper.RandomValueGenerator;
 import com.hurynovich.api_tester.test_helper.RequestTestHelper;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,11 +23,16 @@ public class RequestContainerDTOServiceTest extends GenericDTOServiceTest<Reques
 
     @BeforeEach
     public void init() {
+        final RequestContainerDTOConverter converter =
+                new RequestContainerDTOConverter(new RequestDTOConverter(new NameValueElementDTOConverter()));
+
+        final DTOService<RequestContainerDTO, String> service = new RequestContainerDTOService(repository, converter);
+
         super.init(() -> RequestTestHelper.generateRandomRequestContainerDTOs(DEFAULT_DTO_COUNT),
                 RandomValueGenerator::generateRandomStringLettersOnly,
                 repository,
-                () -> new RequestContainerDTOConverter(new RequestDTOConverter(new NameValueElementDTOConverter())),
-                RequestContainerDTOService::new,
+                converter,
+                service,
                 RequestTestHelper::checkRequestContainer);
     }
 

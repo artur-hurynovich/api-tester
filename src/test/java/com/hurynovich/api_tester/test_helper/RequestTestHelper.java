@@ -22,8 +22,11 @@ import org.junit.jupiter.api.Assertions;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -601,6 +604,20 @@ public class RequestTestHelper {
         }
     }
 
+    public static void checkUserDetails(final UserDTO userDTO, final UserDetails userDetails) {
+        final List<UserRoleDTO> roles = userDTO.getRoles();
+        final List<GrantedAuthority> authorities = new ArrayList<>(userDetails.getAuthorities());
+
+        Assertions.assertEquals(roles.size(), authorities.size());
+        for (int i = 0; i < roles.size(); i++) {
+            Assertions.assertEquals(roles.get(i).getName(), authorities.get(i).getAuthority());
+        }
+
+        Assertions.assertEquals(userDTO.getPassword(), userDetails.getPassword());
+        Assertions.assertEquals(userDTO.getEmail(), userDetails.getUsername());
+        Assertions.assertEquals(userDTO.getStatus() == Status.ACTIVE, userDetails.isEnabled());
+    }
+
     public static List<ExecutionLogEntryDTO> generateRandomRequestExecutionLogEntryDTOs(final int size) {
         return IntStream.range(1, size + 1).mapToObj(index -> {
             final ExecutionLogEntryDTO executionLogEntry = new ExecutionLogEntryDTO();
@@ -649,6 +666,12 @@ public class RequestTestHelper {
 
     public static String generateRandomHttpUrl() {
         return HTTP_PROTOCOL + "://" + RandomValueGenerator.generateRandomStringLettersOnly().toLowerCase() + '.' +
+                RandomValueGenerator.generateRandomEnumValue(Domain.class).getName();
+    }
+
+    public static String generateRandomEmail() {
+        return RandomValueGenerator.generateRandomStringLettersOnly().toLowerCase() + "@" +
+                RandomValueGenerator.generateRandomStringLettersOnly().toLowerCase() + '.' +
                 RandomValueGenerator.generateRandomEnumValue(Domain.class).getName();
     }
 
