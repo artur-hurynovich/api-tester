@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Document(collection = "apte_execution_logs")
+@Document(collection = "APTE_EXECUTION_LOGS")
 public class ExecutionLogDocument extends AbstractDocument<String> {
 
     private LocalDateTime dateTime;

@@ -50,7 +50,7 @@ public class ExecutionLogDTOConverter extends GenericDTOConverter<ExecutionLogDT
     }
 
     @Override
-    public Class<ExecutionLogDocument> getConvertibleClass() {
+    public Class<ExecutionLogDocument> getPersistentObjectClass() {
         return ExecutionLogDocument.class;
     }
 

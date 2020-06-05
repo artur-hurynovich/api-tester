@@ -11,22 +11,19 @@ import com.hurynovich.api_tester.test_helper.RequestTestHelper;
 import com.hurynovich.api_tester.utils.RequestUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
-@ExtendWith(MockitoExtension.class)
 public class ClientConverterImplTest {
 
     private static final int REQUEST_HEADERS_SIZE = 3;
 
-    private RequestNameValueElementConverter requestNameValueElementConverter = new RequestNameValueElementConverterImpl();
+    private final RequestNameValueElementConverter requestNameValueElementConverter = new RequestNameValueElementConverterImpl();
 
-    private ClientConverter<String> clientConverter = new ClientConverterImpl(requestNameValueElementConverter);
+    private final ClientConverter<String> clientConverter = new ClientConverterImpl(requestNameValueElementConverter);
 
     @Test
     public void convertRequestDTOToRequestEntityTest() {
@@ -67,7 +64,7 @@ public class ClientConverterImplTest {
                         body(body);
 
         final ResponseDTO response = clientConverter.convert(responseEntity);
-        Assertions.assertEquals(httpStatus, response.getStatus());
+        Assertions.assertEquals(httpStatus, response.getHttpStatus());
 
         checkNameValueElements(headers, response.getHeaders());
 

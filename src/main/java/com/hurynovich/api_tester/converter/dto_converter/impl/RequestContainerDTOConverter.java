@@ -50,7 +50,7 @@ public class RequestContainerDTOConverter extends GenericDTOConverter<RequestCon
     }
 
     @Override
-    public Class<RequestContainerDocument> getConvertibleClass() {
+    public Class<RequestContainerDocument> getPersistentObjectClass() {
         return RequestContainerDocument.class;
     }
 

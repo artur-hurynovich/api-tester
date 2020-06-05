@@ -7,20 +7,26 @@ import com.hurynovich.api_tester.model.dto.impl.RequestContainerDTO;
 import com.hurynovich.api_tester.model.dto.impl.RequestDTO;
 import com.hurynovich.api_tester.model.dto.impl.ResponseDTO;
 import com.hurynovich.api_tester.model.dto.impl.UserDTO;
+import com.hurynovich.api_tester.model.dto.impl.UserRoleDTO;
 import com.hurynovich.api_tester.model.enumeration.ExecutionLogEntryType;
 import com.hurynovich.api_tester.model.enumeration.NameValueElementType;
+import com.hurynovich.api_tester.model.enumeration.Status;
 import com.hurynovich.api_tester.model.persistence.document.impl.ExecutionLogDocument;
 import com.hurynovich.api_tester.model.persistence.document.impl.ExecutionLogEntryDocument;
 import com.hurynovich.api_tester.model.persistence.document.impl.NameValueElementDocument;
 import com.hurynovich.api_tester.model.persistence.document.impl.RequestContainerDocument;
 import com.hurynovich.api_tester.model.persistence.document.impl.RequestDocument;
 import com.hurynovich.api_tester.model.persistence.entity.impl.UserEntity;
+import com.hurynovich.api_tester.model.persistence.entity.impl.UserRoleEntity;
 import org.junit.jupiter.api.Assertions;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -71,7 +77,7 @@ public class RequestTestHelper {
             final NameValueElementDTO nameValueElementDTO = new NameValueElementDTO();
 
             nameValueElementDTO.setId(RandomValueGenerator.generateRandomStringLettersOnly());
-
+            nameValueElementDTO.setStatus(Status.ACTIVE);
             nameValueElementDTO.setName(RandomValueGenerator.generateRandomStringLettersOnly());
 
             final NameValueElementType nameValueElementType =
@@ -100,7 +106,7 @@ public class RequestTestHelper {
             final NameValueElementDocument nameValueElementDocument = new NameValueElementDocument();
 
             nameValueElementDocument.setId(RandomValueGenerator.generateRandomStringLettersOnly());
-
+            nameValueElementDocument.setStatus(Status.ACTIVE);
             nameValueElementDocument.setName(RandomValueGenerator.generateRandomStringLettersOnly());
 
             final NameValueElementType nameValueElementType =
@@ -131,6 +137,7 @@ public class RequestTestHelper {
 
         if (nameValueElementDTO != null) {
             Assertions.assertEquals(nameValueElementDTO.getId(), nameValueElementDocument.getId());
+            Assertions.assertEquals(nameValueElementDTO.getStatus(), nameValueElementDocument.getStatus());
             Assertions.assertEquals(nameValueElementDTO.getName(), nameValueElementDocument.getName());
             Assertions.assertEquals(nameValueElementDTO.getType(), nameValueElementDocument.getType());
 
@@ -151,6 +158,7 @@ public class RequestTestHelper {
             final RequestDTO requestDTO = new RequestDTO();
 
             requestDTO.setId(RandomValueGenerator.generateRandomStringLettersOnly());
+            requestDTO.setStatus(Status.ACTIVE);
             requestDTO.setMethod(generateRandomHttpMethod());
             requestDTO.setHeaders(generateRandomNameValueElementDTOs(HEADERS_SIZE));
             requestDTO.setUrl(generateRandomHttpUrl());
@@ -166,6 +174,7 @@ public class RequestTestHelper {
             final RequestDocument requestDocument = new RequestDocument();
 
             requestDocument.setId(RandomValueGenerator.generateRandomStringLettersOnly());
+            requestDocument.setStatus(Status.ACTIVE);
             requestDocument.setMethod(generateRandomHttpMethod());
             requestDocument.setHeaders(generateRandomNameValueElementDocuments(HEADERS_SIZE));
             requestDocument.setUrl(generateRandomHttpUrl());
@@ -183,6 +192,7 @@ public class RequestTestHelper {
 
         if (requestDTO != null) {
             Assertions.assertEquals(requestDTO.getId(), requestDocument.getId());
+            Assertions.assertEquals(requestDTO.getStatus(), requestDocument.getStatus());
             Assertions.assertEquals(requestDTO.getMethod(), requestDocument.getMethod());
 
             final List<NameValueElementDTO> requestDTOHeaders = requestDTO.getHeaders();
@@ -210,6 +220,7 @@ public class RequestTestHelper {
             final RequestContainerDTO requestContainerDTO = new RequestContainerDTO();
 
             requestContainerDTO.setId(RandomValueGenerator.generateRandomStringLettersOnly());
+            requestContainerDTO.setStatus(Status.ACTIVE);
             requestContainerDTO.setName(RandomValueGenerator.generateRandomStringLettersOnly());
             requestContainerDTO.setDescription(RandomValueGenerator.generateRandomStringLettersOnly());
             requestContainerDTO.setRequests(generateRandomRequestDTOs(REQUESTS_SIZE));
@@ -223,6 +234,7 @@ public class RequestTestHelper {
             final RequestContainerDocument requestContainerDocument = new RequestContainerDocument();
 
             requestContainerDocument.setId(RandomValueGenerator.generateRandomStringLettersOnly());
+            requestContainerDocument.setStatus(Status.ACTIVE);
             requestContainerDocument.setName(RandomValueGenerator.generateRandomStringLettersOnly());
             requestContainerDocument.setDescription(RandomValueGenerator.generateRandomStringLettersOnly());
             requestContainerDocument.setRequests(generateRandomRequestDocuments(REQUESTS_SIZE));
@@ -238,6 +250,7 @@ public class RequestTestHelper {
 
         if (requestContainerDTO != null) {
             Assertions.assertEquals(requestContainerDTO.getId(), requestContainerDocument.getId());
+            Assertions.assertEquals(requestContainerDTO.getStatus(), requestContainerDocument.getStatus());
             Assertions.assertEquals(requestContainerDTO.getName(), requestContainerDocument.getName());
             Assertions.assertEquals(requestContainerDTO.getDescription(), requestContainerDocument.getDescription());
 
@@ -252,6 +265,7 @@ public class RequestTestHelper {
 
     public static void checkRequestContainer(final RequestContainerDTO expected, final RequestContainerDTO actual) {
         Assertions.assertEquals(expected.getId(), actual.getId());
+        Assertions.assertEquals(expected.getStatus(), actual.getStatus());
 
         final List<RequestDTO> expectedRequests = expected.getRequests();
         final List<RequestDTO> actualRequests = actual.getRequests();
@@ -318,7 +332,10 @@ public class RequestTestHelper {
             final UserDTO user = new UserDTO();
 
             user.setId(RandomValueGenerator.generateRandomPositiveLong());
-            user.setName(RandomValueGenerator.generateRandomStringLettersOnly());
+            user.setStatus(Status.ACTIVE);
+            user.setEmail(RandomValueGenerator.generateRandomStringLettersOnly());
+            user.setPassword(RandomValueGenerator.generateRandomStringLettersOnly());
+            user.setRoles(generateRandomUserRoleDTOs(size));
 
             return user;
         }).collect(Collectors.toList());
@@ -329,9 +346,36 @@ public class RequestTestHelper {
             final UserEntity user = new UserEntity();
 
             user.setId(RandomValueGenerator.generateRandomPositiveLong());
-            user.setLogin(RandomValueGenerator.generateRandomStringLettersOnly());
+            user.setStatus(Status.ACTIVE);
+            user.setEmail(RandomValueGenerator.generateRandomStringLettersOnly());
+            user.setPassword(RandomValueGenerator.generateRandomStringLettersOnly());
+            user.setRoles(generateRandomUserRoleEntities(size));
 
             return user;
+        }).collect(Collectors.toList());
+    }
+
+    public static List<UserRoleDTO> generateRandomUserRoleDTOs(final int size) {
+        return IntStream.range(1, size + 1).mapToObj(index -> {
+            final UserRoleDTO userRole = new UserRoleDTO();
+
+            userRole.setId(RandomValueGenerator.generateRandomPositiveLong());
+            userRole.setStatus(Status.ACTIVE);
+            userRole.setName(RandomValueGenerator.generateRandomStringLettersOnly());
+
+            return userRole;
+        }).collect(Collectors.toList());
+    }
+
+    public static List<UserRoleEntity> generateRandomUserRoleEntities(final int size) {
+        return IntStream.range(1, size + 1).mapToObj(index -> {
+            final UserRoleEntity userRole = new UserRoleEntity();
+
+            userRole.setId(RandomValueGenerator.generateRandomPositiveLong());
+            userRole.setStatus(Status.ACTIVE);
+            userRole.setName(RandomValueGenerator.generateRandomStringLettersOnly());
+
+            return userRole;
         }).collect(Collectors.toList());
     }
 
@@ -341,13 +385,52 @@ public class RequestTestHelper {
 
         if (userDTO != null) {
             Assertions.assertEquals(userDTO.getId(), userEntity.getId());
-            Assertions.assertEquals(userDTO.getName(), userEntity.getLogin());
+            Assertions.assertEquals(userDTO.getStatus(), userEntity.getStatus());
+            Assertions.assertEquals(userDTO.getEmail(), userEntity.getEmail());
+            Assertions.assertEquals(userDTO.getPassword(), userEntity.getPassword());
+
+            final List<UserRoleDTO> userDTORoles = userDTO.getRoles();
+            final List<UserRoleEntity> userEntityRoles = userEntity.getRoles();
+
+            Assertions.assertEquals(userDTORoles.size(), userEntityRoles.size());
+
+            for (int i = 0; i < userDTORoles.size(); i++) {
+                checkUserRolesConversion(userDTORoles.get(i), userEntityRoles.get(i));
+            }
+        }
+    }
+
+    public static void checkUserRolesConversion(final UserRoleDTO userRoleDTO, final UserRoleEntity userRoleEntity) {
+        Assertions.assertTrue((userRoleDTO == null && userRoleEntity == null) ||
+                (userRoleDTO != null && userRoleEntity != null));
+
+        if (userRoleDTO != null) {
+            Assertions.assertEquals(userRoleDTO.getId(), userRoleEntity.getId());
+            Assertions.assertEquals(userRoleDTO.getStatus(), userRoleEntity.getStatus());
+            Assertions.assertEquals(userRoleDTO.getName(), userRoleEntity.getName());
         }
     }
 
     public static void checkUserDTOs(final UserDTO expectedUser, final UserDTO actualUser) {
         Assertions.assertEquals(expectedUser.getId(), actualUser.getId());
-        Assertions.assertEquals(expectedUser.getName(), actualUser.getName());
+        Assertions.assertEquals(expectedUser.getStatus(), actualUser.getStatus());
+        Assertions.assertEquals(expectedUser.getEmail(), actualUser.getEmail());
+        Assertions.assertEquals(expectedUser.getPassword(), actualUser.getPassword());
+
+        final List<UserRoleDTO> expectedUserRoles = expectedUser.getRoles();
+        final List<UserRoleDTO> actualUserRoles = actualUser.getRoles();
+
+        Assertions.assertEquals(expectedUserRoles.size(), actualUserRoles.size());
+
+        for (int i = 0; i < expectedUserRoles.size(); i++) {
+            checkUserRoleDTOs(expectedUserRoles.get(i), actualUserRoles.get(i));
+        }
+    }
+
+    public static void checkUserRoleDTOs(final UserRoleDTO expectedUserRoleDTO, final UserRoleDTO actualUserRoleDTO) {
+        Assertions.assertEquals(expectedUserRoleDTO.getId(), actualUserRoleDTO.getId());
+        Assertions.assertEquals(expectedUserRoleDTO.getStatus(), actualUserRoleDTO.getStatus());
+        Assertions.assertEquals(expectedUserRoleDTO.getName(), actualUserRoleDTO.getName());
     }
 
     public static List<ExecutionLogDTO> generateRandomExecutionLogDTOs(final int size) {
@@ -355,6 +438,7 @@ public class RequestTestHelper {
             final ExecutionLogDTO executionLogDTO = new ExecutionLogDTO();
 
             executionLogDTO.setId(RandomValueGenerator.generateRandomStringLettersOnly());
+            executionLogDTO.setStatus(Status.ACTIVE);
             executionLogDTO.setDateTime(LocalDateTime.now());
             executionLogDTO.setUserId(RandomValueGenerator.generateRandomPositiveLong());
             executionLogDTO.setEntries(generateRandomExecutionLogEntryDTOs(EXECUTION_LOG_ENTRIES_SIZE));
@@ -368,6 +452,7 @@ public class RequestTestHelper {
             final ExecutionLogDocument executionLogDocument = new ExecutionLogDocument();
 
             executionLogDocument.setId(RandomValueGenerator.generateRandomStringLettersOnly());
+            executionLogDocument.setStatus(Status.ACTIVE);
             executionLogDocument.setDateTime(LocalDateTime.now());
             executionLogDocument.setUserId(RandomValueGenerator.generateRandomPositiveLong());
             executionLogDocument.setEntries(generateRandomExecutionLogEntryDocuments(EXECUTION_LOG_ENTRIES_SIZE));
@@ -383,6 +468,7 @@ public class RequestTestHelper {
 
         if (executionLogDTO != null) {
             Assertions.assertEquals(executionLogDTO.getId(), executionLogDocument.getId());
+            Assertions.assertEquals(executionLogDTO.getStatus(), executionLogDocument.getStatus());
             Assertions.assertEquals(executionLogDTO.getDateTime(), executionLogDocument.getDateTime());
             Assertions.assertEquals(executionLogDTO.getUserId(), executionLogDocument.getUserId());
 
@@ -444,7 +530,7 @@ public class RequestTestHelper {
         }
 
         Assertions.assertEquals(expectedExecutionLogEntry.getUrl(), actualExecutionLogEntry.getUrl());
-        Assertions.assertEquals(expectedExecutionLogEntry.getStatus(), actualExecutionLogEntry.getStatus());
+        Assertions.assertEquals(expectedExecutionLogEntry.getHttpStatus(), actualExecutionLogEntry.getHttpStatus());
         Assertions.assertEquals(expectedExecutionLogEntry.getBody(), actualExecutionLogEntry.getBody());
         Assertions.assertEquals(expectedExecutionLogEntry.getErrorMessage(), actualExecutionLogEntry.getErrorMessage());
     }
@@ -459,7 +545,7 @@ public class RequestTestHelper {
             executionLogEntryDTO.setHeaders(generateRandomNameValueElementDTOs(HEADERS_SIZE));
             executionLogEntryDTO.setParameters(generateRandomNameValueElementDTOs(PARAMETERS_SIZE));
             executionLogEntryDTO.setUrl(generateRandomHttpUrl());
-            executionLogEntryDTO.setStatus(generateRandomHttpStatus());
+            executionLogEntryDTO.setHttpStatus(generateRandomHttpStatus());
             executionLogEntryDTO.setBody(generateRandomBody());
             executionLogEntryDTO.setErrorMessage(generateRandomBody());
 
@@ -477,7 +563,7 @@ public class RequestTestHelper {
             executionLogEntryDocument.setHeaders(generateRandomNameValueElementDocuments(HEADERS_SIZE));
             executionLogEntryDocument.setParameters(generateRandomNameValueElementDocuments(PARAMETERS_SIZE));
             executionLogEntryDocument.setUrl(generateRandomHttpUrl());
-            executionLogEntryDocument.setStatus(generateRandomHttpStatus());
+            executionLogEntryDocument.setHttpStatus(generateRandomHttpStatus());
             executionLogEntryDocument.setBody(generateRandomBody());
             executionLogEntryDocument.setErrorMessage(generateRandomBody());
 
@@ -492,6 +578,7 @@ public class RequestTestHelper {
 
         if (executionLogEntryDTO != null) {
             Assertions.assertEquals(executionLogEntryDTO.getId(), executionLogEntryDocument.getId());
+            Assertions.assertEquals(executionLogEntryDTO.getStatus(), executionLogEntryDTO.getStatus());
             Assertions.assertEquals(executionLogEntryDTO.getType(), executionLogEntryDocument.getType());
             Assertions.assertEquals(executionLogEntryDTO.getDateTime(), executionLogEntryDocument.getDateTime());
             Assertions.assertEquals(executionLogEntryDTO.getMethod(), executionLogEntryDocument.getMethod());
@@ -511,10 +598,24 @@ public class RequestTestHelper {
             }
 
             Assertions.assertEquals(executionLogEntryDTO.getUrl(), executionLogEntryDocument.getUrl());
-            Assertions.assertEquals(executionLogEntryDTO.getStatus(), executionLogEntryDocument.getStatus());
+            Assertions.assertEquals(executionLogEntryDTO.getHttpStatus(), executionLogEntryDocument.getHttpStatus());
             Assertions.assertEquals(executionLogEntryDTO.getBody(), executionLogEntryDocument.getBody());
             Assertions.assertEquals(executionLogEntryDTO.getErrorMessage(), executionLogEntryDocument.getErrorMessage());
         }
+    }
+
+    public static void checkUserDetails(final UserDTO userDTO, final UserDetails userDetails) {
+        final List<UserRoleDTO> roles = userDTO.getRoles();
+        final List<GrantedAuthority> authorities = new ArrayList<>(userDetails.getAuthorities());
+
+        Assertions.assertEquals(roles.size(), authorities.size());
+        for (int i = 0; i < roles.size(); i++) {
+            Assertions.assertEquals(roles.get(i).getName(), authorities.get(i).getAuthority());
+        }
+
+        Assertions.assertEquals(userDTO.getPassword(), userDetails.getPassword());
+        Assertions.assertEquals(userDTO.getEmail(), userDetails.getUsername());
+        Assertions.assertEquals(userDTO.getStatus() == Status.ACTIVE, userDetails.isEnabled());
     }
 
     public static List<ExecutionLogEntryDTO> generateRandomRequestExecutionLogEntryDTOs(final int size) {
@@ -540,7 +641,7 @@ public class RequestTestHelper {
             executionLogEntry.setType(ExecutionLogEntryType.RESPONSE);
             executionLogEntry.setDateTime(LocalDateTime.now());
             executionLogEntry.setHeaders(generateRandomNameValueElementDTOs(HEADERS_SIZE));
-            executionLogEntry.setStatus(generateRandomHttpStatus());
+            executionLogEntry.setHttpStatus(generateRandomHttpStatus());
             executionLogEntry.setBody(generateRandomBody());
 
             return executionLogEntry;
@@ -565,6 +666,12 @@ public class RequestTestHelper {
 
     public static String generateRandomHttpUrl() {
         return HTTP_PROTOCOL + "://" + RandomValueGenerator.generateRandomStringLettersOnly().toLowerCase() + '.' +
+                RandomValueGenerator.generateRandomEnumValue(Domain.class).getName();
+    }
+
+    public static String generateRandomEmail() {
+        return RandomValueGenerator.generateRandomStringLettersOnly().toLowerCase() + "@" +
+                RandomValueGenerator.generateRandomStringLettersOnly().toLowerCase() + '.' +
                 RandomValueGenerator.generateRandomEnumValue(Domain.class).getName();
     }
 

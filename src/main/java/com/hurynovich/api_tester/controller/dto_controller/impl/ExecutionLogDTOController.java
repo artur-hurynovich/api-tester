@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/executionLog")
+@RequestMapping("/api/executionLog")
 public class ExecutionLogDTOController extends GenericDTOController<ExecutionLogDTO, String> {
 
     public ExecutionLogDTOController(final @NonNull Validator<ExecutionLogDTO> validator,

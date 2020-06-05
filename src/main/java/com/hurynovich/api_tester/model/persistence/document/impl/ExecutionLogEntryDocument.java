@@ -22,7 +22,7 @@ public class ExecutionLogEntryDocument extends AbstractDocument<String> {
 
     private String url;
 
-    private HttpStatus status;
+    private HttpStatus httpStatus;
 
     private String body;
 
@@ -76,12 +76,12 @@ public class ExecutionLogEntryDocument extends AbstractDocument<String> {
         this.url = url;
     }
 
-    public HttpStatus getStatus() {
-        return status;
+    public HttpStatus getHttpStatus() {
+        return httpStatus;
     }
 
-    public void setStatus(final HttpStatus status) {
-        this.status = status;
+    public void setHttpStatus(final HttpStatus httpStatus) {
+        this.httpStatus = httpStatus;
     }
 
     public String getBody() {

@@ -1,22 +1,19 @@
 status=$(systemctl is-active mysql.service)
 
 if [[ ${status} == 'active' ]]; then
-    echo "Mysql is running... You should stop mysql service first (run 'sudo service mysql stop')"
-    exit 1
-else
-    echo "Executing build and run tasks..."
+  echo "Stopping mysql service..."
+  sudo service mysql stop
+  echo "Mysql service stopped"
 fi
 
 mvn clean install -DskipTests
 
 cd docker || echo "Directory 'docker' not found"
 
-function stop {
-    echo ""
-    echo "************************* REMOVING DOCKER CONTAINERS *************************"
-    docker-compose down
-    echo "************************* DOCKER CONTAINERS REMOVED *************************"
-}
+echo "Removing docker containers..."
+docker-compose down
+echo "Docker containers removed"
 
-echo "************************* STARTING DOCKER *************************"
+echo "Starting docker..."
 docker-compose up --build
+

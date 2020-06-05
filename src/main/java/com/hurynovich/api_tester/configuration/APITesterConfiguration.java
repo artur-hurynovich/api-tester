@@ -7,6 +7,7 @@ import com.hurynovich.api_tester.state_transition.state.impl.StateImpl;
 import com.hurynovich.api_tester.state_transition.state_transition_descriptor.impl.StateTransitionDescriptorImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
@@ -20,6 +21,11 @@ public class APITesterConfiguration {
     @Bean
     public RestTemplate restTemplate() {
         return new RestTemplate();
+    }
+
+    @Bean
+    public BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
     @Bean
