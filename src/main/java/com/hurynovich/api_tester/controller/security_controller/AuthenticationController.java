@@ -8,6 +8,7 @@ import com.hurynovich.api_tester.security.model.AuthenticationRequest;
 import com.hurynovich.api_tester.security.service.JwtService;
 import com.hurynovich.api_tester.service.dto_service.UserDTOService;
 import com.hurynovich.api_tester.validator.Validator;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,7 +22,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/authentication")
 public class AuthenticationController {
 
-    private final Validator<AuthenticationRequest> authenticationRequestValidator;
+    private final Validator<AuthenticationRequest> authenticationRequestOnRegistrationValidator;
+
+    private final Validator<AuthenticationRequest> authenticationRequestOnLoginValidator;
 
     private final AuthenticationManager authenticationManager;
 
@@ -29,29 +32,56 @@ public class AuthenticationController {
 
     private final JwtService jwtService;
 
-    public AuthenticationController(final @NonNull Validator<AuthenticationRequest> authenticationRequestValidator,
+    public AuthenticationController(final @NonNull @Qualifier("authenticationRequestOnRegistrationValidator") Validator<AuthenticationRequest> authenticationRequestOnRegistrationValidator,
+                                    final @NonNull @Qualifier("authenticationRequestOnLoginValidator") Validator<AuthenticationRequest> authenticationRequestOnLoginValidator,
                                     final @NonNull AuthenticationManager authenticationManager,
                                     final @NonNull UserDTOService userService,
                                     final @NonNull JwtService jwtService) {
-        this.authenticationRequestValidator = authenticationRequestValidator;
+        this.authenticationRequestOnRegistrationValidator = authenticationRequestOnRegistrationValidator;
+        this.authenticationRequestOnLoginValidator = authenticationRequestOnLoginValidator;
         this.authenticationManager = authenticationManager;
         this.userService = userService;
         this.jwtService = jwtService;
+    }
+
+    @PostMapping("/registration")
+    public ResponseEntity<AuthenticationControllerResponse> registration(final @NonNull @RequestBody AuthenticationRequest authenticationRequest) {
+        final ValidationResult validationResult =
+                authenticationRequestOnRegistrationValidator.validate(authenticationRequest);
+
+        final AuthenticationControllerResponse response = new AuthenticationControllerResponse();
+        response.setValidationResult(validationResult);
+
+        if (validationResult.getType() == ValidationResultType.VALID) {
+            final UserDTO newUserDTO = new UserDTO();
+            newUserDTO.setEmail(authenticationRequest.getEmail());
+            newUserDTO.setPassword(authenticationRequest.getPassword());
+
+            userService.create(newUserDTO);
+
+            final String email = authenticationRequest.getEmail();
+
+            response.setEmail(email);
+
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.badRequest().body(response);
+        }
     }
 
     @PostMapping("/login")
     public ResponseEntity<AuthenticationControllerResponse> login(final @NonNull @RequestBody AuthenticationRequest authenticationRequest) {
         final String email = authenticationRequest.getEmail();
 
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(email, authenticationRequest.getPassword()));
-
-        final ValidationResult validationResult = authenticationRequestValidator.validate(authenticationRequest);
+        final ValidationResult validationResult = authenticationRequestOnLoginValidator.validate(authenticationRequest);
 
         final AuthenticationControllerResponse response = new AuthenticationControllerResponse();
         response.setValidationResult(validationResult);
 
         if (validationResult.getType() == ValidationResultType.VALID) {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(email, authenticationRequest.getPassword()));
+
             response.setEmail(email);
 
             final UserDTO userDTO = userService.readByEmail(email);

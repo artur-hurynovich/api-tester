@@ -1,4 +1,4 @@
-package com.hurynovich.api_tester.validator.impl;
+package com.hurynovich.api_tester.validator.impl.authentication_request_validator;
 
 import com.hurynovich.api_tester.model.enumeration.ValidationResultType;
 import com.hurynovich.api_tester.model.validation.ValidationResult;
@@ -11,12 +11,12 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class AuthenticationRequestValidatorTest {
+public class AuthenticationRequestOnLoginValidatorTest {
 
     private static final int PASSWORD_MINIMAL_LENGTH = 5;
 
     private final Validator<AuthenticationRequest> validator =
-            new AuthenticationRequestValidator();
+            new AuthenticationRequestOnLoginValidator();
 
     @Test
     public void successValidationTest() {

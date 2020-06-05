@@ -1,4 +1,4 @@
-package com.hurynovich.api_tester.validator.impl;
+package com.hurynovich.api_tester.validator.impl.authentication_request_validator;
 
 import com.hurynovich.api_tester.model.enumeration.ValidationResultType;
 import com.hurynovich.api_tester.model.validation.ValidationResult;
@@ -8,8 +8,8 @@ import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
-@Service
-public class AuthenticationRequestValidator implements Validator<AuthenticationRequest> {
+@Service("authenticationRequestOnLoginValidator")
+public class AuthenticationRequestOnLoginValidator implements Validator<AuthenticationRequest> {
 
     private static final int PASSWORD_MINIMAL_LENGTH = 5;
 

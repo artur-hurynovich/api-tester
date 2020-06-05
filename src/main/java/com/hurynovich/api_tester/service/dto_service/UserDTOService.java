@@ -6,4 +6,6 @@ public interface UserDTOService extends DTOService<UserDTO, Long> {
 
     UserDTO readByEmail(String email);
 
+    UserDTO readByEmailQuite(String email);
+
 }

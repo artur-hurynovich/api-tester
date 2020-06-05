@@ -77,6 +77,24 @@ public class UserDTOServiceImpl extends GenericDTOService<UserDTO, UserEntity, L
 
     @Transactional
     @Override
+    public UserDTO readByEmailQuite(final @NonNull String email) {
+        final UserEntity userEntity = instantiatePersistentObject();
+
+        userEntity.setEmail(email);
+
+        final List<UserDTO> userDTOs = readByExample(Example.of(userEntity));
+
+        if (userDTOs.isEmpty()) {
+            return null;
+        } else if (userDTOs.size() > 1) {
+            throw new DTOServiceException(buildMoreThanOneEntityFoundExceptionMessage(EMAIL_FIELD_NAME, email));
+        } else {
+            return userDTOs.iterator().next();
+        }
+    }
+
+    @Transactional
+    @Override
     public UserDTO update(final @NonNull UserDTO userDTO) {
         return super.create(userDTO);
     }
