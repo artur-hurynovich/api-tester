@@ -7,8 +7,11 @@ import com.hurynovich.api_tester.state_transition.state.impl.StateImpl;
 import com.hurynovich.api_tester.state_transition.state_transition_descriptor.impl.StateTransitionDescriptorImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.lang.NonNull;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -69,6 +72,16 @@ public class APITesterConfiguration {
                 new StateImpl(StateName.ERROR, Collections.emptyList()));
 
         return availableStates;
+    }
+
+    @Bean
+    public WebMvcConfigurer corsConfiguration() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(final @NonNull CorsRegistry registry) {
+                registry.addMapping("/api/**");
+            }
+        };
     }
 
 }

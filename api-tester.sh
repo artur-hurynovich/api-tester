@@ -11,9 +11,8 @@ mvn clean install -DskipTests
 cd docker || echo "Directory 'docker' not found"
 
 echo "Removing docker containers..."
-docker-compose down
+sudo docker-compose down
 echo "Docker containers removed"
 
 echo "Starting docker..."
-docker-compose up --build
-
+sudo docker-compose up --build
