@@ -4,6 +4,7 @@ import com.hurynovich.api_tester.cache.Cache;
 import com.hurynovich.api_tester.cache.cache_key.impl.ExecutionCacheKey;
 import com.hurynovich.api_tester.model.dto.impl.ExecutionLogDTO;
 import com.hurynovich.api_tester.model.dto.impl.RequestContainerDTO;
+import com.hurynovich.api_tester.model.dto.impl.RequestDTO;
 import com.hurynovich.api_tester.model.execution.ExecutionSignal;
 import com.hurynovich.api_tester.model.execution.ExecutionState;
 import com.hurynovich.api_tester.service.execution_helper.ExecutionHelper;
@@ -11,6 +12,7 @@ import com.hurynovich.api_tester.state_transition.signal.SignalName;
 import com.hurynovich.api_tester.state_transition.state.State;
 import com.hurynovich.api_tester.state_transition.state.StateName;
 import com.hurynovich.api_tester.state_transition.state_manager.StateManager;
+import com.hurynovich.api_tester.utils.RequestWrapperUtils;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
@@ -47,7 +49,9 @@ public class ExecutionHelperImpl implements ExecutionHelper {
         final ExecutionState executionState = new ExecutionState();
 
         executionState.setState(stateManager.getInitState());
-        executionState.setRequests(requestContainerDTO.getRequests());
+
+        final List<RequestDTO> requests = requestContainerDTO.getRequests();
+        executionState.setRequests(RequestWrapperUtils.wrapRequests(requests));
 
         executionStateCache.put(executionCacheKey, executionState);
 

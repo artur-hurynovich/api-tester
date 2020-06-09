@@ -1,6 +1,5 @@
 package com.hurynovich.api_tester.model.execution;
 
-import com.hurynovich.api_tester.model.dto.impl.RequestDTO;
 import com.hurynovich.api_tester.state_transition.has_state.HasState;
 import com.hurynovich.api_tester.state_transition.state.State;
 
@@ -10,7 +9,7 @@ public class ExecutionState implements HasState {
 
     private State state;
 
-    private List<RequestDTO> requests;
+    private List<IndexedRequestDTOWrapper> requests;
 
     @Override
     public State getState() {
@@ -22,11 +21,11 @@ public class ExecutionState implements HasState {
         this.state = state;
     }
 
-    public List<RequestDTO> getRequests() {
+    public List<IndexedRequestDTOWrapper> getRequests() {
         return requests;
     }
 
-    public void setRequests(final List<RequestDTO> requests) {
+    public void setRequests(final List<IndexedRequestDTOWrapper> requests) {
         this.requests = requests;
     }
 

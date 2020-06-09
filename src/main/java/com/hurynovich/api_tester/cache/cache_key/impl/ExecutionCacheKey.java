@@ -37,4 +37,11 @@ public class ExecutionCacheKey implements CacheKey {
         return Objects.hash(executionKey);
     }
 
+    @Override
+    public String toString() {
+        return "ExecutionCacheKey{" +
+                "executionKey='" + executionKey + '\'' +
+                '}';
+    }
+
 }

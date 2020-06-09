@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class NameValueElementValidator implements Validator<NameValueElementDTO> {
 
+    private static final String EXPRESSION_REGEX = "^\\d+#.+";
+
     @Override
     public ValidationResult validate(final @Nullable NameValueElementDTO nameValueElement) {
         final ValidationResult validationResult = ValidationResult.createValidResult();
@@ -36,10 +38,17 @@ public class NameValueElementValidator implements Validator<NameValueElementDTO>
                         type + "'");
             }
 
-            if (type == NameValueElementType.EXPRESSION && nameValueElement.getExpression() == null) {
-                validationResult.setType(ValidationResultType.NON_VALID);
-                validationResult.getDescriptions().add("'nameValueElement.expression' can't be null for 'nameValueElement.type' '" +
-                        type + "'");
+            if (type == NameValueElementType.EXPRESSION) {
+                final String expression = nameValueElement.getExpression();
+
+                if (expression == null) {
+                    validationResult.setType(ValidationResultType.NON_VALID);
+                    validationResult.getDescriptions().add("'nameValueElement.expression' can't be null for 'nameValueElement.type' '" +
+                            type + "'");
+                } else if (!expression.matches(EXPRESSION_REGEX)) {
+                    validationResult.setType(ValidationResultType.NON_VALID);
+                    validationResult.getDescriptions().add("'" + expression + "' is not a valid 'nameValueElement.expression'");
+                }
             }
         }
 
